@@ -134,6 +134,7 @@ class _MyPageState extends State<MyPage> {
                                     color: Color(0XFF7c7874),
                                 ),
                                 "我的订单",
+                                "/order",
                                 tip: "查看全部订单",
                             ),
                         ),
@@ -146,6 +147,7 @@ class _MyPageState extends State<MyPage> {
                                     color: Color(0XFF7c7874),
                                 ),
                                 "我的优惠券",
+                                "/coupon"
                             ),
                         ),
                         Container(
@@ -156,6 +158,7 @@ class _MyPageState extends State<MyPage> {
                                     color: Color(0XFF7c7874),
                                 ),
                                 "实名认证",
+                                "/order"
                             ),
                         ),
                         Container(
@@ -166,6 +169,7 @@ class _MyPageState extends State<MyPage> {
                                     color: Color(0XFF7c7874),
                                 ),
                                 "我的发票",
+                                "/order"
                             ),
                         ),
                         Container(
@@ -176,6 +180,7 @@ class _MyPageState extends State<MyPage> {
                                     color: Color(0XFF7c7874),
                                 ),
                                 "联系客服",
+                                "/order"
                             ),
                         )
                     ],

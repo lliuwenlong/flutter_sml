@@ -108,6 +108,9 @@ flutter:
    - images/border.png
    - images/2.0x/border.png
    - images/3.0x/border.png
+   - images/itransfer.png
+   - images/2.0x/itransfer.png
+   - images/3.0x/itransfer.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

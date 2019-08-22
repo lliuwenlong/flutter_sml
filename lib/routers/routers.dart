@@ -13,6 +13,10 @@ import '../pages/Base/BaseDetails.dart';
 import '../pages/Trip/Trip.dart';
 import '../pages/Restaurant/RestaurantDetails.dart';
 import '../pages/Restaurant/ReleaseEvaluate.dart';
+import '../pages/My/Product.dart';
+import '../pages/My/PurchaseRecord.dart';
+import '../pages/My/Order.dart';
+
 final Map routes = {
     '/': (context) => TabBars(),
     '/base': (context) => Base(),
@@ -27,7 +31,10 @@ final Map routes = {
     '/baseList': (context) => BaseList(),
     '/baseDetails': (context) => BaseDetails(),
     '/trip': (context) => Trip(),
-    '/releaseEvaluate': (context) => ReleaseEvaluate()
+    '/releaseEvaluate': (context) => ReleaseEvaluate(),
+    '/product': (context) => Product(),
+    '/purchaseRecord':  (context) => PurchaseRecord(),
+    '/order': (context) => Order()
 };
 
 var onGenerateRoute = (RouteSettings settings) {
