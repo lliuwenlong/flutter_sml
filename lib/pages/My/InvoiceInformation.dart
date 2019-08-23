@@ -203,153 +203,168 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                             )
                         )
                     ),
-                    Container(
-                        padding: EdgeInsets.fromLTRB(
-                            ScreenAdaper.width(30),
-                            0,
-                            ScreenAdaper.width(30),
-                            0,
-                        ),
-                        color: Colors.white,
+                    GestureDetector(
+                        onTap: () {
+                            Navigator.pushNamed(context, "/remarksInformation");
+                        },
                         child: Container(
                             padding: EdgeInsets.fromLTRB(
-                                0,
                                 ScreenAdaper.width(30),
                                 0,
                                 ScreenAdaper.width(30),
+                                0,
                             ),
-                            child: Row(
-                                children: <Widget>[
-                                    Container(
-                                        width: ScreenAdaper.width(177),
-                                        child: Text("备注", style: TextStyle(
-                                            color: ColorClass.titleColor,
-                                            fontSize: ScreenAdaper.fontSize(28)
-                                        ))
-                                    ),
-                                    Expanded(
-                                        flex: 1,
-                                        child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                                Text("请填写备注信息（非必填）", style: TextStyle(
-                                                    color: ColorClass.iconColor,
-                                                    fontSize: ScreenAdaper.fontSize(24)
-                                                )),
-                                                Icon(
-                                                    IconData(0Xe61e, fontFamily: "iconfont"),
-                                                    size: ScreenAdaper.fontSize(24),
-                                                    color:  ColorClass.iconColor
-                                                )
-                                            ]
+                            color: Colors.white,
+                            child: Container(
+                                padding: EdgeInsets.fromLTRB(
+                                    0,
+                                    ScreenAdaper.width(30),
+                                    0,
+                                    ScreenAdaper.width(30),
+                                ),
+                                child: Row(
+                                    children: <Widget>[
+                                        Container(
+                                            width: ScreenAdaper.width(177),
+                                            child: Text("备注", style: TextStyle(
+                                                color: ColorClass.titleColor,
+                                                fontSize: ScreenAdaper.fontSize(28)
+                                            ))
                                         ),
-                                    )
-                                ]
-                            )
-                        )
-                    ),
-                    Container(
-                        margin: EdgeInsets.only(
-                            top: ScreenAdaper.height(20)
-                        ),
-                        padding: EdgeInsets.fromLTRB(
-                            ScreenAdaper.width(30),
-                            0,
-                            ScreenAdaper.width(30),
-                            0,
-                        ),
-                        color: Colors.white,
-                        child: Container(
-                            padding: EdgeInsets.fromLTRB(
-                                0,
-                                ScreenAdaper.width(30),
-                                0,
-                                ScreenAdaper.width(30),
-                            ),
-                            child: Row(
-                                children: <Widget>[
-                                    Container(
-                                        width: ScreenAdaper.width(177),
-                                        child: Text("发票收货地址", style: TextStyle(
-                                            color: ColorClass.titleColor,
-                                            fontSize: ScreenAdaper.fontSize(28)
-                                        ))
-                                    ),
-                                    Expanded(
-                                        flex: 1,
-                                        child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: <Widget>[
-                                                Text("发票收货地址", style: TextStyle(
-                                                    color: ColorClass.iconColor,
-                                                    fontSize: ScreenAdaper.fontSize(24)
-                                                )),
-                                                SizedBox(width: ScreenAdaper.width(20)),
-                                                Icon(
-                                                    IconData(0Xe61e, fontFamily: "iconfont"),
-                                                    size: ScreenAdaper.fontSize(24),
-                                                    color:  ColorClass.iconColor
-                                                )
-                                            ]
-                                        ),
-                                    )
-                                ]
-                            )
-                        )
-                    ),
-                    Container(
-                        margin: EdgeInsets.only(
-                            top: ScreenAdaper.height(20)
-                        ),
-                        padding: EdgeInsets.fromLTRB(
-                            ScreenAdaper.width(30),
-                            0,
-                            ScreenAdaper.width(30),
-                            0,
-                        ),
-                        color: Colors.white,
-                        child: Container(
-                            padding: EdgeInsets.fromLTRB(
-                                0,
-                                ScreenAdaper.width(30),
-                                0,
-                                ScreenAdaper.width(30),
-                            ),
-                            child: Row(
-                                children: <Widget>[
-                                    Container(
-                                        width: ScreenAdaper.width(177),
-                                        child: Text("总金额", style: TextStyle(
-                                            color: ColorClass.titleColor,
-                                            fontSize: ScreenAdaper.fontSize(28)
-                                        ))
-                                    ),
-                                    Expanded(
-                                        flex: 1,
-                                        child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: <Widget>[
-                                                Expanded(
-                                                    flex: 1,
-                                                    child: Text("¥188.00", style: TextStyle(
-                                                        fontSize: ScreenAdaper.fontSize(24),
-                                                        color: ColorClass.fontRed
+                                        Expanded(
+                                            flex: 1,
+                                            child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: <Widget>[
+                                                    Text("请填写备注信息（非必填）", style: TextStyle(
+                                                        color: ColorClass.iconColor,
+                                                        fontSize: ScreenAdaper.fontSize(24)
                                                     )),
-                                                ),
-                                                Text("共1张，查看详情", style: TextStyle(
-                                                    color: ColorClass.iconColor,
-                                                    fontSize: ScreenAdaper.fontSize(24)
-                                                )),
-                                                SizedBox(width: ScreenAdaper.width(20)),
-                                                Icon(
-                                                    IconData(0Xe61e, fontFamily: "iconfont"),
-                                                    size: ScreenAdaper.fontSize(24),
-                                                    color:  ColorClass.iconColor
-                                                )
-                                            ]
+                                                    Icon(
+                                                        IconData(0Xe61e, fontFamily: "iconfont"),
+                                                        size: ScreenAdaper.fontSize(24),
+                                                        color:  ColorClass.iconColor
+                                                    )
+                                                ]
+                                            ),
+                                        )
+                                    ]
+                                )
+                            )
+                        )
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                            Navigator.pushNamed(context, "/invoiceHarvestAddress");
+                        },
+                        child: Container(
+                            margin: EdgeInsets.only(
+                                top: ScreenAdaper.height(20)
+                            ),
+                            padding: EdgeInsets.fromLTRB(
+                                ScreenAdaper.width(30),
+                                0,
+                                ScreenAdaper.width(30),
+                                0,
+                            ),
+                            color: Colors.white,
+                            child: Container(
+                                padding: EdgeInsets.fromLTRB(
+                                    0,
+                                    ScreenAdaper.width(30),
+                                    0,
+                                    ScreenAdaper.width(30),
+                                ),
+                                child: Row(
+                                    children: <Widget>[
+                                        Container(
+                                            width: ScreenAdaper.width(177),
+                                            child: Text("发票收货地址", style: TextStyle(
+                                                color: ColorClass.titleColor,
+                                                fontSize: ScreenAdaper.fontSize(28)
+                                            ))
                                         ),
-                                    )
-                                ]
+                                        Expanded(
+                                            flex: 1,
+                                            child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: <Widget>[
+                                                    Text("发票收货地址", style: TextStyle(
+                                                        color: ColorClass.iconColor,
+                                                        fontSize: ScreenAdaper.fontSize(24)
+                                                    )),
+                                                    SizedBox(width: ScreenAdaper.width(20)),
+                                                    Icon(
+                                                        IconData(0Xe61e, fontFamily: "iconfont"),
+                                                        size: ScreenAdaper.fontSize(24),
+                                                        color:  ColorClass.iconColor
+                                                    )
+                                                ]
+                                            ),
+                                        )
+                                    ]
+                                )
+                            )
+                        )
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                            Navigator.pushNamed(context, "/invoiceDetails");
+                        },
+                        child: Container(
+                            margin: EdgeInsets.only(
+                                top: ScreenAdaper.height(20)
+                            ),
+                            padding: EdgeInsets.fromLTRB(
+                                ScreenAdaper.width(30),
+                                0,
+                                ScreenAdaper.width(30),
+                                0,
+                            ),
+                            color: Colors.white,
+                            child: Container(
+                                padding: EdgeInsets.fromLTRB(
+                                    0,
+                                    ScreenAdaper.width(30),
+                                    0,
+                                    ScreenAdaper.width(30),
+                                ),
+                                child: Row(
+                                    children: <Widget>[
+                                        Container(
+                                            width: ScreenAdaper.width(177),
+                                            child: Text("总金额", style: TextStyle(
+                                                color: ColorClass.titleColor,
+                                                fontSize: ScreenAdaper.fontSize(28)
+                                            ))
+                                        ),
+                                        Expanded(
+                                            flex: 1,
+                                            child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: <Widget>[
+                                                    Expanded(
+                                                        flex: 1,
+                                                        child: Text("¥188.00", style: TextStyle(
+                                                            fontSize: ScreenAdaper.fontSize(24),
+                                                            color: ColorClass.fontRed
+                                                        )),
+                                                    ),
+                                                    Text("共1张，查看详情", style: TextStyle(
+                                                        color: ColorClass.iconColor,
+                                                        fontSize: ScreenAdaper.fontSize(24)
+                                                    )),
+                                                    SizedBox(width: ScreenAdaper.width(20)),
+                                                    Icon(
+                                                        IconData(0Xe61e, fontFamily: "iconfont"),
+                                                        size: ScreenAdaper.fontSize(24),
+                                                        color:  ColorClass.iconColor
+                                                    )
+                                                ]
+                                            ),
+                                        )
+                                    ]
+                                )
                             )
                         )
                     ),

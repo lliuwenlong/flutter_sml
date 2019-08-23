@@ -20,6 +20,9 @@ import '../pages/My/Authentication.dart';
 import '../pages/My/Invoice.dart';
 import '../pages/My/ContactCustomerService.dart';
 import '../pages/My/InvoiceInformation.dart';
+import '../pages/My/RemarksInformation.dart';
+import '../pages/My/InvoiceHarvestAddress.dart';
+import '../pages/My/InvoiceDetails.dart';
 
 final Map routes = {
     '/': (context) => TabBars(),
@@ -42,7 +45,10 @@ final Map routes = {
     '/authentication': (context) => Authentication(),
     '/invoice': (context) => Invoice(),
     '/contactCustomerService': (context) => ContactCustomerService(),
-    '/invoiceInformation': (context) => InvoiceInformation()
+    '/invoiceInformation': (context) => InvoiceInformation(),
+    '/remarksInformation': (context) => RemarksInformation(),
+    '/invoiceHarvestAddress': (context) => InvoiceHarvestAddress(),
+    '/invoiceDetails': (context) => InvoiceDetails()
 };
 
 var onGenerateRoute = (RouteSettings settings) {
