@@ -158,7 +158,7 @@ class _MyPageState extends State<MyPage> {
                                     color: Color(0XFF7c7874),
                                 ),
                                 "实名认证",
-                                "/order"
+                                "/authentication"
                             ),
                         ),
                         Container(
@@ -169,7 +169,7 @@ class _MyPageState extends State<MyPage> {
                                     color: Color(0XFF7c7874),
                                 ),
                                 "我的发票",
-                                "/order"
+                                "/invoice"
                             ),
                         ),
                         Container(
@@ -180,7 +180,7 @@ class _MyPageState extends State<MyPage> {
                                     color: Color(0XFF7c7874),
                                 ),
                                 "联系客服",
-                                "/order"
+                                "/contactCustomerService"
                             ),
                         )
                     ],

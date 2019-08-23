@@ -16,6 +16,10 @@ import '../pages/Restaurant/ReleaseEvaluate.dart';
 import '../pages/My/Product.dart';
 import '../pages/My/PurchaseRecord.dart';
 import '../pages/My/Order.dart';
+import '../pages/My/Authentication.dart';
+import '../pages/My/Invoice.dart';
+import '../pages/My/ContactCustomerService.dart';
+import '../pages/My/InvoiceInformation.dart';
 
 final Map routes = {
     '/': (context) => TabBars(),
@@ -34,7 +38,11 @@ final Map routes = {
     '/releaseEvaluate': (context) => ReleaseEvaluate(),
     '/product': (context) => Product(),
     '/purchaseRecord':  (context) => PurchaseRecord(),
-    '/order': (context) => Order()
+    '/order': (context) => Order(),
+    '/authentication': (context) => Authentication(),
+    '/invoice': (context) => Invoice(),
+    '/contactCustomerService': (context) => ContactCustomerService(),
+    '/invoiceInformation': (context) => InvoiceInformation()
 };
 
 var onGenerateRoute = (RouteSettings settings) {
