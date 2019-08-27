@@ -46,7 +46,7 @@ class Menu extends StatelessWidget {
                     ),
                     Expanded(
                         flex: 1,
-                        child: this._menuItem(context, "我的钱包", "images/wodeqianbao.png", 57, 61, "/product")
+                        child: this._menuItem(context, "我的钱包", "images/wodeqianbao.png", 57, 61, "/myWallet")
                     ),
                     Expanded(
                         flex: 1,

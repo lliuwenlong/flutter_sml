@@ -32,6 +32,10 @@ import '../pages/My/InvoiceInformation.dart';
 import '../pages/My/RemarksInformation.dart';
 import '../pages/My/InvoiceHarvestAddress.dart';
 import '../pages/My/InvoiceDetails.dart';
+import '../pages/My/UserInfo.dart';//个人信息
+import '../pages/My/ChangeNickName.dart';//修改昵称
+import '../pages/My/MyWallet.dart';// 我的钱包
+import '../pages/My/CashOut.dart';//提现
 
 final Map routes = {
     '/': (context) => TabBars(),
@@ -66,7 +70,13 @@ final Map routes = {
     '/invoiceInformation': (context) => InvoiceInformation(),
     '/remarksInformation': (context) => RemarksInformation(),
     '/invoiceHarvestAddress': (context) => InvoiceHarvestAddress(),
-    '/invoiceDetails': (context) => InvoiceDetails()
+    '/invoiceDetails': (context) => InvoiceDetails(),
+    '/userInfo': (context,{arguments}) => UserInfo(arguments:arguments),
+    '/changeNickName': (context,{arguments}) => ChangeNickName(arguments:arguments),
+    '/myWallet': (context) => MyWallet(),
+    '/cashOut': (context) => CashOut()
+    
+
 };
 
 var onGenerateRoute = (RouteSettings settings) {

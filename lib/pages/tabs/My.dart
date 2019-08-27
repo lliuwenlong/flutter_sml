@@ -56,7 +56,11 @@ class _MyPageState extends State<MyPage> {
                             width: double.infinity,
                             child: Row(
                                 children: <Widget>[
-                                    Container(
+                                    GestureDetector(
+                                      onTap: (){
+                                        Navigator.pushNamed(context, '/userInfo');
+                                      },
+                                      child: Container(
                                         width: ScreenAdaper.width(160),
                                         child: Stack(
                                             children: <Widget>[
@@ -87,6 +91,7 @@ class _MyPageState extends State<MyPage> {
                                                 )
                                             ],
                                         )
+                                    )
                                     ),
                                     SizedBox(width: ScreenAdaper.width(20)),
                                     Text("小童宝贝", style: TextStyle(

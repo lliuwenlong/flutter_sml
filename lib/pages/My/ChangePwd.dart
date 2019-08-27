@@ -17,7 +17,7 @@ class _ChangePwdState extends State<ChangePwd> {
       body: Container(
           color: Colors.white,
           // padding: EdgeInsets.only(left:ScreenAdaper.width(30),right: ScreenAdaper.width(30)),
-          child: Column(
+          child: ListView(
             children: <Widget>[
                 Container(
                   padding: EdgeInsets.only(left: ScreenAdaper.width(110),right: ScreenAdaper.width(110),top: ScreenAdaper.height(40),bottom: ScreenAdaper.height(40)),
@@ -94,8 +94,8 @@ class _ChangePwdState extends State<ChangePwd> {
                 ),
                 Container(
                   margin: EdgeInsets.only(top: ScreenAdaper.height(40)),
-                  width: ScreenAdaper.width(690),
                   height: ScreenAdaper.height(88),
+                  padding: EdgeInsets.only(left: ScreenAdaper.width(30),right: ScreenAdaper.width(30)),
                   decoration: BoxDecoration(
                     color: Colors.white,
                   ),
