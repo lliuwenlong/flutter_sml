@@ -16,6 +16,15 @@ import '../pages/Restaurant/ReleaseEvaluate.dart';
 import '../pages/My/Product.dart';
 import '../pages/My/PurchaseRecord.dart';
 import '../pages/My/Order.dart';
+import '../pages/My/Setting.dart';//设置
+import '../pages/My/ChangePwd.dart';//修改密码
+import '../pages/My/FeedBack.dart';//意见反馈
+import '../pages/My/AboutUs.dart';//关于我们
+import '../pages/My/Introduction.dart';//公司简介
+import '../pages/News/SystemMessage.dart';//系统消息
+import '../pages/News/NewsDetail.dart'; //消息详情
+import '../pages/News/ActivityMessage.dart';//活动公告
+import '../pages/News/OtherMessage.dart';//其他消息
 
 final Map routes = {
     '/': (context) => TabBars(),
@@ -34,7 +43,17 @@ final Map routes = {
     '/releaseEvaluate': (context) => ReleaseEvaluate(),
     '/product': (context) => Product(),
     '/purchaseRecord':  (context) => PurchaseRecord(),
-    '/order': (context) => Order()
+    '/order': (context) => Order(),
+    '/setting': (context) => Setting(),
+    '/changePwd': (context) => ChangePwd(),
+    '/feedBack': (context) => FeedBack(),
+    '/about': (context) => AboutUs(),
+    '/introduction': (context) => Introduction(),
+    '/systemMessage': (context,{arguments}) => SystemMessage(arguments:arguments),
+    '/newsDetail': (context,{arguments}) => NewsDetail(arguments:arguments),
+    '/activityMessage': (context,{arguments}) => ActivityMessage(arguments:arguments),
+    '/otherMessage': (context,{arguments}) => OtherMessage(arguments:arguments),
+
 };
 
 var onGenerateRoute = (RouteSettings settings) {

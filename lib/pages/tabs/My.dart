@@ -23,8 +23,11 @@ class _MyPageState extends State<MyPage> {
             ),
             child: Container(
                 margin: EdgeInsets.only(top: top),
+                
                 child: Column(
+                   
                     children: <Widget>[
+
                         Container(
                             height: ScreenAdaper.height(88),
                             padding: EdgeInsets.fromLTRB(ScreenAdaper.width(30), 0, ScreenAdaper.width(30), 0),
@@ -36,10 +39,14 @@ class _MyPageState extends State<MyPage> {
                                         size: ScreenAdaper.fontSize(40, allowFontScaling: true),
                                         color: Colors.white,
                                     ),
-                                    Icon(
-                                        IconData(0xe653, fontFamily: 'iconfont'),
-                                        size: ScreenAdaper.fontSize(40, allowFontScaling: true),
-                                        color: Colors.white,
+                                    IconButton(
+                                      alignment:Alignment.center,
+                                      icon: Icon(IconData(0xe653, fontFamily: 'iconfont')),
+                                      iconSize:ScreenAdaper.fontSize(40, allowFontScaling: true),
+                                      color: Colors.white,
+                                      onPressed: (){
+                                        Navigator.pushNamed(context, '/setting');
+                                      }
                                     )
                                 ],
                             )

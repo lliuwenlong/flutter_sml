@@ -23,7 +23,8 @@ dependencies:
   flutter_svg : ^0.14.0
   flutter_screenutil: ^0.5.3
   path_drawing: ^0.4.1
-
+  video_player: ^0.8.0
+  chewie: ^0.9.6
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -111,6 +112,10 @@ flutter:
    - images/itransfer.png
    - images/2.0x/itransfer.png
    - images/3.0x/itransfer.png
+   - images/message.png
+   - images/2.0x/message.png
+   - images/3.0x/message.png
+   - videos/video.mp4
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

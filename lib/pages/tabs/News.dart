@@ -6,18 +6,23 @@ class NewsPage extends StatefulWidget {
 }
 
 class _NewsPageState extends State<NewsPage> {
-    Widget _listItem (String url, String name, {isBorder = true}) {
-        return Container(
+    Widget _listItem (String url, String name, String routerName, {isBorder = true}) {
+        return GestureDetector(
+          onTap: (){
+            Navigator.pushNamed(context, routerName,arguments: {
+              "appTabName":name
+            });
+          },
+          child: Container(
             width: double.infinity,
-            padding: EdgeInsets.fromLTRB(
-                0, ScreenAdaper.height(30), 0, ScreenAdaper.height(30)
-            ),
+            padding: EdgeInsets.only(top: ScreenAdaper.height(30),bottom: ScreenAdaper.height(30)),
             decoration: BoxDecoration(
                 border: isBorder ? Border(bottom: BorderSide(
                     color: Color(0XFFd9d9d9),
                     width: 1
                 )) : null
             ),
+           
             child: Row(
                 children: <Widget>[
                     Container(
@@ -48,7 +53,8 @@ class _NewsPageState extends State<NewsPage> {
                         ),
                     )
                 ],
-            ),
+            )
+        ),
         );
     }
 
@@ -58,27 +64,28 @@ class _NewsPageState extends State<NewsPage> {
         return Scaffold(
             appBar: AppBar(
                 title: Text("消息", style: TextStyle(
-                    color: Colors.black
+                    color: Colors.black,
                 )),
                 elevation: 0,
                 brightness: Brightness.light,
-                backgroundColor: Colors.white
+                backgroundColor: Colors.white,
+                centerTitle: true,
             ),
             body: Container(
                 child: Container(
                     padding: EdgeInsets.fromLTRB(
-                        ScreenAdaper.width(30), 0, ScreenAdaper.width(30), 0
+                        ScreenAdaper.width(30), 0, ScreenAdaper.width(30),0
                     ),
                     child: Column(
                         children: <Widget>[
                             this._listItem(
-                                "images/tongzhi.png", "系统通知"
+                                "images/tongzhi.png", "系统通知",'/systemMessage'
                             ),
                             this._listItem(
-                                "images/gonggao.png", "活动公告"
+                                "images/gonggao.png", "活动公告",'/activityMessage'
                             ),
                             this._listItem(
-                                "images/xiaoxi.png", "其他消息", isBorder: false
+                                "images/xiaoxi.png", "其他消息", '/otherMessage',isBorder: false
                             )
                         ]
                     ),
