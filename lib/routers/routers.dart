@@ -25,6 +25,13 @@ import '../pages/News/SystemMessage.dart';//系统消息
 import '../pages/News/NewsDetail.dart'; //消息详情
 import '../pages/News/ActivityMessage.dart';//活动公告
 import '../pages/News/OtherMessage.dart';//其他消息
+import '../pages/My/Authentication.dart';
+import '../pages/My/Invoice.dart';
+import '../pages/My/ContactCustomerService.dart';
+import '../pages/My/InvoiceInformation.dart';
+import '../pages/My/RemarksInformation.dart';
+import '../pages/My/InvoiceHarvestAddress.dart';
+import '../pages/My/InvoiceDetails.dart';
 
 final Map routes = {
     '/': (context) => TabBars(),
@@ -53,7 +60,13 @@ final Map routes = {
     '/newsDetail': (context,{arguments}) => NewsDetail(arguments:arguments),
     '/activityMessage': (context,{arguments}) => ActivityMessage(arguments:arguments),
     '/otherMessage': (context,{arguments}) => OtherMessage(arguments:arguments),
-
+    '/authentication': (context) => Authentication(),
+    '/invoice': (context) => Invoice(),
+    '/contactCustomerService': (context) => ContactCustomerService(),
+    '/invoiceInformation': (context) => InvoiceInformation(),
+    '/remarksInformation': (context) => RemarksInformation(),
+    '/invoiceHarvestAddress': (context) => InvoiceHarvestAddress(),
+    '/invoiceDetails': (context) => InvoiceDetails()
 };
 
 var onGenerateRoute = (RouteSettings settings) {
