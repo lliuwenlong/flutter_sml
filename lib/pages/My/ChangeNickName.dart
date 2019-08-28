@@ -5,8 +5,7 @@ import '../../components/AppBarWidget.dart';
 class ChangeNickName extends StatefulWidget {
   final Map arguments;
   ChangeNickName({Key key, this.arguments}) : super(key: key);
-  _ChangeNickNameState createState() =>
-      _ChangeNickNameState(arguments: this.arguments);
+  _ChangeNickNameState createState() => _ChangeNickNameState(arguments: this.arguments);
 }
 
 class _ChangeNickNameState extends State<ChangeNickName> {

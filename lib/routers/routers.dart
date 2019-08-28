@@ -36,7 +36,6 @@ import '../pages/My/UserInfo.dart';//个人信息
 import '../pages/My/ChangeNickName.dart';//修改昵称
 import '../pages/My/MyWallet.dart';// 我的钱包
 import '../pages/My/CashOut.dart';//提现
-
 import '../pages/My/InvoiceHistory.dart';
 import '../pages/My/InvoiceHistoryDetails.dart';
 import '../pages/My/InvoiceSee.dart';
@@ -44,8 +43,15 @@ import '../pages/FriendDynamics/Comment.dart';
 import '../pages/FriendDynamics/Report.dart';
 import '../pages/FriendDynamics/Release.dart';
 import '../pages/FriendDynamics/FriendInformation.dart';
-
-
+import '../pages/My/AiCustomerService.dart';//AI客服
+import '../pages/My/FollowOrFans.dart';//关注 粉丝
+import '../pages/My/ProductDetail.dart';//神木详情
+import '../pages/My/GrowthRecord.dart';//成长记录
+import '../pages/My/OutputRecord.dart';//产值记录
+import '../pages/My/TransferRecord.dart';//转让记录
+import '../pages/My/Transfer.dart'; //转让
+import '../pages/My/ValueAddedServices.dart';//增值服务
+import '../pages/My/ValueDetail.dart';//增值服务 详情
 final Map routes = {
     '/': (context) => TabBars(),
     '/base': (context) => Base(),
@@ -61,7 +67,7 @@ final Map routes = {
     '/baseDetails': (context) => BaseDetails(),
     '/trip': (context) => Trip(),
     '/releaseEvaluate': (context) => ReleaseEvaluate(),
-    '/product': (context) => Product(),
+    '/product': (context,{arguments}) => Product(arguments:arguments),
     '/purchaseRecord':  (context) => PurchaseRecord(),
     '/order': (context) => Order(),
     '/setting': (context) => Setting(),
@@ -90,7 +96,16 @@ final Map routes = {
     '/friendDynamicsComment': (context) => FriendDynamicsComment(),
     '/friendDynamicsReport': (context) => FriendDynamicsReport(),
     '/friendDynamicsRelease': (context) => FriendDynamicsRelease(),
-    '/friendInformation': (context) => FriendInformation()
+    '/friendInformation': (context) => FriendInformation(),
+    '/aiCustomerService': (context) => AiCustomerService(),
+    '/followOrFans': (context,{arguments}) => FollowOrFans(arguments:arguments),
+    '/productDetail': (context,{arguments}) => ProductDetail(arguments:arguments),
+    '/growthRecord': (context) => GrowthRecord(),
+    '/outputRecord': (context) => OutputRecord(),
+    '/transferRecord': (context) => TransferRecord(),
+    '/transfer': (context) => Transfer(),
+    '/valueAddedServices': (context) => ValueAddedServices(),
+    '/valueDetail': (context,{arguments}) => ValueDetail(arguments:arguments)
 };
 
 var onGenerateRoute = (RouteSettings settings) {

@@ -6,9 +6,10 @@ class Menu extends StatelessWidget {
     Widget _menuItem (context, String name, String url, double width, double height, String routeName) {
         return GestureDetector(
             onTap: () {
-                Navigator.pushNamed(context, routeName);
+                Navigator.pushNamed(context, routeName,arguments: {});
             },
             child: Column(
+              
                 children: <Widget>[
                     Container(
                         width: ScreenAdaper.width(width),
@@ -50,7 +51,7 @@ class Menu extends StatelessWidget {
                     ),
                     Expanded(
                         flex: 1,
-                        child: this._menuItem(context, "我的动态", "images/wodedongtai.png", 54, 57, "/product")
+                        child: this._menuItem(context, "我的动态", "images/wodedongtai.png", 54, 57, "/followOrFans")
                     )
                 ]
             )

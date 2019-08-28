@@ -3,22 +3,37 @@ import '../../services/ScreenAdaper.dart';
 import '../../components/Label.dart';
 import '../../common/Color.dart';
 class Product extends StatefulWidget {
-    Product({Key key}) : super(key: key);
+  final Map arguments;
+    Product({Key key,this.arguments}) : super(key: key);
 
-    _ProductState createState() => _ProductState();
+    _ProductState createState() => _ProductState(arguments:this.arguments);
 }
 
 class _ProductState extends State<Product> with SingleTickerProviderStateMixin{
+  final Map arguments;
+  int _currentIndex;
+  _ProductState({this.arguments});
     TabController _tabController;
     void initState () {
         super.initState();
+        _currentIndex = arguments.isNotEmpty? arguments['index']:0;
         _tabController = new TabController(
             vsync: this,
-            length: 2
+            length: 2,
+            initialIndex: _currentIndex
         );
     }
     Widget _item ({bool isTransfer = true}) {
-        return Stack(
+        return GestureDetector(
+          onTap: (){
+            if(this._currentIndex==1){
+              return;
+            }
+            Navigator.pushNamed(context, '/productDetail',arguments: {
+              "id":1
+            });
+          },
+          child: Stack(
             alignment: AlignmentDirectional.topCenter,
             children: <Widget>[
                 Container(
@@ -132,9 +147,12 @@ class _ProductState extends State<Product> with SingleTickerProviderStateMixin{
                     ),
                 )
             ]
+        ),
         );
     }
-
+void onTap(value){
+  this._currentIndex = value;
+}
     @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
@@ -169,6 +187,9 @@ class _ProductState extends State<Product> with SingleTickerProviderStateMixin{
                     indicatorWeight: ScreenAdaper.height(6),
                     indicatorColor: Color(0XFF22b0a1),
                     controller: this._tabController,
+                    onTap: (value){
+                      this._currentIndex = value;
+                    },
                     tabs: <Widget>[
                         Tab(child: Text("认购中", style: TextStyle(
                             color: Colors.black, fontSize: ScreenAdaper.fontSize(34)
@@ -190,7 +211,9 @@ class _ProductState extends State<Product> with SingleTickerProviderStateMixin{
                 child: TabBarView(
                     controller: this._tabController,
                     children: <Widget>[
-                        Wrap(
+                        ListView(
+                          children: <Widget>[
+                            Wrap(
                             spacing: ScreenAdaper.width(10),
                             runSpacing: ScreenAdaper.width(10),
                             children: <Widget>[
@@ -199,8 +222,12 @@ class _ProductState extends State<Product> with SingleTickerProviderStateMixin{
                                 this._item(),
                                 this._item()
                             ]
+                        )
+                          ],
                         ),
-                        Wrap(
+                        ListView(
+                          children: <Widget>[
+                            Wrap(
                             spacing: ScreenAdaper.width(10),
                             runSpacing: ScreenAdaper.width(10),
                             children: <Widget>[
@@ -209,6 +236,8 @@ class _ProductState extends State<Product> with SingleTickerProviderStateMixin{
                                 this._item(isTransfer: false),
                                 this._item(isTransfer: false)
                             ]
+                        )
+                          ],
                         )
                     ]
                 )

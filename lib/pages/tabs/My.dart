@@ -34,10 +34,14 @@ class _MyPageState extends State<MyPage> {
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                    Icon(
-                                        IconData(0xe652, fontFamily: 'iconfont'),
-                                        size: ScreenAdaper.fontSize(40, allowFontScaling: true),
-                                        color: Colors.white,
+                                  IconButton(
+                                      alignment:Alignment.center,
+                                      icon: Icon(IconData(0xe652, fontFamily: 'iconfont')),
+                                      iconSize:ScreenAdaper.fontSize(40, allowFontScaling: true),
+                                      color: Colors.white,
+                                      onPressed: (){
+                                        Navigator.pushNamed(context, '/aiCustomerService');
+                                      }
                                     ),
                                     IconButton(
                                       alignment:Alignment.center,
