@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../components/AppBarWidget.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
 
@@ -75,7 +74,32 @@ class Invoice extends StatelessWidget {
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
         return Scaffold(
-            appBar: AppBarWidget().buildAppBar("我的发票"),
+            appBar: AppBar(
+                title: Text("我的发票", style: TextStyle(
+                    color: Colors.black,
+                    fontSize: ScreenAdaper.fontSize(32)
+                )),
+                elevation: 1,
+                iconTheme: IconThemeData(color: Colors.black),
+                backgroundColor: Colors.white,
+                centerTitle: true,
+                brightness: Brightness.light,
+                actions: [
+                    GestureDetector(
+                        onTap: () {
+                            Navigator.pushNamed(context, "/invoiceHistory");
+                        },
+                        child: Container(
+                            margin: EdgeInsets.only(right: ScreenAdaper.width(30)),
+                            alignment: Alignment.center,
+                            child: Text("开票历史", style: TextStyle(
+                                color: ColorClass.fontColor,
+                                fontSize: ScreenAdaper.fontSize(32)
+                            ), textAlign: TextAlign.center)
+                        )
+                    )
+                ]
+            ),
             body: ListView(
                 children: <Widget>[
                     this._item(),

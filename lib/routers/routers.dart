@@ -37,6 +37,15 @@ import '../pages/My/ChangeNickName.dart';//修改昵称
 import '../pages/My/MyWallet.dart';// 我的钱包
 import '../pages/My/CashOut.dart';//提现
 
+import '../pages/My/InvoiceHistory.dart';
+import '../pages/My/InvoiceHistoryDetails.dart';
+import '../pages/My/InvoiceSee.dart';
+import '../pages/FriendDynamics/Comment.dart';
+import '../pages/FriendDynamics/Report.dart';
+import '../pages/FriendDynamics/Release.dart';
+import '../pages/FriendDynamics/FriendInformation.dart';
+
+
 final Map routes = {
     '/': (context) => TabBars(),
     '/base': (context) => Base(),
@@ -74,9 +83,14 @@ final Map routes = {
     '/userInfo': (context,{arguments}) => UserInfo(arguments:arguments),
     '/changeNickName': (context,{arguments}) => ChangeNickName(arguments:arguments),
     '/myWallet': (context) => MyWallet(),
-    '/cashOut': (context) => CashOut()
-    
-
+    '/cashOut': (context) => CashOut(),
+    '/invoiceHistory': (context) => InvoiceHistory(),
+    '/invoiceHistoryDetails': (context) => InvoiceHistoryDetails(),
+    '/invoiceSee': (context) => InvoiceSee(),
+    '/friendDynamicsComment': (context) => FriendDynamicsComment(),
+    '/friendDynamicsReport': (context) => FriendDynamicsReport(),
+    '/friendDynamicsRelease': (context) => FriendDynamicsRelease(),
+    '/friendInformation': (context) => FriendInformation()
 };
 
 var onGenerateRoute = (RouteSettings settings) {

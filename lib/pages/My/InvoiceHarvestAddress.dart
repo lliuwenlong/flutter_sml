@@ -131,7 +131,31 @@ class InvoiceHarvestAddress extends StatelessWidget {
                     this._rowItem("收货人", "请输入收货人姓名"),
                     this._rowItem("电话", "收货人的电话，方便联系"),
                     this._rowItemII("地址", "请选择地址"),
-                    this._rowItem("详细地址", "请输入街道、门牌号等详细信息", maxLines: 3, isBorder: false)
+                    this._rowItem("详细地址", "请输入街道、门牌号等详细信息", maxLines: 3, isBorder: false),
+                    Container(
+                        margin: EdgeInsets.only(
+                            top: ScreenAdaper.height(50)
+                        ),
+                        height: ScreenAdaper.height(88),
+                        width: double.infinity,
+                        padding: EdgeInsets.only(
+                            left: ScreenAdaper.width(30),
+                            right: ScreenAdaper.width(30)
+                        ),
+                        child: RaisedButton(
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(ScreenAdaper.width(10))
+                            ),
+                            onPressed: () {
+                            },
+                            child: Text("提交", style: TextStyle(
+                                color: Colors.white,
+                                fontSize: ScreenAdaper.fontSize(40)
+                            )),
+                            color: ColorClass.common,
+                        ),
+                    )
                 ]
             )
         );

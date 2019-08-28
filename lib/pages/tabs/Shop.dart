@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
 import '../../services/ScreenAdaper.dart';
-
+import '../Shop/Purchase.dart';
 class ShopPage extends StatefulWidget {
     ShopPage({Key key}) : super(key: key);
     _ShopPageState createState() => _ShopPageState();
 }
 
 class _ShopPageState extends State<ShopPage> {
-    
+	BuildContext _selfContext;
+    _purchase () {
+		showModalBottomSheet(
+			context: this._selfContext,
+			shape:  RoundedRectangleBorder(
+				borderRadius: BorderRadius.only(
+					topLeft: Radius.circular(ScreenAdaper.width(10)),
+					topRight: Radius.circular(ScreenAdaper.width(10)),
+				)
+			),
+			builder: (BuildContext context) {
+				return Purchase();
+			}
+		);
+	}
+
     Widget _commodityItem () {
         return Container(
             width: (ScreenAdaper.getScreenWidth() - 40 ) / 2,
@@ -87,16 +102,20 @@ class _ShopPageState extends State<ShopPage> {
                                     )),
                                 ),
                                 Align(
-                                    alignment: Alignment.bottomCenter,
+                                    alignment: Alignment.centerRight,
                                     child: Container(
                                         alignment: Alignment.centerRight,
+										width: ScreenAdaper.width(161),
+										height: ScreenAdaper.height(50),
                                         child: RaisedButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+												this._purchase();
+											},
                                             color: Color(0xFF22b0a1),
                                             splashColor: Color.fromRGBO(0, 0, 0, 0),
                                             elevation: 0,
                                             shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(Radius.circular(6))
+                                                borderRadius: BorderRadius.all(Radius.circular(ScreenAdaper.width(10)))
                                             ),
                                             child: Text("立即购买", style: TextStyle(
                                                 fontSize: ScreenAdaper.fontSize(24),
@@ -116,6 +135,7 @@ class _ShopPageState extends State<ShopPage> {
     @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
+		this._selfContext = context;
         return Scaffold(
             appBar: AppBar(
                 title: Text("商城", style: TextStyle(
