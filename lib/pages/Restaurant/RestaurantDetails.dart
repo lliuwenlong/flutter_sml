@@ -93,10 +93,15 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                             SizedBox(
                                                 width: ScreenAdaper.width(75)
                                             ),
-                                            Icon(
+                                            IconButton(
+                                              icon: Icon(
                                                 IconData(0Xe639, fontFamily: "iconfont"),
                                                 color: ColorClass.common,
                                                 size: ScreenAdaper.fontSize(40,  allowFontScaling: true)
+                                              ),
+                                              onPressed: (){
+                                                Navigator.pushNamed(context, '/payment');
+                                              },
                                             )
                                         ]
                                     ),
@@ -305,10 +310,10 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
     // appBar
     Widget _sliverBuilder () {
         return SliverAppBar(
-            title: Text("标题", style: TextStyle(
+            title: Text("", style: TextStyle(
                 color: Colors.black,
             )),
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: IconThemeData(color: Colors.white),
             backgroundColor: Colors.white,
             expandedHeight: ScreenAdaper.height(300),
             floating: false,
@@ -420,10 +425,13 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
     // 商家
     Widget _business (String name, {bool isBorder = true, bool isIcon = false, String subTitle = '', Icon icon, }) {
         return Container(
-            padding: EdgeInsets.only(
+          color: Colors.white,
+          padding: EdgeInsets.only(
                 left: ScreenAdaper.width(30),
                 right: ScreenAdaper.width(30)
             ),
+          child: Container(
+            
             child: Container(
                 padding: EdgeInsets.only(
                     top: ScreenAdaper.height(30),
@@ -461,6 +469,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                     ],
                 )
             ),
+        ),
         );
     }
 

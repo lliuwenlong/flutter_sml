@@ -58,6 +58,7 @@ import '../pages/My/order/Acknowledgement.dart'; // 订单确认
 import '../pages/tabs/Shop.dart'; // 商城
 import '../pages/Shop/ShenmuDetails.dart'; // 商品详情页
 import '../pages/My/MyDynamics.dart';//我的动态
+import '../pages/Restaurant/Payment.dart';//餐饮 付款
 final Map routes = {
     '/': (context) => TabBars(),
     '/base': (context) => Base(),
@@ -117,7 +118,8 @@ final Map routes = {
     '/acknowledgement': (context, {arguments}) => Acknowledgement(arguments: arguments),
     '/shenmuDetails': (context, {arguments}) => ShenmuDetails(arguments: arguments),
     '/valueDetail': (context,{arguments}) => ValueDetail(arguments:arguments),
-    '/myDynamics': (context) => MyDynamics()
+    '/myDynamics': (context) => MyDynamics(),
+    '/payment': (context) => Payment()
 };
 
 var onGenerateRoute = (RouteSettings settings) {

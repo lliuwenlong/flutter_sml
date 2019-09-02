@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-
+import '../Shop/Purchase.dart';
 class ShenmuDetails extends StatefulWidget {
     final Map arguments;
     ShenmuDetails({Key key, this.arguments}) : super(key: key);
@@ -77,179 +77,71 @@ class _ShenmuDetailsState extends State<ShenmuDetails> {
     );
   }
 
-  //记录
-  Widget _treeRecord(String recordName, String text, String routeName,
-      {String time = '',
-      String oldName = '',
-      String newName = '',
-      bool isShow = true}) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, routeName);
-      },
-      child: Container(
-        color: Colors.white,
-        margin: EdgeInsets.only(top: ScreenAdaper.height(20)),
-        padding: EdgeInsets.all(ScreenAdaper.width(30)),
-        child: Column(
+
+  //介绍
+  Widget _introuce (String name,String text,{String imageUrl=''}) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(ScreenAdaper.width(30), ScreenAdaper.height(30), ScreenAdaper.width(30), 0),
+      color: Colors.white,
+      margin: EdgeInsets.only(top: ScreenAdaper.height(20)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(bottom: ScreenAdaper.height(30)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Container(
-                        width: ScreenAdaper.width(6),
-                        height: ScreenAdaper.height(28),
-                        decoration: BoxDecoration(
-                            color: Color(0xff22b0a1),
-                            borderRadius: BorderRadius.all(Radius.circular(2))),
-                      ),
-                      SizedBox(
-                        width: ScreenAdaper.width(16),
-                      ),
-                      Text(
-                        recordName,
-                        style: TextStyle(
-                            fontFamily: "SourceHanSansCN-Medium",
-                            fontSize: ScreenAdaper.fontSize(30),
-                            color: Color(0xff333333),
-                            fontWeight: FontWeight.w500),
-                      )
-                    ],
-                  ),
-                  Icon(
-                    IconData(0xe61e, fontFamily: 'iconfont'),
-                    size: ScreenAdaper.fontSize(26, allowFontScaling: true),
-                    color: Color(0xffaaaaaa),
-                  )
-                ],
-              ),
-            ),
-            Container(
               width: double.infinity,
-              margin: EdgeInsets.only(bottom: ScreenAdaper.height(14)),
               child: Text(
-                text,
+                name,
                 style: TextStyle(
-                    fontFamily: "SourceHanSansCN-Regular",
-                    fontSize: ScreenAdaper.fontSize(28),
-                    color: Color(0xff666666)),
+                  color: Color(0xff333333),
+                  fontSize: ScreenAdaper.fontSize(30),
+                  fontWeight: FontWeight.w500
+                ),
               ),
             ),
-            isShow
-                ? Container(
-                    width: double.infinity,
-                    child: time.isNotEmpty
-                        ? Text(
-                            time,
-                            style: TextStyle(
-                                fontFamily: "SourceHanSansCN-Regular",
-                                fontSize: ScreenAdaper.fontSize(24),
-                                color: Color(0xff999999)),
-                          )
-                        : Row(
-                            children: <Widget>[
-                              Text(
-                                '金丝楠持有人由',
-                                style: TextStyle(
-                                    color: Color(0xff666666),
-                                    fontSize: ScreenAdaper.fontSize(24)),
-                              ),
-                              Text(
-                                oldName,
-                                style: TextStyle(
-                                    color: Color(0xff666666),
-                                    fontSize: ScreenAdaper.fontSize(24),
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              Text(
-                                '更改为',
-                                style: TextStyle(
-                                    color: Color(0xff666666),
-                                    fontSize: ScreenAdaper.fontSize(24)),
-                              ),
-                              Text(
-                                newName,
-                                style: TextStyle(
-                                    color: Color(0xff666666),
-                                    fontSize: ScreenAdaper.fontSize(24),
-                                    fontWeight: FontWeight.w500),
-                              )
-                            ],
-                          ),
-                  )
-                : Container(),
+            SizedBox(height: ScreenAdaper.height(30),),
+            Text(
+              text,
+               style: TextStyle(
+                  color: Color(0xff666666),
+                  fontSize: ScreenAdaper.fontSize(26)
+                ),
+            ),
+            imageUrl.isNotEmpty?  Container(
+              margin: EdgeInsets.only(top: ScreenAdaper.height(30),bottom: ScreenAdaper.height(30)),
+              // height: ScreenAdaper.height(214),
+              child:AspectRatio(
+                aspectRatio:236/107,
+                  child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                ),        
+              ),
+            ):Text('')
           ],
-        ),
       ),
     );
   }
 
-  //增值列表
-  Widget _listItem(String name, String date, String state, String output) {
-    return Container(
-      padding: EdgeInsets.only(
-          top: ScreenAdaper.height(30), right: ScreenAdaper.height(30)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                name,
-                style: TextStyle(
-                  color: Color(0xff666666),
-                  fontFamily: "SourceHanSansCN-Medium",
-                  fontSize: ScreenAdaper.fontSize(28),
-                ),
-              ),
-              Text(
-                '购买日期  $date',
-                style: TextStyle(
-                  color: Color(0xff999999),
-                  fontFamily: "SourceHanSansCN-Regular",
-                  fontSize: ScreenAdaper.fontSize(24),
-                ),
-              )
-            ],
-          ),
-          SizedBox(
-            height: ScreenAdaper.height(20),
-          ),
-          Text(
-            '成长状态：$state',
-            style: TextStyle(
-              color: Color(0xff666666),
-              fontFamily: "SourceHanSansCN-Regular",
-              fontSize: ScreenAdaper.fontSize(24),
-            ),
-          ),
-          SizedBox(
-            height: ScreenAdaper.height(20),
-          ),
-          Text(
-            '产值：$output',
-            style: TextStyle(
-              color: Color(0xff666666),
-              fontFamily: "SourceHanSansCN-Regular",
-              fontSize: ScreenAdaper.fontSize(24),
-            ),
-          ),
-          SizedBox(
-            height: ScreenAdaper.height(30),
-          ),
-        ],
-      ),
-    );
-  }
+  BuildContext _selfContext;
+    _purchase () {
+		showModalBottomSheet(
+			context: this._selfContext,
+			shape:  RoundedRectangleBorder(
+				borderRadius: BorderRadius.only(
+					topLeft: Radius.circular(ScreenAdaper.width(10)),
+					topRight: Radius.circular(ScreenAdaper.width(10)),
+				)
+			),
+			builder: (BuildContext context) {
+				return Purchase();
+			}
+		);
+	}
 
   @override
   Widget build(BuildContext context) {
     ScreenAdaper.init(context);
+     this._selfContext = context;
     return Scaffold(
         appBar: AppBarWidget().buildAppBar('神木详情'),
         body: ConstrainedBox(
@@ -258,7 +150,7 @@ class _ShenmuDetailsState extends State<ShenmuDetails> {
             alignment: Alignment.topLeft,
             children: <Widget>[
               Container(
-                padding: EdgeInsets.only(bottom: ScreenAdaper.height(132)),
+                padding: EdgeInsets.only(bottom: ScreenAdaper.height(110)),
                 child: ListView(
                   children: <Widget>[
                     Container(
@@ -373,152 +265,52 @@ class _ShenmuDetailsState extends State<ShenmuDetails> {
                         ],
                       ),
                     ),
-                    this._treeRecord('成长记录', '开花', '/growthRecord',
-                        time: '2019-08-06  12:30:06'),
-                    this._treeRecord('转让记录', '张三', '/transferRecord',
-                        oldName: '李四', newName: '张三'),
-                    this._treeRecord('产值记录', '百合花总产量达150株', '/outputRecord',
-                        isShow: false),
                     Container(
-                      color: Colors.white,
-                      margin: EdgeInsets.only(top: ScreenAdaper.height(20)),
-                      padding: EdgeInsets.fromLTRB(ScreenAdaper.width(30),
-                          ScreenAdaper.height(30), ScreenAdaper.width(30), 0),
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                width: ScreenAdaper.width(6),
-                                height: ScreenAdaper.height(28),
-                                decoration: BoxDecoration(
-                                    color: Color(0xff22b0a1),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(2))),
-                              ),
-                              SizedBox(
-                                width: ScreenAdaper.width(16),
-                              ),
-                              Text(
-                                '增值列表',
-                                style: TextStyle(
-                                    fontFamily: "SourceHanSansCN-Medium",
-                                    fontSize: ScreenAdaper.fontSize(30),
-                                    color: Color(0xff333333),
-                                    fontWeight: FontWeight.w500),
-                              )
-                            ],
-                          ),
-                          Column(
-                            children: <Widget>[
-                              this._listItem(
-                                  "百合花", '2019-08-06  12:30:06', '发芽', '发芽'),
-                              Container(
-                                color: Color(0xffd5d5d5),
-                                height: ScreenAdaper.height(1),
-                                width: double.infinity,
-                              ),
-                              this._listItem(
-                                  "中草药", '2019-08-06  12:30:06', '结果', '15斤'),
-                            ],
-                          )
-                        ],
-                      ),
+                      child: this._introuce(
+                        '神木介绍', 
+                        '金丝楠是中国特有的珍贵木材。代表物种楠木（学名：Phoebe zhennan S. Lee）：原称“桢楠”。大乔木，高达30余米，树干通直。小枝通常较细，有棱或近于圆柱形，被灰黄色或灰褐色长柔毛或短柔毛。叶革质，椭圆形，长7-11厘米，宽2.5-4厘米，上面光亮无毛或沿中脉下半部有柔毛，下面密被短柔毛，聚伞状圆锥花序十分开展，被毛，每伞形花序有花3-6朵，花中等大，长3-4毫米。果椭圆形，革质、紧贴，两面被短柔毛或外面被微柔毛。花期4-5月，果期9-10月。野生或栽培；野生的多见于海拔1500米以下的阔叶林中。主要产于中国四川、湖北西部、云南、贵州及长江以南省区。据记载，在所有的金丝楠木中，四川的金丝楠材质最佳。属中国国家二级保护植物，木材有香气，纹理直而结构细密，不易变形和开裂，为建筑、高级家具等优良木材。在历史上金丝楠木专用于皇家宫殿、少数寺庙的建筑和家具。金丝楠木中的结晶体明显多于普通楠木，木材表面在阳光下金光闪闪，金丝浮现，且有淡雅幽香。',
+                        ),
+                    ),
+                    Container(
+                      child: this._introuce(
+                        '产值介绍', 
+                        '金丝楠是中国特有的珍贵木材。代表物种楠木（学名：Phoebe zhennan S. Lee）：原称“桢楠”。大乔木，高达30余米，树干通直。小枝通常较细，有棱或近于圆柱形，被灰黄色或灰褐色长柔毛或短柔毛。叶革质，椭圆形，长7-11厘米，宽2.5-4厘米，上面光亮无毛或沿中脉下半部有柔毛，下面密被短柔毛，聚伞状圆锥花序十分开展，被毛，每伞形花序有花3-6朵，花中等大，长3-4毫米。果椭圆形，革质、紧贴，两面被短柔毛或外面被微柔毛。花期4-5月，果期9-10月。'
+                      )
+                      ,
                     )
                   ],
+
                 ),
               ),
               Positioned(
                 left: 0,
+                right: 0,
                 bottom: 0,
-                child: Container(
-                  width: ScreenAdaper.getScreenWidth(),
-                  height: ScreenAdaper.height(110),
-                  alignment: Alignment.center,
+                height: ScreenAdaper.height(110),
+                child:Container(
+                  width: double.infinity,
                   color: Colors.white,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      GestureDetector(
-                        child: Container(
-                          height: ScreenAdaper.height(110),
-                          alignment: Alignment.center,
-                          width: ScreenAdaper.width(168),
-                          decoration: BoxDecoration(
-                              color: Color(0xffffffff),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0xffd5d5d5),
-                                  spreadRadius: 0.5,
-                                ),
-                              ]),
-                          child: Text(
-                            '转让',
-                            style: TextStyle(
-                              color: Color(0xff22b0a1),
-                              fontSize: ScreenAdaper.fontSize(34),
-                            ),
-                          ),
-                        ),
-                        onTap: () {
-                          Navigator.pushNamed(context, '/transfer');
-                        },
-                      ),
-                      GestureDetector(
-                        child: Container(
-                          height: ScreenAdaper.height(110),
-                          alignment: Alignment.center,
-                          width: ScreenAdaper.width(232),
-                          decoration: BoxDecoration(
-                              color: Color(0xffffffff),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0xffd5d5d5),
-                                  spreadRadius: 0.5,
-                                ),
-                              ]),
-                          child: Text(
-                            '增值服务',
-                            style: TextStyle(
-                              color: Color(0xff22b0a1),
-                              fontSize: ScreenAdaper.fontSize(34),
-                            ),
-                          ),
-                        ),
-                        onTap: () {
-                          Navigator.pushNamed(context, '/valueAddedServices');
-                        },
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: GestureDetector(
-                          child: Container(
-                            height: ScreenAdaper.height(110),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                color: Color(0xff22b0a1),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0xff22b0a1),
-                                    spreadRadius: 0.5,
-                                  ),
-                                ]),
-                            child: Text(
-                              '续费',
-                              style: TextStyle(
-                                color: Color(0xffffffff),
-                                fontSize: ScreenAdaper.fontSize(40),
-                                fontFamily: 'SourceHanSansCN-Regular',
-                              ),
-                            ),
-                          ),
-                          onTap: () {
-                            print('续费');
-                          },
-                        ),
+                  height: ScreenAdaper.height(88),
+                  padding: EdgeInsets.only(left: ScreenAdaper.width(30),right: ScreenAdaper.width(30),top:ScreenAdaper.height(14),bottom: ScreenAdaper.height(14)),
+                  child:  RaisedButton(
+                    child: Text(
+                      '购买',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: ScreenAdaper.fontSize(40)
                       )
-                    ],
+                    ),
+                    disabledColor: Color(0XFF86d4ca),
+                    splashColor: Color.fromARGB(0, 0, 0, 0),
+                    highlightColor: Color(0xff009a8a),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5))
+                    ),
+                    color: Color(0XFF22b0a1),
+                    onPressed: (){
+                      this._purchase();
+                    },
                   ),
                 ),
               )

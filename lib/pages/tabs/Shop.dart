@@ -103,7 +103,7 @@ class _ShopPageState extends State<ShopPage> {
                                     alignment: Alignment.centerLeft,
                                     child: Text("¥1000.00", style: TextStyle(
                                         color: Color(0xFFfb4135),
-                                        fontSize: ScreenAdaper.fontSize(28)
+                                        fontSize: ScreenAdaper.fontSize(26)
                                     )),
                                 ),
                                 Align(
@@ -123,7 +123,7 @@ class _ShopPageState extends State<ShopPage> {
                                                 borderRadius: BorderRadius.all(Radius.circular(ScreenAdaper.width(10)))
                                             ),
                                             child: Text("立即购买", style: TextStyle(
-                                                fontSize: ScreenAdaper.fontSize(20),
+                                                fontSize: ScreenAdaper.fontSize(22),
                                                 color: Color(0xFFffffff)
                                             )),
                                         ),

@@ -90,6 +90,7 @@ class _ChangeNickNameState extends State<ChangeNickName> {
             SizedBox(height: ScreenAdaper.height(52),),
             Container(
               width: double.infinity,
+              height: ScreenAdaper.height(88),
               child: RaisedButton(
                     child: Text(
                       '保存',
