@@ -9,7 +9,7 @@ class AboutUs extends StatefulWidget {
 
 class _AboutUsState extends State<AboutUs> {
 
-Widget _ListItem (String name,String tips,{isBorder=true,int color=0XFF666666}){
+Widget _listItem (String name,String tips,{isBorder=true,int color=0XFF666666}){
   return Container(
     decoration: BoxDecoration(
       color: Colors.white
@@ -90,9 +90,9 @@ Widget _ListItem (String name,String tips,{isBorder=true,int color=0XFF666666}){
               SizedBox(height: 40),
               Column(
                 children: <Widget>[
-                  this._ListItem('联系电话', '400-000-0000',color:0xff22b0a1),
-                  this._ListItem('官网地址', 'www.shenmulin.com'),
-                  this._ListItem('服务地址', '义龙新区大数据产业园',isBorder: false),
+                  this._listItem('联系电话', '400-000-0000',color:0xff22b0a1),
+                  this._listItem('官网地址', 'www.shenmulin.com'),
+                  this._listItem('服务地址', '义龙新区大数据产业园',isBorder: false),
 
                 ],
               ),

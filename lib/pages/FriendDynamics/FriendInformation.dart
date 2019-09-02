@@ -9,11 +9,11 @@ class FriendInformation extends StatelessWidget {
     Widget _buildTopBar () {
         double top = MediaQueryData.fromWindow(window).padding.top;
         return Container(
-            height: ScreenAdaper.height(335) + top,
+            height: ScreenAdaper.height(370) + top,
             width: double.infinity,
             decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage("images/zhuangtailan.png"),
+                    image: AssetImage("images/dongtai.png"),
                     fit: BoxFit.cover
                 )
             ),

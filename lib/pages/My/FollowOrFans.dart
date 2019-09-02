@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../services/ScreenAdaper.dart';
-import '../../components/AppBarWidget.dart';
 import '../../common/Color.dart';
 
 class FollowOrFans extends StatefulWidget {
@@ -29,7 +28,7 @@ class _FollowOrFansState extends State<FollowOrFans> with SingleTickerProviderSt
   }
 
 
-  Widget _ListItem(String imageUrl,String nickName,String text){
+  Widget _listItem(String imageUrl,String nickName,String text){
     return  Container(
       padding: EdgeInsets.only(left: ScreenAdaper.width(30),right: ScreenAdaper.width(30)),
       height: ScreenAdaper.height(126),
@@ -126,10 +125,10 @@ class _FollowOrFansState extends State<FollowOrFans> with SingleTickerProviderSt
               color: Colors.white,
               child: ListView(
               children: <Widget>[
-                this._ListItem('https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws', '梅西123', '取消关注'),
-                this._ListItem('http://pic30.nipic.com/20130619/9885883_210838271000_2.jpg', '小胖胖家的', '取消关注'),
-                this._ListItem('http://pic21.nipic.com/20120522/9961772_184043382124_2.jpg', '玻璃心', '取消关注'),
-                this._ListItem('http://pic41.nipic.com/20140524/9643307_104442624152_2.jpg', '秋天的蜂', '取消关注')
+                this._listItem('https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws', '梅西123', '取消关注'),
+                this._listItem('http://pic30.nipic.com/20130619/9885883_210838271000_2.jpg', '小胖胖家的', '取消关注'),
+                this._listItem('http://pic21.nipic.com/20120522/9961772_184043382124_2.jpg', '玻璃心', '取消关注'),
+                this._listItem('http://pic41.nipic.com/20140524/9643307_104442624152_2.jpg', '秋天的蜂', '取消关注')
               ],
             ),
             ),
@@ -138,8 +137,8 @@ class _FollowOrFansState extends State<FollowOrFans> with SingleTickerProviderSt
               color: Colors.white,
               child: ListView(
               children: <Widget>[
-                this._ListItem('https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws', 'Amy 丽', '关注'),
-                this._ListItem('http://pic41.nipic.com/20140524/9643307_104442624152_2.jpg', 'Amy 丽', '关注'),
+                this._listItem('https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws', 'Amy 丽', '关注'),
+                this._listItem('http://pic41.nipic.com/20140524/9643307_104442624152_2.jpg', 'Amy 丽', '关注'),
               ],
             ),
             )

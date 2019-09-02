@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import '../Shop/Purchase.dart';
 
 class ValueDetail extends StatefulWidget {
   final Map arguments;
@@ -91,9 +92,29 @@ class _ValueDetailState extends State<ValueDetail> {
       ),
     );
   }
+  
+  
+  BuildContext _selfContext;
+    _purchase () {
+		showModalBottomSheet(
+			context: this._selfContext,
+			shape:  RoundedRectangleBorder(
+				borderRadius: BorderRadius.only(
+					topLeft: Radius.circular(ScreenAdaper.width(10)),
+					topRight: Radius.circular(ScreenAdaper.width(10)),
+				)
+			),
+			builder: (BuildContext context) {
+				return Purchase();
+			}
+		);
+	}
+  
+  
   @override
   Widget build(BuildContext context) {
     ScreenAdaper.init(context);
+    this._selfContext = context;
     return Scaffold(
         appBar: AppBarWidget().buildAppBar('详情'),
         body: ConstrainedBox(
@@ -220,6 +241,7 @@ class _ValueDetailState extends State<ValueDetail> {
                     ),
                     color: Color(0XFF22b0a1),
                     onPressed: (){
+                      this._purchase();
                       print('购买');
                     },
                   ),

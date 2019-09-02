@@ -12,7 +12,7 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
-    Widget _ListItem (String name,String routerName,{isBorder=true,int color=0XFF333333}){
+    Widget _listItem (String name,String routerName,{isBorder=true,int color=0XFF333333}){
       return GestureDetector(
         onTap: (){
           Navigator.pushNamed(context, routerName);
@@ -57,9 +57,7 @@ class _SettingState extends State<Setting> {
              )
       );
   }
-
-            
-    String  _choice = 'Nothing';
+    String  _choice ='';
     Future _openAlertDialog() async {
       final action = await showDialog(
         context: context,
@@ -117,12 +115,12 @@ class _SettingState extends State<Setting> {
       switch (action) {
         case Action.Ok:
           setState(() {
-            _choice = 'Ok';
+            this._choice = 'Ok';
           });
           break;
         case Action.Cancel:
           setState(() {
-            _choice = 'Cancel';
+            this._choice = 'Cancel';
           });
           break;
         default:
@@ -136,9 +134,9 @@ class _SettingState extends State<Setting> {
       body: Container(
           child:Column(
             children: <Widget>[
-              this._ListItem('修改密码', '/changePwd',isBorder: true),
-              this._ListItem('意见反馈', '/feedBack',isBorder: true),
-              this._ListItem('关于我们', '/about',isBorder: false),
+              this._listItem('修改密码', '/changePwd',isBorder: true),
+              this._listItem('意见反馈', '/feedBack',isBorder: true),
+              this._listItem('关于我们', '/about',isBorder: false),
               Container(
                 margin: EdgeInsets.only(bottom: ScreenAdaper.height(10)),
               ),

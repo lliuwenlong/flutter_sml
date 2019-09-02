@@ -127,6 +127,9 @@ flutter:
    - images/mybg.png
    - images/2.0x/mybg.png
    - images/3.0x/mybg.png
+   - images/dongtai.png
+   - images/2.0x/dongtai.png
+   - images/3.0x/dongtai.png
    - videos/video.mp4
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

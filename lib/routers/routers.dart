@@ -54,10 +54,10 @@ import '../pages/My/ValueAddedServices.dart';//增值服务
 import '../pages/My/ValueDetail.dart';//增值服务 详情
 import '../pages/My/order/CancellationOrder.dart'; // 我的订单
 import '../pages/My/order/Acknowledgement.dart'; // 订单确认
-import '../pages/My/myDynamics/MyDynamics.dart'; // 我的
+// import '../pages/My/myDynamics/MyDynamics.dart'; // 我的
 import '../pages/tabs/Shop.dart'; // 商城
 import '../pages/Shop/ShenmuDetails.dart'; // 商品详情页
-
+import '../pages/My/MyDynamics.dart';//我的动态
 final Map routes = {
     '/': (context) => TabBars(),
     '/base': (context) => Base(),
@@ -95,7 +95,7 @@ final Map routes = {
     '/invoiceDetails': (context) => InvoiceDetails(),
     '/userInfo': (context,{arguments}) => UserInfo(arguments:arguments),
     '/changeNickName': (context,{arguments}) => ChangeNickName(arguments:arguments),
-    '/myWallet': (context, {arguments}) => MyWallet(arguments: arguments),
+    '/myWallet': (context) => MyWallet(),
     '/cashOut': (context) => CashOut(),
     '/invoiceHistory': (context) => InvoiceHistory(),
     '/invoiceHistoryDetails': (context) => InvoiceHistoryDetails(),
@@ -115,8 +115,9 @@ final Map routes = {
     '/valueDetail': (context, {arguments}) => ValueDetail(arguments: arguments),
     '/cancellationOrder': (context, {arguments}) => CancellationOrder(arguments: arguments),
     '/acknowledgement': (context, {arguments}) => Acknowledgement(arguments: arguments),
-    '/myDynamics': (context, {arguments}) => MyDynamics(arguments: arguments),
     '/shenmuDetails': (context, {arguments}) => ShenmuDetails(arguments: arguments),
+    '/valueDetail': (context,{arguments}) => ValueDetail(arguments:arguments),
+    '/myDynamics': (context) => MyDynamics()
 };
 
 var onGenerateRoute = (RouteSettings settings) {

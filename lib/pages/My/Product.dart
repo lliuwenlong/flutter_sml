@@ -16,7 +16,7 @@ class _ProductState extends State<Product> with SingleTickerProviderStateMixin{
     TabController _tabController;
     void initState () {
         super.initState();
-        _currentIndex = arguments.isNotEmpty? arguments['index']:0;
+        _currentIndex =arguments==null?0:arguments.isNotEmpty? arguments['index']:0;
         _tabController = new TabController(
             vsync: this,
             length: 2,
@@ -26,7 +26,7 @@ class _ProductState extends State<Product> with SingleTickerProviderStateMixin{
     Widget _item ({bool isTransfer = true}) {
         return GestureDetector(
           onTap: (){
-            if(this._currentIndex==1){
+            if(this._currentIndex==1 || !isTransfer){
               return;
             }
             Navigator.pushNamed(context, '/productDetail',arguments: {

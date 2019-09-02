@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../services/ScreenAdaper.dart';
 import 'ListItem.dart';
 import '../../components/AppBarWidget.dart';
 class OtherMessage extends StatefulWidget {

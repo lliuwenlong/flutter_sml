@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import '../Shop/Purchase.dart';
 
 class ProductDetail extends StatefulWidget {
   final Map arguments;
   ProductDetail({Key key, this.arguments}) : super(key: key);
 
-  _ProductDetailState createState() =>
-      _ProductDetailState(arguments: this.arguments);
+  _ProductDetailState createState() => _ProductDetailState(arguments: this.arguments);
 }
 
 class _ProductDetailState extends State<ProductDetail> {
@@ -30,7 +30,7 @@ class _ProductDetailState extends State<ProductDetail> {
   //树木信息
   Widget _treeInfo(String infoName, String infoData) {
     return Container(
-        width: ScreenAdaper.width(345),
+        width: (ScreenAdaper.getScreenWidth()-ScreenAdaper.width(60))/2,
         margin: EdgeInsets.only(bottom: ScreenAdaper.height(20)),
         child: Row(
           children: <Widget>[
@@ -242,9 +242,29 @@ class _ProductDetailState extends State<ProductDetail> {
       ),
     );
   }
+  
+  
+  BuildContext _selfContext;
+    _purchase () {
+		showModalBottomSheet(
+			context: this._selfContext,
+			shape:  RoundedRectangleBorder(
+				borderRadius: BorderRadius.only(
+					topLeft: Radius.circular(ScreenAdaper.width(10)),
+					topRight: Radius.circular(ScreenAdaper.width(10)),
+				)
+			),
+			builder: (BuildContext context) {
+				return Purchase();
+			}
+		);
+	}
+  
+  
   @override
   Widget build(BuildContext context) {
     ScreenAdaper.init(context);
+    this._selfContext = context;
     return Scaffold(
         appBar: AppBarWidget().buildAppBar('神木详情'),
         body: ConstrainedBox(
@@ -267,7 +287,10 @@ class _ProductDetailState extends State<ProductDetail> {
                                     image: DecorationImage(
                                         image: NetworkImage(
                                             bannerList[index]['url']),
-                                        fit: BoxFit.cover)));
+                                        fit: BoxFit.cover
+									)
+								)
+							);
                           },
                           itemCount: bannerList.length,
                           control: new SwiperPagination(
@@ -275,13 +298,13 @@ class _ProductDetailState extends State<ProductDetail> {
                                 color: Colors.white,
                                 activeColor: Colors.white,
                                 fontSize: ScreenAdaper.fontSize(30),
-                                activeFontSize: ScreenAdaper.fontSize(40)),
+                                activeFontSize: ScreenAdaper.fontSize(40),
+                            ),
                             margin: EdgeInsets.only(
                                 bottom: ScreenAdaper.height(30),
                                 right: ScreenAdaper.width(30)),
                             alignment: Alignment.bottomRight,
-                          )
-                          // pagination: new SwiperPagination()
+                          ),
                           ),
                     )),
                     Container(
@@ -309,6 +332,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                   ScreenAdaper.width(14)),
                               child: Wrap(
                                 alignment: WrapAlignment.start,
+                                spacing: 0,
                                 children: <Widget>[
                                   this._treeInfo('树龄', '1年生'),
                                   this._treeInfo('枝条数', '3'),
@@ -365,9 +389,9 @@ class _ProductDetailState extends State<ProductDetail> {
                         ],
                       ),
                     ),
-                   this._treeRecord('成长记录', '开花','/growthRecord',time: '2019-08-06  12:30:06'),
-                   this._treeRecord('转让记录', '张三','/transferRecord',oldName: '李四',newName: '张三'),
-                   this._treeRecord('产值记录', '百合花总产量达150株','/outputRecord',isShow:false),
+					this._treeRecord('成长记录', '开花','/growthRecord',time: '2019-08-06  12:30:06'),
+					this._treeRecord('转让记录', '张三','/transferRecord',oldName: '李四',newName: '张三'),
+					this._treeRecord('产值记录', '百合花总产量达150株','/outputRecord',isShow:false),
                     Container(
                       color: Colors.white,
                       margin: EdgeInsets.only(top: ScreenAdaper.height(20)),
@@ -500,7 +524,8 @@ class _ProductDetailState extends State<ProductDetail> {
                             ),
                           ),
                           onTap: () {
-                            print('续费');
+                            // print('续费');
+                            this._purchase();
                           },
                         ),
                       )
