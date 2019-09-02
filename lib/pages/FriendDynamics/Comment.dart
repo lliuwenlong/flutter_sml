@@ -127,7 +127,7 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                                             Column(
                                                 children: <Widget>[
                                                     Icon(
-                                                        IconData(0xe665, fontFamily: "iconfont"),
+                                                        IconData(0xe667, fontFamily: "iconfont"),
                                                         size: ScreenAdaper.fontSize(100),
                                                         color: Color(0xFF22b0a1)
                                                     ),
@@ -142,7 +142,7 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                                             Column(
                                                 children: <Widget>[
                                                     Icon(
-                                                        IconData(0xe665, fontFamily: "iconfont"),
+                                                        IconData(0xe668, fontFamily: "iconfont"),
                                                         size: ScreenAdaper.fontSize(100),
                                                         color: Color(0xFF22b0a1)
                                                     ),

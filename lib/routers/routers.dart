@@ -52,9 +52,16 @@ import '../pages/My/TransferRecord.dart';//转让记录
 import '../pages/My/Transfer.dart'; //转让
 import '../pages/My/ValueAddedServices.dart';//增值服务
 import '../pages/My/ValueDetail.dart';//增值服务 详情
+import '../pages/My/order/CancellationOrder.dart'; // 我的订单
+import '../pages/My/order/Acknowledgement.dart'; // 订单确认
+import '../pages/My/myDynamics/MyDynamics.dart'; // 我的
+import '../pages/tabs/Shop.dart'; // 商城
+import '../pages/Shop/ShenmuDetails.dart'; // 商品详情页
+
 final Map routes = {
     '/': (context) => TabBars(),
     '/base': (context) => Base(),
+    '/shop': (context) => ShopPage(),
     '/coupon': (context) => Coupon(),
     '/restaurant': (context) => Restaurant(),
     '/restaurantDetails': (context) => RestaurantDetails(),
@@ -88,7 +95,7 @@ final Map routes = {
     '/invoiceDetails': (context) => InvoiceDetails(),
     '/userInfo': (context,{arguments}) => UserInfo(arguments:arguments),
     '/changeNickName': (context,{arguments}) => ChangeNickName(arguments:arguments),
-    '/myWallet': (context) => MyWallet(),
+    '/myWallet': (context, {arguments}) => MyWallet(arguments: arguments),
     '/cashOut': (context) => CashOut(),
     '/invoiceHistory': (context) => InvoiceHistory(),
     '/invoiceHistoryDetails': (context) => InvoiceHistoryDetails(),
@@ -98,14 +105,18 @@ final Map routes = {
     '/friendDynamicsRelease': (context) => FriendDynamicsRelease(),
     '/friendInformation': (context) => FriendInformation(),
     '/aiCustomerService': (context) => AiCustomerService(),
-    '/followOrFans': (context,{arguments}) => FollowOrFans(arguments:arguments),
-    '/productDetail': (context,{arguments}) => ProductDetail(arguments:arguments),
+    '/followOrFans': (context, {arguments}) => FollowOrFans(arguments: arguments),
+    '/productDetail': (context, {arguments}) => ProductDetail(arguments: arguments),
     '/growthRecord': (context) => GrowthRecord(),
     '/outputRecord': (context) => OutputRecord(),
     '/transferRecord': (context) => TransferRecord(),
     '/transfer': (context) => Transfer(),
     '/valueAddedServices': (context) => ValueAddedServices(),
-    '/valueDetail': (context,{arguments}) => ValueDetail(arguments:arguments)
+    '/valueDetail': (context, {arguments}) => ValueDetail(arguments: arguments),
+    '/cancellationOrder': (context, {arguments}) => CancellationOrder(arguments: arguments),
+    '/acknowledgement': (context, {arguments}) => Acknowledgement(arguments: arguments),
+    '/myDynamics': (context, {arguments}) => MyDynamics(arguments: arguments),
+    '/shenmuDetails': (context, {arguments}) => ShenmuDetails(arguments: arguments),
 };
 
 var onGenerateRoute = (RouteSettings settings) {

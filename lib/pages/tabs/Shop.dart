@@ -35,17 +35,22 @@ class _ShopPageState extends State<ShopPage> {
                 children: <Widget>[
                     Stack(
                         children: <Widget>[
-                            AspectRatio(
-                                aspectRatio: 335 / 400,
-                                child: Container(
-                                    width: double.infinity,
-                                    child: ClipRRect(
-                                        borderRadius: BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5)),
-                                        child: Image.network(
-                                            "http://qcloud.dpfile.com/pc/pYPuondR-PaQO3rhSjRl7x1PBMlPubyBLeDC8IcaPQGC0AsVXyL223YOP11TLXmuTZlMcKwJPXLIRuRlkFr_8g.jpg",
-                                            fit: BoxFit.cover,
-                                        )
-                                    ),
+                            GestureDetector(
+                                onTap: () {
+                                    Navigator.pushNamed(context, "/shenmuDetails");
+                                },
+                                child: AspectRatio(
+                                    aspectRatio: 335 / 400,
+                                    child: Container(
+                                        width: double.infinity,
+                                        child: ClipRRect(
+                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5)),
+                                            child: Image.network(
+                                                "http://qcloud.dpfile.com/pc/pYPuondR-PaQO3rhSjRl7x1PBMlPubyBLeDC8IcaPQGC0AsVXyL223YOP11TLXmuTZlMcKwJPXLIRuRlkFr_8g.jpg",
+                                                fit: BoxFit.cover,
+                                            )
+                                        ),
+                                    )
                                 )
                             ),
                             Positioned(

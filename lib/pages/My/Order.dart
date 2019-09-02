@@ -22,6 +22,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
             length: 5
         );
     }
+
     Widget _itemWidget () {
         return Container(
             margin: EdgeInsets.only(
@@ -88,14 +89,21 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                     Container(
                         alignment: Alignment.centerRight,
                         child: Container(
-                            width: ScreenAdaper.width(150),
-                            height: ScreenAdaper.width(50),
+                            width: ScreenAdaper.width(160),
+                            height: ScreenAdaper.width(60),
                             child: OutlineButton(
                                 borderSide: BorderSide(
-                                    color: Color(0XFF999999)
+                                    color: Color(0XFF999999),
+                                    width: ScreenAdaper.width(1)
                                 ),
-                                onPressed: () {},
-                                child: Text("评价", style: TextStyle(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(ScreenAdaper.width(10))
+                                ),
+                                highlightedBorderColor: Color(0XFF999999),
+                                onPressed: () {
+                                    Navigator.pushNamed(context, "/acknowledgement");
+                                },
+                                child: Text("去购买", style: TextStyle(
                                     color: ColorClass.titleColor,
                                     fontSize: ScreenAdaper.fontSize(24)
                                 )),

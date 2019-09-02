@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                     Row(
                         children: <Widget>[
                             this._menuItem("images/shenmuzhusu.png", "神木住宿", 98, 83, "/accommodation"),
-                            this._menuItem("images/shenmugouwu.png", "神木购物", 65, 92,  "/restaurant"),
+                            this._menuItem("images/shenmugouwu.png", "神木购物", 65, 92,  "/shop"),
                             this._menuItem("images/shenmuyule.png", "神木娱乐", 62, 97, "/entertainment"),
                             this._menuItem("images/zhoubianyou.png", "周边游", 100, 85, "/restaurant")
                         ],

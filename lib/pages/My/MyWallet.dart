@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
 class MyWallet extends StatefulWidget {
-  MyWallet({Key key}) : super(key: key);
+  final Map arguments;
+  MyWallet({Key key, this.arguments}) : super(key: key);
 
   _MyWalletState createState() => _MyWalletState();
 }

@@ -26,6 +26,7 @@ dependencies:
   video_player: ^0.8.0
   chewie: ^0.9.6
   provider: ^3.1.0
+  city_pickers: ^0.1.23
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -123,6 +124,9 @@ flutter:
    - images/weixin.png
    - images/2.0x/weixin.png
    - images/3.0x/weixin.png
+   - images/mybg.png
+   - images/2.0x/mybg.png
+   - images/3.0x/mybg.png
    - videos/video.mp4
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
