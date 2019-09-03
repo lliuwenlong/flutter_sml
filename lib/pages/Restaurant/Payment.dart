@@ -21,15 +21,17 @@ class _PaymentState extends State<Payment> {
           child: Stack(
             children: <Widget>[
               Container(
-                color: Colors.white,
-                padding: EdgeInsets.only(
-                    top: ScreenAdaper.height(24),
-                    left: ScreenAdaper.width(30),
-                    right: ScreenAdaper.width(30)),
+                // color: Colors.white,
+                
                 child: Column(
                   children: <Widget>[
                     Container(
-                        height: ScreenAdaper.height(100),
+						color: Colors.white,
+						padding: EdgeInsets.only(
+                    left: ScreenAdaper.width(30),
+                    right: ScreenAdaper.width(30)),
+                        child: Container(
+							height: ScreenAdaper.height(124),
                         alignment: Alignment.centerLeft,
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -41,9 +43,14 @@ class _PaymentState extends State<Payment> {
                           style: TextStyle(
                               color: Color(0xff333333),
                               fontSize: ScreenAdaper.fontSize(60)),
-                        )),
+                        )
+						),
+					),
                     Container(
-                        padding: EdgeInsets.only(
+						padding: EdgeInsets.only(left: ScreenAdaper.width(30),right: ScreenAdaper.width(30)),
+						color: Colors.white,
+                        child: Container(
+							padding: EdgeInsets.only(
                             top: ScreenAdaper.height(32),
                             bottom: ScreenAdaper.height(32)),
                         decoration: BoxDecoration(
@@ -62,12 +69,18 @@ class _PaymentState extends State<Payment> {
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: <Widget>[
-                                      Icon(
-                                        IconData(0xe638,
-                                            fontFamily: 'iconfont'),
-                                        size: ScreenAdaper.fontSize(40),
-                                        color: Color(0xfffb4135),
+                                      Container(
+                                        width: ScreenAdaper.width(40),
+                                        height: ScreenAdaper.width(40),
+										decoration: BoxDecoration(
+											image: DecorationImage(
+												image: AssetImage('images/hui.png'),
+												fit: BoxFit.cover
+											)
+										),
                                       ),
                                       SizedBox(
                                         width: ScreenAdaper.width(20),
@@ -115,9 +128,14 @@ class _PaymentState extends State<Payment> {
                                   ))
                             ],
                           ),
-                        )),
+                        )
+						),
+					),
                     Container(
-                        height: ScreenAdaper.height(100),
+						padding: EdgeInsets.only(left: ScreenAdaper.width(30),right: ScreenAdaper.width(30)),
+						color: Colors.white,
+						child: Container(
+							 height: ScreenAdaper.height(100),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border(
@@ -142,16 +160,20 @@ class _PaymentState extends State<Payment> {
                                   fontSize: ScreenAdaper.fontSize(48)),
                             )
                           ],
-                        )),
+                        )
+						),
+					),
                     Container(
-                      height: ScreenAdaper.height(100),
+						padding: EdgeInsets.only(left: ScreenAdaper.width(30),right: ScreenAdaper.width(30)),
+						color: Colors.white,
+                     child: Container(
+						  height: ScreenAdaper.height(100),
                       decoration: BoxDecoration(
                           border: Border(
                               bottom: BorderSide(
                                   color: Color(0xffd9d9d9), width: 1))),
                       child: GestureDetector(
                         onTap: () {
-                          print('wx');
                           setState(() {
                             this._payType = 'wx';
                           });
@@ -187,21 +209,30 @@ class _PaymentState extends State<Payment> {
                                       color: Color(0xffffffff),
                                     ),
                                   )
-                                : Container(
-                                    width: ScreenAdaper.width(40),
-                                    height: ScreenAdaper.height(40),
-                                    decoration: BoxDecoration(
-                                        color: Color(0xfff7f7f7),
-                                        border: Border.all(
-                                            color: Color(0xff999999), width: 1),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20))))
+                                : CircleAvatar(
+                                    radius: ScreenAdaper.width(20),
+                                    child: Container(
+                                        width: ScreenAdaper.width(40),
+                                        height: ScreenAdaper.height(40),
+                                        decoration: BoxDecoration(
+                                            color: Color(0xfff7f7f7),
+                                            border: Border.all(
+                                                color: Color(0xff999999),
+                                                width: ScreenAdaper.width(1)
+                                              ),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20)))),
+                                  )
                           ],
                         ),
-                      ),
+                      )
+					 ),
                     ),
                     Container(
-                      height: ScreenAdaper.height(100),
+						padding: EdgeInsets.only(left: ScreenAdaper.width(30),right: ScreenAdaper.width(30),bottom: ScreenAdaper.height(50)),
+						color: Colors.white,
+                      child: Container(
+						  height: ScreenAdaper.height(100),
                       child: GestureDetector(
                         onTap: () {
                           setState(() {
@@ -239,18 +270,24 @@ class _PaymentState extends State<Payment> {
                                       color: Color(0xffffffff),
                                     ),
                                   )
-                                : Container(
-                                    width: ScreenAdaper.width(40),
-                                    height: ScreenAdaper.height(40),
-                                    decoration: BoxDecoration(
-                                        color: Color(0xfff7f7f7),
-                                        border: Border.all(
-                                            color: Color(0xff999999), width: 1),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20))))
+                                : CircleAvatar(
+                                    radius: ScreenAdaper.width(20),
+                                    child: Container(
+                                        width: ScreenAdaper.width(40),
+                                        height: ScreenAdaper.height(40),
+                                        decoration: BoxDecoration(
+                                            color: Color(0xfff7f7f7),
+                                            border: Border.all(
+                                                color: Color(0xff999999),
+                                                width: ScreenAdaper.width(1)
+                                            ),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(40)))),
+                                  )
                           ],
                         ),
-                      ),
+                      )
+					  ),
                     )
                   ],
                 ),

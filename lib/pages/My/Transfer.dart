@@ -99,6 +99,7 @@ class _TransferState extends State<Transfer> {
               padding: EdgeInsets.only(
                   left: ScreenAdaper.width(30), right: ScreenAdaper.width(30)),
               width: double.infinity,
+              height: ScreenAdaper.height(88),
               child: RaisedButton(
                 child: Text(
                   '确认转让',

@@ -27,7 +27,8 @@ dependencies:
   chewie: ^0.9.6
   provider: ^3.1.0
   city_pickers: ^0.1.23
-
+  image_picker: ^0.6.1+4
+  
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -130,6 +131,9 @@ flutter:
    - images/dongtai.png
    - images/2.0x/dongtai.png
    - images/3.0x/dongtai.png
+   - images/hui.png
+   - images/2.0x/hui.png
+   - images/3.0x/hui.png
    - videos/video.mp4
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

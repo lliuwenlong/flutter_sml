@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
-
 class CashOut extends StatefulWidget {
   CashOut({Key key}) : super(key: key);
   _CashOutState createState() => _CashOutState();
@@ -122,6 +121,7 @@ class _CashOutState extends State<CashOut> {
               padding: EdgeInsets.only(
                   left: ScreenAdaper.width(30), right: ScreenAdaper.width(30)),
               width: double.infinity,
+              height: ScreenAdaper.height(88),
               child: RaisedButton(
                 child: Text(
                   '提现',

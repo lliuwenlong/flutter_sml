@@ -267,7 +267,9 @@ class _ProductDetailState extends State<ProductDetail> {
     this._selfContext = context;
     return Scaffold(
         appBar: AppBarWidget().buildAppBar('神木详情'),
-        body: ConstrainedBox(
+        body: SafeArea(
+          bottom: true,
+          child: ConstrainedBox(
           constraints: BoxConstraints.expand(),
           child: Stack(
             alignment: Alignment.topLeft,
@@ -535,6 +537,8 @@ class _ProductDetailState extends State<ProductDetail> {
               )
             ],
           ),
-        ));
+        ),
+        )
+    );
   }
 }

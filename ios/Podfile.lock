@@ -2,6 +2,8 @@ PODS:
   - city_pickers (0.0.1):
     - Flutter
   - Flutter (1.0.0)
+  - image_picker (0.0.1):
+    - Flutter
   - screen (0.0.1):
     - Flutter
   - video_player (0.0.1):
@@ -10,6 +12,7 @@ PODS:
 DEPENDENCIES:
   - city_pickers (from `.symlinks/plugins/city_pickers/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - screen (from `.symlinks/plugins/screen/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
 
@@ -18,6 +21,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/city_pickers/ios"
   Flutter:
     :path: ".symlinks/flutter/ios"
+  image_picker:
+    :path: ".symlinks/plugins/image_picker/ios"
   screen:
     :path: ".symlinks/plugins/screen/ios"
   video_player:
@@ -26,6 +31,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   city_pickers: b0370f4c35c201723b5b7fcce10ec29b59d5bc35
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
   video_player: 3964090a33353060ed7f58aa6427c7b4b208ec21
 
