@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../services/ScreenAdaper.dart';
 import '../Shop/Purchase.dart';
+import '../../components/AppBarWidget.dart';
+import '../../common/HttpUtil.dart';
+import '../../model/api/shop/ShopModel.dart';
 class ShopPage extends StatefulWidget {
     ShopPage({Key key}) : super(key: key);
     _ShopPageState createState() => _ShopPageState();
@@ -8,6 +11,33 @@ class ShopPage extends StatefulWidget {
 
 class _ShopPageState extends State<ShopPage> {
 	BuildContext _selfContext;
+    int _page = 1;
+    bool isLoading = false;
+    List<Data> shopList = [];
+    @override
+    initState() {
+        super.initState();
+        this._getData();
+    }
+    _getData () async {
+        Map<String, dynamic> response = await HttpUtil().post(
+            "/api/v1/wood/shop/",
+            data: {
+                "pageNO": 1,
+                "pageSize": 10
+            }
+        );
+        if (response["code"] == 200) {
+            final ShopModel shopModel =  new ShopModel.fromJson(response);
+            setState(() {
+                this.shopList = shopModel.data;
+            });
+        } else {
+
+        }
+        
+    }
+
     _purchase () {
 		showModalBottomSheet(
 			context: this._selfContext,
@@ -82,7 +112,11 @@ class _ShopPageState extends State<ShopPage> {
                         ),
                         child: Row(
                             children: <Widget>[
-                                Icon(IconData(0xe61d, fontFamily: 'iconfont'), color: Color(0xFF22b0a1)),
+                                Icon(
+                                    IconData(0xe61d, fontFamily: 'iconfont'),
+                                    color: Color(0xFF22b0a1),
+                                    size: ScreenAdaper.fontSize(30)
+                                ),
                                 SizedBox(width: ScreenAdaper.width(20)),
                                 Text("神木基地名称", style: TextStyle(
                                     fontSize: ScreenAdaper.fontSize(28, allowFontScaling: true),
@@ -110,9 +144,10 @@ class _ShopPageState extends State<ShopPage> {
                                     alignment: Alignment.centerRight,
                                     child: Container(
                                         alignment: Alignment.centerRight,
-										width: ScreenAdaper.width(161),
-										height: ScreenAdaper.height(50),
-                                        child: RaisedButton(
+                                        child: MaterialButton(
+                                            padding: EdgeInsets.all(0),
+                                            height: ScreenAdaper.height(50),
+                                            minWidth: ScreenAdaper.width(141),
                                             onPressed: () {
 												this._purchase();
 											},
@@ -123,7 +158,7 @@ class _ShopPageState extends State<ShopPage> {
                                                 borderRadius: BorderRadius.all(Radius.circular(ScreenAdaper.width(10)))
                                             ),
                                             child: Text("立即购买", style: TextStyle(
-                                                fontSize: ScreenAdaper.fontSize(22),
+                                                fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true),
                                                 color: Color(0xFFffffff)
                                             )),
                                         ),
@@ -142,13 +177,9 @@ class _ShopPageState extends State<ShopPage> {
         ScreenAdaper.init(context);
 		this._selfContext = context;
         return Scaffold(
-            appBar: AppBar(
-                title: Text("商城", style: TextStyle(
-                    color: Colors.black
-                )),
-                elevation: 0,
-                brightness: Brightness.light,
-                backgroundColor: Colors.white
+            appBar: PreferredSize(
+                child: AppBarWidget().buildAppBar("商城"),
+                preferredSize: Size.fromHeight(ScreenAdaper.height(110))
             ),
             body: SingleChildScrollView(
                 child: Container(
@@ -156,14 +187,9 @@ class _ShopPageState extends State<ShopPage> {
                     child: Wrap(
                         spacing: 10,
                         runSpacing: 10,
-                        children: <Widget>[
-                            this._commodityItem(),
-                            this._commodityItem(),
-                            this._commodityItem(),
-                            this._commodityItem(),
-                            this._commodityItem(),
-                            this._commodityItem(),
-                        ],
+                        children: this.shopList.map((Data val) {
+                            return this._commodityItem();
+                        }).toList(),
                     )
                 )
             )

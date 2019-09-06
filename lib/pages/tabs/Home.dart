@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../Home/Swiper.dart';
 import '../../services/ScreenAdaper.dart';
+import '../../components/AppBarWidget.dart';
 class HomePage extends StatefulWidget {
     HomePage({Key key}) : super(key: key);
     _HomePageState createState() => _HomePageState();
@@ -101,11 +102,14 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                         children: <Widget>[
                             Container(
-                                width: ScreenAdaper.width(width),
-                                height: ScreenAdaper.width(height),
-                                child: Image.asset(
-                                    url,
-                                    fit: BoxFit.cover
+                                height: ScreenAdaper.width(100),
+                                child: Container(
+                                    width: ScreenAdaper.width(width),
+                                    height: ScreenAdaper.width(height),
+                                    child: Image.asset(
+                                        url,
+                                        fit: BoxFit.cover
+                                    )
                                 )
                             ),
                             SizedBox(height: ScreenAdaper.height(20)),
@@ -274,12 +278,13 @@ class _HomePageState extends State<HomePage> {
                                             fontSize: ScreenAdaper.fontSize(28),
                                             color: Color(0xFF333333)
                                         )),
-                                        SizedBox(height: ScreenAdaper.height(20)),
+                                        SizedBox(height: ScreenAdaper.height(15)),
                                         Text(
                                             value['subTitle'],
                                             style: TextStyle(
                                                 fontSize: ScreenAdaper.fontSize(24),
-                                                color: Color(0xFF666666)
+                                                color: Color(0xFF666666),
+                                                height: 1.3
                                             ),
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 2,
@@ -329,15 +334,9 @@ class _HomePageState extends State<HomePage> {
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
         return Scaffold(
-            appBar: AppBar(
-                title: Text("大明边屯神木林", style: TextStyle(
-                    color: Colors.black
-                )),
-                elevation: 1,
-                brightness: Brightness.light,
-                backgroundColor: Colors.white,
-                centerTitle: true
-                
+            appBar: PreferredSize(
+                child: AppBarWidget().buildAppBar("神木林"),
+                preferredSize: Size.fromHeight(ScreenAdaper.height(110))
             ),
             body: SingleChildScrollView(
                 child: Column(

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import './routers/routers.dart';
 import 'model/store/shop/Shop.dart';
-
+import 'model/store/user/User.dart';
 void main() {
     // 强制竖屏
     SystemChrome.setPreferredOrientations([
@@ -14,7 +16,8 @@ void main() {
     runApp(
         MultiProvider(
             providers: [
-                ChangeNotifierProvider.value(value: ShopModel())
+                ChangeNotifierProvider.value(value: ShopModel()),
+                ChangeNotifierProvider.value(value: User())
             ],
             child: MyApp()
         )
@@ -29,13 +32,21 @@ void main() {
 class MyApp extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
-        return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            initialRoute: '/',
-            onGenerateRoute: onGenerateRoute,
-            showPerformanceOverlay: false,
-            theme: ThemeData(
-                splashColor: Color.fromARGB(0, 0, 0, 0)
+        return RefreshConfiguration(
+            headerTriggerDistance: 80.0, 
+            footerTriggerDistance: -80,
+            maxUnderScrollExtent: 80.0,
+            enableBallisticLoad: false,
+            hideFooterWhenNotFull: true,
+            springDescription: SpringDescription(stiffness: 170, damping: 20, mass: 1.9), 
+            child: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                initialRoute: '/login',
+                onGenerateRoute: onGenerateRoute,
+                showPerformanceOverlay: false,
+                theme: ThemeData(
+                    splashColor: Color.fromARGB(0, 0, 0, 0)
+                )
             )
         );
     }

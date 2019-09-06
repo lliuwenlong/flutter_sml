@@ -32,43 +32,95 @@ class _TabBarsState extends State<TabBars> {
     Widget _buildTabBars () {
         return BottomNavigationBar(
             currentIndex: this._currentIndex,
-            fixedColor: const Color(0xFF21b9a9),
+            fixedColor: Color(0xFF21b9a9),
             type: BottomNavigationBarType.fixed,
+            selectedFontSize: ScreenAdaper.fontSize(22),
+            unselectedFontSize: ScreenAdaper.fontSize(22),
             items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                     icon: Icon(
                         IconData(0xe614, fontFamily: 'iconfont'),
                         size: ScreenAdaper.fontSize(48)
                     ),
-                    title: Text("首页")
+                    activeIcon: Icon(
+                        IconData(0xe613, fontFamily: 'iconfont'),
+                        size: ScreenAdaper.fontSize(48),
+                        color: Color(0xFF21b9a9),
+                    ),
+                    title: Padding(
+                        padding: EdgeInsets.only(
+                            top: ScreenAdaper.height(10)
+                        ),
+                        child: Text("首页")
+                    )
                 ),
                 BottomNavigationBarItem(
                     icon: Icon(
                         IconData(0xe615, fontFamily: 'iconfont'),
                         size: ScreenAdaper.fontSize(48)
                     ),
-                    title: Text("商城")
+                    activeIcon: Icon(
+                        IconData(0xe616, fontFamily: 'iconfont'),
+                        size: ScreenAdaper.fontSize(48),
+                        color: Color(0xFF21b9a9),
+                    ),
+                    title: Padding(
+                        padding: EdgeInsets.only(
+                            top: ScreenAdaper.height(10)
+                        ),
+                        child: Text("商城"),
+                    )
                 ),
                 BottomNavigationBarItem(
                     icon: Icon(
                         IconData(0xe618, fontFamily: 'iconfont'),
                         size: ScreenAdaper.fontSize(48)
                     ),
-                    title: Text("树友圈")
+                    activeIcon: Icon(
+                        IconData(0xe617, fontFamily: 'iconfont'),
+                        size: ScreenAdaper.fontSize(48),
+                        color: Color(0xFF21b9a9),
+                    ),
+                    title: Padding(
+                        padding: EdgeInsets.only(
+                            top: ScreenAdaper.height(10)
+                        ),
+                        child: Text("树友圈")
+                    )
                 ),
                 BottomNavigationBarItem(
                     icon: Icon(
                         IconData(0xe619, fontFamily: 'iconfont'),
                         size: ScreenAdaper.fontSize(48)
                     ),
-                    title: Text("消息")
+                    activeIcon: Icon(
+                        IconData(0xe61a, fontFamily: 'iconfont'),
+                        size: ScreenAdaper.fontSize(48),
+                        color: Color(0xFF21b9a9),
+                    ),
+                    title: Padding(
+                        padding: EdgeInsets.only(
+                            top: ScreenAdaper.height(10)
+                        ),
+                        child: Text("消息")
+                    )
                 ),
                 BottomNavigationBarItem(
                     icon: Icon(
                         IconData(0xe61c, fontFamily: 'iconfont'),
                         size: ScreenAdaper.fontSize(48)
                     ),
-                    title: Text("我的")
+                    activeIcon: Icon(
+                        IconData(0xe61b, fontFamily: 'iconfont'),
+                        size: ScreenAdaper.fontSize(48),
+                        color: Color(0xFF21b9a9),
+                    ),
+                    title: Padding(
+                        padding: EdgeInsets.only(
+                            top: ScreenAdaper.height(10)
+                        ),
+                        child: Text("我的")
+                    )
                 )
                 
             ],

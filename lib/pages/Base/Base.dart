@@ -1,12 +1,70 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/components/Loading.dart';
 import '../../services/ScreenAdaper.dart';
+import '../../common/HttpUtil.dart';
+import '../../model/api/base/BaseModel.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+
 class Base extends StatefulWidget {
     Base({Key key}) : super(key: key);
     _BaseState createState() => _BaseState();
 }
 
 class _BaseState extends State<Base> {
-    Widget _cardItem() {
+    int _page = 1;
+    List<Data> baseList = [];
+    bool isLoading = false;
+    RefreshController _refreshController = RefreshController(initialRefresh: false);
+
+    void initState() {
+        super.initState();
+        setState(() {
+            isLoading = true;
+        });
+        this._getData();
+    }
+
+    _getData ({bool isInit = false}) async {
+        Map<String, dynamic> response = await HttpUtil().get("/api/v1/woodsbase/data?pageNO=${this._page}&pageSize=10");
+        if (response["code"] == 200) {
+            final BaseModel baseModel = new BaseModel.fromJson(response);
+            if (isInit) {
+                setState(() {
+                    baseList = baseModel.data;
+                });
+            } else {
+                setState(() {
+                    baseList.addAll(baseModel.data);
+                    if (isLoading) {
+                        isLoading = false;
+                    } 
+                });
+            }
+        }
+        return response;
+    }
+    void _onRefresh() async{
+        setState(() {
+            this._page = 1;
+        });
+        await _getData(isInit: true);
+        _refreshController.refreshCompleted();
+    }
+
+    void _onLoading() async{
+        setState(() {
+            this._page++;
+        });
+        var response = await _getData();
+        if (response["data"].length) {
+            _refreshController.loadNoData();
+        } else {
+            _refreshController.loadComplete();
+        }
+    }
+
+    Widget _cardItem(String name, int id) {
         return Container(
             margin: EdgeInsets.only(top: ScreenAdaper.height(30)),
             padding: EdgeInsets.fromLTRB(
@@ -55,7 +113,7 @@ class _BaseState extends State<Base> {
                                                 color: Color(0xFF22b0a1)
                                             ),
                                             SizedBox(width: ScreenAdaper.width(20)),
-                                            Text("神木基地名称", style: TextStyle(
+                                            Text(name, style: TextStyle(
                                                 color: Color(0xFF666666),
                                                 fontSize: ScreenAdaper.fontSize(28, allowFontScaling: true)
                                             ))
@@ -64,7 +122,7 @@ class _BaseState extends State<Base> {
                                     Container(
                                         child: RaisedButton(
                                             onPressed: () {
-                                                Navigator.pushNamed(context, '/baseList');
+                                                Navigator.pushNamed(context, '/baseList', arguments: {"id": id});
                                             },
                                             color: Color(0xFF22b0a1),
                                             splashColor: Color.fromRGBO(0, 0, 0, 0),
@@ -85,6 +143,7 @@ class _BaseState extends State<Base> {
             )
         );
     }
+
     @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
@@ -99,11 +158,27 @@ class _BaseState extends State<Base> {
                 centerTitle: true,
                 brightness: Brightness.light
             ),
-            body: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, item) {
-                    return _cardItem();
-                },
+            body: isLoading ? Loading() : SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: true,
+                header: WaterDropHeader(),
+                footer: ClassicFooter(
+                    loadStyle: LoadStyle.ShowWhenLoading,
+                    idleText: "上拉加载",
+                    failedText: "加载失败！点击重试！",
+                    canLoadingText: "加载更多",
+                    noDataText: "没有更多数据",
+                    loadingText: "加载中"
+                ),
+                controller: _refreshController,
+                onRefresh: _onRefresh,
+                onLoading: _onLoading,
+                child: ListView.builder(
+                    itemCount: baseList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                        return _cardItem(this.baseList[index].baseName, this.baseList[index].baseId);
+                    },
+                )
             )
         );
     }

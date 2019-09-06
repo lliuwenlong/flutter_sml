@@ -140,11 +140,16 @@ class _AccommodationState extends State<Accommodation> {
                 ),
                 body: ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
-                        return this._listItem(
-                            "边屯酒家",
-                            "豪华型",
-                            188,
-                            "贵州省黔西南布依族苗族自治州兴义市鲁"
+                        return GestureDetector(
+                            onTap: () {
+                                Navigator.pushNamed(context, "/accommodationDetal");
+                            },
+                            child: this._listItem(
+                                "边屯酒家",
+                                "豪华型",
+                                188,
+                                "贵州省黔西南布依族苗族自治州兴义市鲁"
+                            )
                         );
                     },
                     itemCount: 10,

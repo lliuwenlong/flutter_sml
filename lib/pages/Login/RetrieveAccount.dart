@@ -1,10 +1,145 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_sml/common/Color.dart';
+import 'package:flutter_sml/common/HttpUtil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/Input.dart';
-
-class RetrieveAccount extends StatelessWidget {
+class RetrieveAccount extends StatefulWidget {
     RetrieveAccount({Key key}) : super(key: key);
+    _RetrieveAccountState createState() => _RetrieveAccountState();
+}
+
+
+class _RetrieveAccountState extends State<RetrieveAccount> {
+    GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+    TextEditingController _phoneController = TextEditingController();
+    TextEditingController _passwordController = TextEditingController();
+    TextEditingController _passwordIIController = TextEditingController();
+    TextEditingController _verificationCodeController = TextEditingController();
+    Timer _countdownTimer;
+    String _codeCountdownStr = '获取验证码';
+    int _countdownNum = 59;
+    String code;
+    
+    _RetrieveAccountState({Key key});
+
+    @override
+    void dispose() {
+        _countdownTimer?.cancel();
+        _countdownTimer = null;
+        super.dispose();
+    }
+
+        Future _submitHandler () async {
+        if (_formKey.currentState.validate()) {
+            final String phone = this._phoneController.text;
+            final String password = this._passwordController.text;
+            Map response = await HttpUtil().post("/api/v11/repwd", params: {
+                "password": password,
+                "phone": phone
+            });
+            print(response);
+            if (response["code"] == 200 ) {
+                await Fluttertoast.showToast(
+                    msg: "修改成功",
+                    toastLength: Toast.LENGTH_LONG,
+                    gravity: ToastGravity.TOP,
+                    timeInSecForIos: 1,
+                    textColor: Colors.white,
+                    fontSize: ScreenAdaper.fontSize(30)
+                ).then((m) => Navigator.pop(context));
+            } else {
+                Fluttertoast.showToast(
+                    msg: response["msg"],
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.TOP,
+                    timeInSecForIos: 1,
+                    textColor: Colors.white,
+                    fontSize: ScreenAdaper.fontSize(30)
+                );
+            }
+        }
+    }
+
+    // 获取验证码 
+    Future _getCode () async {
+        if (!_formKey.currentState.validate()) {
+            return null;
+        }
+        Map response =  await HttpUtil().get("/api/v11/vcode");
+        setState(() {
+            this.code = response["data"];
+            this._verificationCodeController.text = response["data"];
+        });
+    }
+
+    String _phoneValidate (val) {
+        RegExp exp = RegExp('^((13[0-9])|(15[^4])|(166)|(17[0-8])|(18[0-9])|(19[8-9])|(147,145))\\d{8}\$');
+        if(val == null || val == "") {
+            return "手机号不可以为空";
+        } else if (!exp.hasMatch(val)) {
+            return "手机号不正确";
+        }
+        return null;
+    }
+
+    String _passwordValidate (val) {
+        if(val == null || val == "") {
+            return "密码不可以为空";
+        } else if (val.length < 6 || val.length > 16) {
+            return "大于6个字符，小于16个字符";
+        }
+        return null;
+    }
+
+    String _passwordIIValidate (val) {
+        if (val != _passwordIIController.text) {
+            return "两次密码不一致";
+        }
+        return null;
+    }
+    
+    String _verificationCodeValidate (val) {
+        if(val == null || val == "") {
+            return "验证码不可以为空";
+        }
+        return null;
+    }
+
+    // 倒计时
+    void reGetCountdown() {
+        setState(() {
+            if (_countdownTimer != null) {
+                return;
+            }
+            this._getCode();
+            // Timer的第一秒倒计时是有一点延迟的，为了立刻显示效果可以添加下一行。
+            _codeCountdownStr = '${_countdownNum--}';
+            _countdownTimer =
+            new Timer.periodic(new Duration(seconds: 1), (timer) {
+                setState(() {
+                    if (_countdownNum > 0) {
+                        _codeCountdownStr = '${_countdownNum--}';
+                    } else {
+                        _codeCountdownStr = '获取验证码';
+                        _countdownNum = 59;
+                        _countdownTimer.cancel();
+                        _countdownTimer = null;
+                    }
+                });
+            });
+        });
+    }
+
+    bool isDisabled() {
+        return _passwordController.text.isNotEmpty
+            && _phoneController.text.isNotEmpty
+            && _verificationCodeController.text.isNotEmpty
+            && _passwordIIController.text.isNotEmpty;
+    }
+
     @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
@@ -55,54 +190,73 @@ class RetrieveAccount extends StatelessWidget {
                                     ),
                                     child: Column(
                                         children: <Widget>[
-                                            Input(
-                                                "请输入手机号",
-                                                isShowSuffixIcon: true
-                                            ),
-                                            Container(
-                                                decoration: BoxDecoration(
-                                                    border: Border(bottom: BorderSide(
-                                                        width: 1,
-                                                        color: Color(0XFFd9d9d9)
-                                                    ))
-                                                ),
-                                                child: Row(
+                                            Form(
+                                                key: _formKey,
+                                                child: Column(
                                                     children: <Widget>[
-                                                        Expanded(
-                                                            flex: 1,
-                                                            child: Input(
-                                                                "请输入验证码",
-                                                                isShowSuffixIcon: true,
-                                                                showBorder: false
-                                                            )
+                                                        Input(
+                                                            "请输入手机号",
+                                                            isShowSuffixIcon: true,
+                                                            controller: this._phoneController,
+                                                            validate: this._phoneValidate,
                                                         ),
                                                         Container(
-                                                            width: ScreenAdaper.width(171),
-                                                            height: ScreenAdaper.width(50),
-                                                            alignment: Alignment.centerRight,
                                                             decoration: BoxDecoration(
-                                                                border: Border(left: BorderSide(
+                                                                border: Border(bottom: BorderSide(
                                                                     width: 1,
                                                                     color: Color(0XFFd9d9d9)
                                                                 ))
                                                             ),
-                                                            child: Text("获取验证码", style: TextStyle(
-                                                                color: ColorClass.common,
-                                                                fontSize: ScreenAdaper.fontSize(30)
-                                                            )),
-                                                        )
+                                                            child: Row(
+                                                                children: <Widget>[
+                                                                    Expanded(
+                                                                        flex: 1,
+                                                                        child: Input(
+                                                                            "请输入验证码",
+                                                                            isShowSuffixIcon: true,
+                                                                            showBorder: false,
+                                                                            controller: this._verificationCodeController
+                                                                        )
+                                                                    ),
+                                                                    GestureDetector(
+                                                                        onTap: () {
+                                                                            this.reGetCountdown();
+                                                                        },
+                                                                        child: Container(
+                                                                            width: ScreenAdaper.width(171),
+                                                                            height: ScreenAdaper.width(50),
+                                                                            alignment: _countdownTimer != null ? Alignment.center : Alignment.centerRight,
+                                                                            decoration: BoxDecoration(
+                                                                                border: Border(left: BorderSide(
+                                                                                    width: 1,
+                                                                                    color: Color(0XFFd9d9d9)
+                                                                                ))
+                                                                            ),
+                                                                            child: Text(this._codeCountdownStr, style: TextStyle(
+                                                                                color: ColorClass.common,
+                                                                                fontSize: ScreenAdaper.fontSize(30)
+                                                                            )),
+                                                                        )
+                                                                    )
+                                                                ],
+                                                            )
+                                                        ),
+                                                        Input(
+                                                            "请输入密码",
+                                                            isPwd: true,
+                                                            isShowSuffixIcon: true,
+                                                            controller: this._passwordController,
+                                                            validate: this._passwordValidate,
+                                                        ),
+                                                        Input(
+                                                            "请再次确认新密码",
+                                                            isPwd: true,
+                                                            isShowSuffixIcon: true,
+                                                            controller: this._passwordIIController,
+                                                            validate: this._passwordIIValidate,
+                                                        ),
                                                     ],
-                                                )
-                                            ),
-                                            Input(
-                                                "请输入密码",
-                                                isPwd: true,
-                                                isShowSuffixIcon: true
-                                            ),
-                                            Input(
-                                                "请再次确认新密码",
-                                                isPwd: true,
-                                                isShowSuffixIcon: true
+                                                ),
                                             ),
                                             Container(
                                                 margin: EdgeInsets.only(
@@ -118,7 +272,7 @@ class RetrieveAccount extends StatelessWidget {
                                                         ),
                                                 child: RaisedButton(
                                                     disabledColor: Color(0XFF86d4ca),
-                                                    onPressed: null,
+                                                    onPressed: _submitHandler,
                                                     child: Text("确定", style: TextStyle(
                                                         color: Colors.white,
                                                         fontSize: ScreenAdaper.fontSize(40)

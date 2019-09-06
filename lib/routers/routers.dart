@@ -59,6 +59,9 @@ import '../pages/tabs/Shop.dart'; // 商城
 import '../pages/Shop/ShenmuDetails.dart'; // 商品详情页
 import '../pages/My/MyDynamics.dart';//我的动态
 import '../pages/Restaurant/Payment.dart';//餐饮 付款
+import '../pages/Accommodation/AccommodationDetal.dart'; // 住宿页面
+import '../pages/Accommodation/PlaceOrder.dart'; // 订单确认
+
 final Map routes = {
     '/': (context) => TabBars(),
     '/base': (context) => Base(),
@@ -71,7 +74,7 @@ final Map routes = {
     '/login': (context) => LoginPage(),
     '/register': (context) => RegisterPage(),
     '/retrieveAccount': (context) => RetrieveAccount(),
-    '/baseList': (context) => BaseList(),
+    '/baseList': (context, {arguments}) => BaseList(arguments: arguments),
     '/baseDetails': (context) => BaseDetails(),
     '/trip': (context) => Trip(),
     '/releaseEvaluate': (context) => ReleaseEvaluate(),
@@ -119,7 +122,9 @@ final Map routes = {
     '/shenmuDetails': (context, {arguments}) => ShenmuDetails(arguments: arguments),
     '/valueDetail': (context,{arguments}) => ValueDetail(arguments:arguments),
     '/myDynamics': (context) => MyDynamics(),
-    '/payment': (context) => Payment()
+    '/payment': (context) => Payment(),
+    '/accommodationDetal': (context) => AccommodationDetal(),
+    '/placeOrder': (context) => PlaceOrder()
 };
 
 var onGenerateRoute = (RouteSettings settings) {

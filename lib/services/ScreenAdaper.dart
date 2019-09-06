@@ -20,7 +20,7 @@ class ScreenAdaper {
         return ScreenUtil.screenWidthDp;
     }
 
-    static fontSize (double size, {allowFontScaling = false}) {
+    static fontSize (double size, {allowFontScaling = true}) {
         return ScreenUtil(allowFontScaling: allowFontScaling).setSp(size);
     }
 }
