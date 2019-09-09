@@ -62,6 +62,7 @@ import '../pages/Restaurant/Payment.dart';//餐饮 付款
 import '../pages/Accommodation/AccommodationDetal.dart'; // 住宿页面
 import '../pages/Accommodation/PlaceOrder.dart'; // 订单确认
 
+
 final Map routes = {
     '/': (context) => TabBars(),
     '/base': (context) => Base(),
