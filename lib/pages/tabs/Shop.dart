@@ -158,7 +158,11 @@ class _ShopPageState extends State<ShopPage> {
                                                 borderRadius: BorderRadius.all(Radius.circular(ScreenAdaper.width(10)))
                                             ),
                                             child: Text("立即购买", style: TextStyle(
+<<<<<<< Updated upstream
                                                 fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true),
+=======
+                                                fontSize: ScreenAdaper.fontSize(20),
+>>>>>>> Stashed changes
                                                 color: Color(0xFFffffff)
                                             )),
                                         ),

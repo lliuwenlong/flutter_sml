@@ -52,6 +52,7 @@ import '../pages/My/TransferRecord.dart';//转让记录
 import '../pages/My/Transfer.dart'; //转让
 import '../pages/My/ValueAddedServices.dart';//增值服务
 import '../pages/My/ValueDetail.dart';//增值服务 详情
+<<<<<<< Updated upstream
 import '../pages/My/order/CancellationOrder.dart'; // 我的订单
 import '../pages/My/order/Acknowledgement.dart'; // 订单确认
 // import '../pages/My/myDynamics/MyDynamics.dart'; // 我的
@@ -62,6 +63,9 @@ import '../pages/Restaurant/Payment.dart';//餐饮 付款
 import '../pages/Accommodation/AccommodationDetal.dart'; // 住宿页面
 import '../pages/Accommodation/PlaceOrder.dart'; // 订单确认
 
+=======
+import '../pages/My/MyDynamics.dart';//我的动态
+>>>>>>> Stashed changes
 final Map routes = {
     '/': (context) => TabBars(),
     '/base': (context) => Base(),
@@ -116,6 +120,7 @@ final Map routes = {
     '/transferRecord': (context) => TransferRecord(),
     '/transfer': (context) => Transfer(),
     '/valueAddedServices': (context) => ValueAddedServices(),
+<<<<<<< Updated upstream
     '/valueDetail': (context, {arguments}) => ValueDetail(arguments: arguments),
     '/cancellationOrder': (context, {arguments}) => CancellationOrder(arguments: arguments),
     '/acknowledgement': (context, {arguments}) => Acknowledgement(arguments: arguments),
@@ -125,6 +130,10 @@ final Map routes = {
     '/payment': (context) => Payment(),
     '/accommodationDetal': (context) => AccommodationDetal(),
     '/placeOrder': (context) => PlaceOrder()
+=======
+    '/valueDetail': (context,{arguments}) => ValueDetail(arguments:arguments),
+    '/myDynamics': (context) => MyDynamics()
+>>>>>>> Stashed changes
 };
 
 var onGenerateRoute = (RouteSettings settings) {

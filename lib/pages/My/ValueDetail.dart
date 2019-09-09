@@ -94,6 +94,7 @@ class _ValueDetailState extends State<ValueDetail> {
       ),
     );
   }
+<<<<<<< Updated upstream
 
   BuildContext _selfContext;
   _purchase() {
@@ -109,6 +110,27 @@ class _ValueDetailState extends State<ValueDetail> {
         });
   }
 
+=======
+  
+  
+  BuildContext _selfContext;
+    _purchase () {
+		showModalBottomSheet(
+			context: this._selfContext,
+			shape:  RoundedRectangleBorder(
+				borderRadius: BorderRadius.only(
+					topLeft: Radius.circular(ScreenAdaper.width(10)),
+					topRight: Radius.circular(ScreenAdaper.width(10)),
+				)
+			),
+			builder: (BuildContext context) {
+				return Purchase();
+			}
+		);
+	}
+  
+  
+>>>>>>> Stashed changes
   @override
   Widget build(BuildContext context) {
     ScreenAdaper.init(context);
@@ -211,7 +233,23 @@ class _ValueDetailState extends State<ValueDetail> {
                         '产值介绍',
                         '灵芝是喜温型真菌，菌丝生长温度以26~28℃为最佳，子实体在24~28℃温度下长势最好，低于18℃子实体不能正常发育。发菌期间，培养室内温度保持22~30℃，空气相对湿度保持50%~60%。每天通风半小时，每隔5~7天菌袋上下翻动1次。当菌丝题发满料袋溶剂三分之二时，移入培养棚内，松开料袋口，用手轻轻一提，留一点缝隙。棚内以散射光为宜避免强光直射。',
                       )
+<<<<<<< Updated upstream
                     ],
+=======
+                    ),
+                    disabledColor: Color(0XFF86d4ca),
+                    splashColor: Color.fromARGB(0, 0, 0, 0),
+                    highlightColor: Color(0xff009a8a),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5))
+                    ),
+                    color: Color(0XFF22b0a1),
+                    onPressed: (){
+                      this._purchase();
+                      print('购买');
+                    },
+>>>>>>> Stashed changes
                   ),
                 ),
                 Positioned(

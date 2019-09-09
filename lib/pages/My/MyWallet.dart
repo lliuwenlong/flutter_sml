@@ -43,7 +43,11 @@ class _MyWalletState extends State<MyWallet> {
             ),
             Container(
               margin: EdgeInsets.only(top: ScreenAdaper.height(10)),
+<<<<<<< Updated upstream
               alignment: Alignment.center,
+=======
+               alignment: Alignment.center,
+>>>>>>> Stashed changes
               child: Text(
                 '¥ 5000.00',
                 style: TextStyle(
