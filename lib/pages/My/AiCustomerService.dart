@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
-
 class AiCustomerService extends StatefulWidget {
   AiCustomerService({Key key}) : super(key: key);
   _AiCustomerServiceState createState() => _AiCustomerServiceState();
@@ -13,6 +12,7 @@ class _AiCustomerServiceState extends State<AiCustomerService> {
     var value = this._chatList[index];
     return Container(
       margin: EdgeInsets.only(top: ScreenAdaper.height(30)),
+      
       width: double.infinity,
       child: Stack(
         alignment: value["customer"]
@@ -66,7 +66,7 @@ class _AiCustomerServiceState extends State<AiCustomerService> {
 
   @override
   Widget build(BuildContext context) {
-    String _inputText = '';
+  String _inputText = '';
     TextEditingController _controller = new TextEditingController.fromValue(
         TextEditingValue(
             text: _inputText,

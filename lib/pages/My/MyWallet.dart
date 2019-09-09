@@ -43,7 +43,7 @@ class _MyWalletState extends State<MyWallet> {
             ),
             Container(
               margin: EdgeInsets.only(top: ScreenAdaper.height(10)),
-              alignment: Alignment.center,
+               alignment: Alignment.center,
               child: Text(
                 '¥ 5000.00',
                 style: TextStyle(
