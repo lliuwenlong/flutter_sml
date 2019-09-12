@@ -12,6 +12,7 @@ class RestaurantDetails extends StatefulWidget {
 class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTickerProviderStateMixin{
     ScrollController _scrollViewController;
     TabController _tabController;
+    bool isOpen = true;
     @override
     void initState() {
         super.initState();
@@ -25,6 +26,154 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
         _scrollViewController.dispose();
         _tabController.dispose();
     }
+
+    // 优惠券
+    Widget _coupon () {
+        return Container(
+            width: ScreenAdaper.width(624),
+            height: ScreenAdaper.height(180),
+            margin: EdgeInsets.only(
+                bottom: ScreenAdaper.height(30)
+            ),
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage(
+                        "images/couponbg.png",
+                    ),
+                    fit: BoxFit.fill
+                )
+            ),
+            child: Container(
+                padding: EdgeInsets.all(ScreenAdaper.width(30)),
+                child: Row(
+                    children: <Widget>[
+                        Container(
+                            width: ScreenAdaper.width(419),
+                            height: double.infinity,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                        "images/couponborder.png",
+                                    ),
+                                    fit: BoxFit.fill
+                                )
+                            ),
+                            child: Row(
+                                children: <Widget>[
+                                    SizedBox(width: ScreenAdaper.width(20)),
+                                    Text.rich(
+                                        TextSpan(
+                                            style: TextStyle(
+                                                color: ColorClass.fontRed
+                                            ),
+                                            children: [
+                                                TextSpan(
+                                                    text: "¥",
+                                                    style: TextStyle(
+                                                        fontSize: ScreenAdaper.fontSize(30),
+                                                        fontWeight: FontWeight.w500
+                                                    )
+                                                ),
+                                                TextSpan(
+                                                    text: "20",
+                                                    style: TextStyle(
+                                                        fontSize: ScreenAdaper.fontSize(80),
+                                                        fontWeight: FontWeight.w500
+                                                    )
+                                                )
+                                            ]
+                                        )
+                                    ),
+                                    SizedBox(width: ScreenAdaper.width(20)),
+                                    Container(
+                                        height: double.infinity,
+                                        child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                                Text("优惠券", style: TextStyle(
+                                                    color: ColorClass.fontRed,
+                                                    fontSize: ScreenAdaper.fontSize(30)
+                                                )),
+                                                Text("有效期至2019.07.09", style: TextStyle(
+                                                    color: ColorClass.fontColor,
+                                                    fontSize: ScreenAdaper.fontSize(24)
+                                                ))
+                                            ]
+                                        )
+                                    )
+                                ]
+                            ),
+                        ),
+                        Container(
+                            margin: EdgeInsets.only(
+                                left: ScreenAdaper.width(20),
+                                right: ScreenAdaper.width(20)
+                            ),
+                            width: ScreenAdaper.width(1),
+                            height: ScreenAdaper.height(125),
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                        "images/doashed.png",
+                                    ),
+                                    fit: BoxFit.fill
+                                )
+                            ),
+                        ),
+                        Expanded(
+                            flex: 1,
+                            child: Container(
+                                width: ScreenAdaper.width(94),
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            "images/couponborder2.png",
+                                        ),
+                                        fit: BoxFit.fill
+                                    )
+                                ),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                        Container(
+                                            child: Column(
+                                                children: <Widget>[
+                                                    Text("立即", style: TextStyle(
+                                                        fontSize: ScreenAdaper.fontSize(24),
+                                                        color: ColorClass.fontRed
+                                                    )),
+                                                    Text("领取", style: TextStyle(
+                                                        fontSize: ScreenAdaper.fontSize(24),
+                                                        color: ColorClass.fontRed
+                                                    ))
+                                                ]
+                                            ),
+                                        ),
+                                        Container(
+                                            width: ScreenAdaper.width(70),
+                                            height: ScreenAdaper.height(30),
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(20),
+                                                color: Color(0xFFc1a786)
+                                            ),
+                                            child: Text("GO>", style: TextStyle(
+                                                fontSize: ScreenAdaper.fontSize(24),
+                                                color: Colors.white
+                                            ))
+                                        )
+                                    ]
+                                )
+                            )
+                        )
+                        
+                    ]
+                ),
+            )
+        );
+    }
+
     // label 标签
     Widget _label () {
         return Container(
@@ -82,6 +231,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                         left: ScreenAdaper.width(20)
                                     ),
                                     child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: <Widget>[
                                             Expanded(
                                                 flex: 1,
@@ -110,13 +260,64 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                         ]
                     ),
                     SizedBox(height: ScreenAdaper.height(35)),
-                    Wrap(
-                        spacing: ScreenAdaper.width(10),
-                        runSpacing: ScreenAdaper.height(10),
+                    this.isOpen ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                            this._label(),
-                            this._label()
-                        ],
+                            Expanded(
+                                flex: 1,
+                                child: Wrap(
+                                    spacing: ScreenAdaper.width(10),
+                                    runSpacing: ScreenAdaper.height(10),
+                                    children: <Widget>[
+                                        this._label(),
+                                        this._label()
+                                    ],
+                                )
+                            ),
+                            Container(
+                                width: ScreenAdaper.width(30),
+                                height: ScreenAdaper.height(40),
+                                alignment: Alignment.center,
+                                child: GestureDetector(
+                                    onTap: () {
+                                        setState(() {
+                                            this.isOpen = false;
+                                        });
+                                    },
+                                    child: Icon(
+                                        IconData(0xe63a, fontFamily: "iconfont"),
+                                        size: ScreenAdaper.fontSize(16),
+                                        color: ColorClass.iconColor,
+                                    ),
+                                )
+                            )
+                        ]
+                    )
+                    : Container(
+                        alignment: Alignment.center,
+                        child: Column(
+                            children: <Widget>[
+                                _coupon(),
+                                _coupon(),
+                                _coupon(),
+                                _coupon(),
+                                GestureDetector(
+                                    onTap: () {
+                                        setState(() {
+                                            this.isOpen = true;
+                                        });
+                                    },
+                                    child: Container(
+                                        width: double.infinity,
+                                        child: Icon(
+                                            IconData(0xe63b, fontFamily: "iconfont"),
+                                            size: ScreenAdaper.fontSize(16),
+                                            color: ColorClass.iconColor,
+                                        )
+                                    )
+                                )
+                            ],
+                        )
                     )
                 ]
             ),

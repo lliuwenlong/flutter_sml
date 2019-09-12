@@ -69,8 +69,9 @@ class _BaseListState extends State<BaseList> {
                         borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
                         child: FadeInImage.assetNetwork(
                             placeholder: "images/zhuangtailan.png",
-                            image: 'http://qcloud.dpfile.com/pc/pYPuondR-PaQO3rhSjRl7x1PBMlPubyBLeDC8IcaPQGC0AsVXyL223YOP11TLXmuTZlMcKwJPXLIRuRlkFr_8g.jpg',
-                            fit: BoxFit.cover,
+                            placeholderScale: 1.0,
+                            image: 'http://pic1.sc.chinaz.com/Files/pic/pic9/201907/zzpic19227_s.jpg',
+                            fit: BoxFit.cover
                         ),
                     ),
                     Positioned(

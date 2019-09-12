@@ -148,6 +148,24 @@ flutter:
    - images/dongtai.png
    - images/2.0x/dongtai.png
    - images/3.0x/dongtai.png
+   - images/loading.gif
+   - images/2.0x/loading.gif
+   - images/3.0x/loading.gif
+   - images/couponbg.png
+   - images/2.0x/couponbg.png
+   - images/3.0x/couponbg.png
+   - images/couponborder.png
+   - images/2.0x/couponborder.png
+   - images/3.0x/couponborder.png
+   - images/couponborder2.png
+   - images/2.0x/couponborder2.png
+   - images/3.0x/couponborder2.png
+   - images/doashed.png
+   - images/2.0x/doashed.png
+   - images/3.0x/doashed.png
+   - images/beoverdue.png
+   - images/2.0x/beoverdue.png
+   - images/3.0x/beoverdue.png
    - videos/video.mp4
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -2,15 +2,72 @@ import 'package:flutter/material.dart';
 import '../Home/Swiper.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
+import '../../common/HttpUtil.dart';
+import '../../model/api/home/ArticleModel.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 class HomePage extends StatefulWidget {
     HomePage({Key key}) : super(key: key);
     _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+    HttpUtil http = HttpUtil();
+    int _page = 1;
+    List<Data> articleList = [];
+    RefreshController _refreshController = RefreshController(initialRefresh: false);
     _onTap (String router) {
         Navigator.pushNamed(context, router);
     }
+
+    @override
+    void initState () {
+        super.initState();
+        this.getArticleData();
+    }
+
+    getArticleData({bool isInit = false}) async {
+        Map response = await http.get("/api/v1/article/articles/article", data: {
+            "pageSize": 10,
+            "pageNO": this._page
+        });
+        if (response["code"] == 200) {
+            final ArticleModel articleModel = new ArticleModel.fromJson(response);
+            if (isInit) {
+                setState(() {
+                    articleList = articleModel.data;
+                });
+                return response;
+            } else {
+                setState(() {
+                    articleList.addAll(articleModel.data);
+                });
+                return response;
+            }
+        }
+        return response;
+    }
+
+    void _onLoading() async{
+        setState(() {
+            this._page++;
+        });
+        var response = await getArticleData();
+        if (response["data"].length == 0) {
+            _refreshController.loadNoData();
+        } else {
+            _refreshController.loadComplete();
+        }
+    }
+
+    void _onRefresh() async{
+        setState(() {
+            this._page = 1;
+        });
+        await getArticleData(isInit: true);
+        _refreshController.refreshCompleted();
+    }
+
     List<Map> _nivoListData = [
         {
             "url": "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
@@ -241,7 +298,7 @@ class _HomePageState extends State<HomePage> {
 
     Widget _getNivoList () {
         List<Widget> widgetList = [];
-        var list = this._nivoListData.map((value) {
+        var list = this.articleList.map((value) {
             int lastId = this._nivoListData[this._nivoListData.length - 1]["id"];
             return Container(
                 padding : EdgeInsets.fromLTRB(
@@ -249,8 +306,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(
-                        color: lastId == value["id"] ? Colors.white :  Color(0XFFd9d9d9),
-                        width: ScreenAdaper.width(lastId == value["id"] ? 0 : 1)
+                        color: lastId == value.articleId ? Colors.white :  Color(0XFFd9d9d9),
+                        width: ScreenAdaper.width(lastId == value.articleId ? 0 : 1)
                     ))
                 ),
                 child: Row(
@@ -274,13 +331,13 @@ class _HomePageState extends State<HomePage> {
                                 child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
-                                        Text(value['title'], style: TextStyle(
+                                        Text(value.articleTitle, style: TextStyle(
                                             fontSize: ScreenAdaper.fontSize(28),
                                             color: Color(0xFF333333)
                                         )),
                                         SizedBox(height: ScreenAdaper.height(15)),
                                         Text(
-                                            value['subTitle'],
+                                            value.articleSummary,
                                             style: TextStyle(
                                                 fontSize: ScreenAdaper.fontSize(24),
                                                 color: Color(0xFF666666),
@@ -338,8 +395,23 @@ class _HomePageState extends State<HomePage> {
                 child: AppBarWidget().buildAppBar("神木林"),
                 preferredSize: Size.fromHeight(ScreenAdaper.height(110))
             ),
-            body: SingleChildScrollView(
-                child: Column(
+            body: SmartRefresher(
+                controller: _refreshController,
+                enablePullDown: true,
+                enablePullUp: true,
+                header: WaterDropHeader(),
+                footer: ClassicFooter(
+                    loadStyle: LoadStyle.ShowWhenLoading,
+                    idleText: "上拉加载",
+                    failedText: "加载失败！点击重试！",
+                    canLoadingText: "加载更多",
+                    noDataText: "没有更多数据",
+                    loadingText: "加载中"
+                ),
+                onRefresh: _onRefresh,
+                onLoading: _onLoading,
+                child: ListView(
+                    physics: ClampingScrollPhysics(),
                     children: <Widget>[
                         SwiperComponent(),
                         this._menuWidget(),

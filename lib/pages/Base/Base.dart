@@ -4,7 +4,7 @@ import '../../services/ScreenAdaper.dart';
 import '../../common/HttpUtil.dart';
 import '../../model/api/base/BaseModel.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
+import '../../components/AppBarWidget.dart';
 
 class Base extends StatefulWidget {
     Base({Key key}) : super(key: key);
@@ -148,15 +148,9 @@ class _BaseState extends State<Base> {
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
         return Scaffold(
-            appBar: AppBar(
-                title: Text("神木基地", style: TextStyle(
-                    color: Colors.black,
-                )),
-                elevation: 1,
-                iconTheme: IconThemeData(color: Colors.black),
-                backgroundColor: Colors.white,
-                centerTitle: true,
-                brightness: Brightness.light
+            appBar: PreferredSize(
+                child: AppBarWidget().buildAppBar("神木基地"),
+                preferredSize: Size.fromHeight(ScreenAdaper.height(110))
             ),
             body: isLoading ? Loading() : SmartRefresher(
                 enablePullDown: true,

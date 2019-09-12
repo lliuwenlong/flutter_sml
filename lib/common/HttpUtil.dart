@@ -59,7 +59,6 @@ class HttpUtil {
         Response response;
         try {
             response = await dio.get(url, queryParameters: data, options: options, cancelToken: cancelToken);
-            print(response);
         //      response.data; 响应体
         //      response.headers; 响应头
         //      response.request; 请求体

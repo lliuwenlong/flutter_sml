@@ -36,11 +36,10 @@ class _RetrieveAccountState extends State<RetrieveAccount> {
         if (_formKey.currentState.validate()) {
             final String phone = this._phoneController.text;
             final String password = this._passwordController.text;
-            Map response = await HttpUtil().post("/api/v11/repwd", params: {
+            Map response = await HttpUtil().post("/api/v11/mpwd", params: {
                 "password": password,
                 "phone": phone
             });
-            print(response);
             if (response["code"] == 200 ) {
                 await Fluttertoast.showToast(
                     msg: "修改成功",
