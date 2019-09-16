@@ -3,9 +3,14 @@ import './Evaluate.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/SliverAppBarDelegate.dart';
 import '../../common/Color.dart';
+import '../../model/api/restaurant/FoodModel.dart';
+import '../../model/api/restaurant/AppraiseList.dart';
+import '../../common/HttpUtil.dart';
+
 class RestaurantDetails extends StatefulWidget {
-    RestaurantDetails({Key key}) : super(key: key);
-    _RestaurantDetailsState createState() => _RestaurantDetailsState();
+    final ListModel params;
+    RestaurantDetails({Key key, this.params}) : super(key: key);
+    _RestaurantDetailsState createState() => _RestaurantDetailsState(params: this.params);
 
 }
 
@@ -13,6 +18,24 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
     ScrollController _scrollViewController;
     TabController _tabController;
     bool isOpen = true;
+    final HttpUtil http = HttpUtil();
+    List<ListItem> appraiseList = [];
+    final ListModel params;
+    int _appraisePage = 1;
+    _RestaurantDetailsState({this.params});
+    _getAppraiseListData () async {
+        final Map response = await http.post("/api/v1/firm/12/appraise", data: {
+            "pageNO": this._appraisePage,
+            "pageSize": 10
+        });
+        if (response["code"] == 0) {
+            AppraiseListModel res = new AppraiseListModel.fromJson(response);
+            setState(() {
+                this.appraiseList = res.data.list;
+            });
+        }
+    }
+
     @override
     void initState() {
         super.initState();
@@ -689,19 +712,15 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                         child: this.__evaluateButton(),
                     ),
                     new Wrap(
-                        children: <Widget>[
-                            Evaluate(),
-                            Evaluate(),
-                            Evaluate(),
-                            Evaluate(),
-                            Evaluate(),
-                            Evaluate()
-                        ],
+                        children: this.appraiseList.map((val) {
+                            return Evaluate(val: val);
+                        }).toList(),
                     )
                 ]
             )
         );
     }
+
     Widget build(BuildContext context) {
         return Scaffold(
             body: CustomScrollView(
@@ -741,6 +760,9 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                     indicatorWeight: ScreenAdaper.height(6),
                                     indicatorColor: Color(0XFF22b0a1),
                                     controller: this._tabController,
+                                    onTap: (int index) {
+                                        this._getAppraiseListData();
+                                    },
                                     tabs: <Widget>[
                                         Tab(child: Text("服务", style: TextStyle(
                                             color: Colors.black, fontSize: ScreenAdaper.fontSize(34)

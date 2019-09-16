@@ -4,9 +4,9 @@ import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
 import '../../common/HttpUtil.dart';
 import '../../model/store/user/User.dart';
-
 import '../../components/LoadingSm.dart';
 import '../../model/api/coupon/CouponData.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class Coupon extends StatefulWidget {
     Coupon({Key key}) : super(key: key);
@@ -15,17 +15,21 @@ class Coupon extends StatefulWidget {
 
 class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
     TabController _tabController;
-    bool isNotUseLoading = false;
-    bool isBeOverdueLoading = false;
+    RefreshController _notUseRefreshController = RefreshController(initialRefresh: false);
+    RefreshController _beOverdueListRefreshController = RefreshController(initialRefresh: false);
+    bool isNotUseLoading = true;
+    bool isBeOverdueLoading = true;
     HttpUtil http = HttpUtil();
     int notUsePage = 1;
-    int beOverdue = 1;
+    int beOverduePage = 1;
     User userModel;
     List notUseList = [];
     List beOverdueList = [];
+
     void didChangeDependencies() {
         super.didChangeDependencies();
         userModel = Provider.of<User>(context);
+        this._getData(isInit: true);
     }
 
     @override
@@ -37,14 +41,23 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
         );
     }
 
-    _getNoUseData ({bool isInit = false}) async {
+
+
+    _getData ({bool isInit = false}) async {
+        if (
+            isInit
+            && ((this._tabController.index == 0 && this.isNotUseLoading == false)
+            || (this._tabController.index == 1 && this.isBeOverdueLoading == false))
+        ) {
+            return null;
+        }
+
         final Map<String, dynamic> response = await this.http.get("/api/v1/coupon/data", data: {
-            "pageNO": this.notUsePage,
+            "pageNO": _tabController.index == 0 ? this.notUsePage : this.beOverduePage,
             "pageSize": 10,
             "userId": this.userModel.userId,
-            "type": 1
+            "type": _tabController.index + 1
         });
-    
         // final CouponDataModel res = new CouponDataModel.fromJson(response);
         Map<String, dynamic> resItem = {
             "couponSn": "string",
@@ -86,81 +99,60 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
             final res = new CouponDataModel.fromJson(resData);
             if (isInit) {
                 setState(() {
-                    notUseList = res.data.list;
-                    isNotUseLoading = false;
+                    if (_tabController.index == 0) {
+                        notUseList = res.data.list;
+                        isNotUseLoading = false;
+                    } else {
+                        beOverdueList = res.data.list;
+                        isBeOverdueLoading = false;
+                    }
+                    
                 });
-                return response;
             } else {
                 setState(() {
-                    notUseList.addAll(res.data.list);
+                    if (_tabController.index == 0) {
+                        notUseList.addAll(res.data.list);
+                    } else {
+                        beOverdueList.addAll(res.data.list);
+                    }
                 });
-                return response;
             }
         }
         return response;
     }
 
-    _getBeOverdueData ({bool isInit = false}) async {
-        final Map<String, dynamic> response = await this.http.get("/api/v1/coupon/data", data: {
-            "pageNO": this.beOverdue,
-            "pageSize": 10,
-            "userId": this.userModel.userId,
-            "type": 2
-        });
-    
-        // final CouponDataModel res = new CouponDataModel.fromJson(response);
-        Map<String, dynamic> resItem = {
-            "couponSn": "string",
-            "coverImage": "string",
-            "endDate": "2019-10-10",
-            "firmId": 0,
-            "id": 0,
-            "name": "string",
-            "title": "string",
-            "type": "house",
-            "worth": "string"
-        };
-
-        Map<String, dynamic> resData = {
-            "code": 200,
-            "data": {
-                "currPage": 10,
-                "list": [
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem
-                ],
-                "pageSize": 0,
-                "totalCount": 0,
-                "totalPage": 0
-            },
-            "msg": "string"
-        };
-
-        if (response["code"] == 200) {
-            // final res = new CouponDataModel.fromJson(response);
-            final res = new CouponDataModel.fromJson(resData);
-            if (isInit) {
-                setState(() {
-                    beOverdueList = res.data.list;
-                    isBeOverdueLoading = false;
-                });
-                return response;
+    void _onLoading() async{
+        setState(() {
+            if (_tabController.index == 0) {
+                this.beOverduePage++;
             } else {
-                setState(() {
-                    beOverdueList.addAll(res.data.list);
-                });
-                return response;
+                this.notUsePage++;
             }
+        });
+        var controller = _tabController.index == 0
+            ? this._notUseRefreshController
+            : this._beOverdueListRefreshController;
+        var response = await _getData();
+        if (response["data"].length == 0) {
+            controller.loadNoData();
+        } else {
+            controller.loadComplete();
         }
-        return response;     
+    }
+
+    void _onRefresh() async{
+        setState(() {
+            if (_tabController.index == 0) {
+                this.beOverduePage = 1;
+            } else {
+                this.notUsePage = 1;
+            }
+        });
+        var controller = _tabController.index == 0
+            ? this._notUseRefreshController
+            : this._beOverdueListRefreshController;
+        final Map res = await _getData(isInit: true);
+        controller.refreshCompleted();
     }
 
     Widget _cardItem ({isBeOverdue: false}) {
@@ -332,25 +324,70 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                         Tab(child: Text("已过期"))
                     ],
                     onTap: (int index) {
-                        print(index);
-                        index == 0 ? this._getNoUseData(isInit: true) : this._getBeOverdueData(isInit: true);
+                        this._getData(isInit: true);
                     }
                 )
             ),
             body: TabBarView(
                 controller: this._tabController,
                 children: <Widget>[
-                    ListView.builder(
-                        itemCount: this.notUseList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                            return this._cardItem();
-                        }
+                    SmartRefresher(
+                        controller: _notUseRefreshController,
+                        enablePullDown: true,
+                        enablePullUp: true,
+                        header: WaterDropHeader(),
+                        footer: ClassicFooter(
+                            loadStyle: LoadStyle.ShowWhenLoading,
+                            idleText: "上拉加载",
+                            failedText: "加载失败！点击重试！",
+                            canLoadingText: "加载更多",
+                            noDataText: "没有更多数据",
+                            loadingText: "加载中"
+                        ),
+                        onRefresh: _onRefresh,
+                        onLoading: _onLoading,
+                        child: this.isNotUseLoading
+                            ? Container(
+                                margin: EdgeInsets.only(
+                                    top: ScreenAdaper.height(200)
+                                ),
+                                child: Loading(),
+                            )
+                            : ListView.builder(
+                                itemCount: this.notUseList.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                    return this._cardItem();
+                                }
+                            )
                     ),
-                    ListView.builder(
-                        itemCount: this.beOverdueList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                            return this._cardItem(isBeOverdue: true);
-                        }
+                    SmartRefresher(
+                        controller: _beOverdueListRefreshController,
+                        enablePullDown: true,
+                        enablePullUp: true,
+                        header: WaterDropHeader(),
+                        footer: ClassicFooter(
+                            loadStyle: LoadStyle.ShowWhenLoading,
+                            idleText: "上拉加载",
+                            failedText: "加载失败！点击重试！",
+                            canLoadingText: "加载更多",
+                            noDataText: "没有更多数据",
+                            loadingText: "加载中"
+                        ),
+                        onRefresh: _onRefresh,
+                        onLoading: _onLoading,
+                        child: this.isBeOverdueLoading
+                            ? Container(
+                                margin: EdgeInsets.only(
+                                    top: ScreenAdaper.height(200)
+                                ),
+                                child: Loading(),
+                            )
+                            : ListView.builder(
+                                itemCount: this.beOverdueList.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                    return this._cardItem(isBeOverdue: true);
+                                }
+                            )
                     )
                 ]
             )

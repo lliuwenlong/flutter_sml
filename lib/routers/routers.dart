@@ -69,7 +69,7 @@ final Map routes = {
     '/shop': (context) => ShopPage(),
     '/coupon': (context) => Coupon(),
     '/restaurant': (context) => Restaurant(),
-    '/restaurantDetails': (context) => RestaurantDetails(),
+    '/restaurantDetails': (context, {arguments}) => RestaurantDetails(),
     '/entertainment': (context) => Entertainment(),
     '/accommodation':  (context) => Accommodation(),
     '/login': (context) => LoginPage(),
@@ -105,8 +105,8 @@ final Map routes = {
     '/invoiceHistory': (context) => InvoiceHistory(),
     '/invoiceHistoryDetails': (context) => InvoiceHistoryDetails(),
     '/invoiceSee': (context) => InvoiceSee(),
-    '/friendDynamicsComment': (context) => FriendDynamicsComment(),
-    '/friendDynamicsReport': (context) => FriendDynamicsReport(),
+    '/friendDynamicsComment': (context, {arguments}) => FriendDynamicsComment(arguments: arguments),
+    '/friendDynamicsReport': (context, {arguments}) => FriendDynamicsReport(arguments: arguments),
     '/friendDynamicsRelease': (context) => FriendDynamicsRelease(),
     '/friendInformation': (context) => FriendInformation(),
     '/aiCustomerService': (context) => AiCustomerService(),
@@ -129,6 +129,7 @@ final Map routes = {
 };
 
 var onGenerateRoute = (RouteSettings settings) {
+    print(settings);
     final String name = settings.name;
     final Function pageContentBuilder = routes[name];
     if (pageContentBuilder != null) {

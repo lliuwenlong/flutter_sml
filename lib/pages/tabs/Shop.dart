@@ -1,44 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../services/ScreenAdaper.dart';
 import '../Shop/Purchase.dart';
 import '../../components/AppBarWidget.dart';
 import '../../common/HttpUtil.dart';
 import '../../model/api/shop/ShopModel.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import '../../components/LoadingSm.dart';
+import '../../model/store/shop/Shop.dart';
+
 class ShopPage extends StatefulWidget {
     ShopPage({Key key}) : super(key: key);
     _ShopPageState createState() => _ShopPageState();
 }
 
 class _ShopPageState extends State<ShopPage> {
+    RefreshController _refreshController = RefreshController(initialRefresh: false);
 	BuildContext _selfContext;
     int _page = 1;
-    bool isLoading = false;
+    bool isLoading = true;
     List<Data> shopList = [];
     @override
     initState() {
         super.initState();
-        this._getData();
+        this._getData(isInit: true);
     }
-    _getData () async {
+
+    _getData ({bool isInit: false}) async {
         Map<String, dynamic> response = await HttpUtil().post(
             "/api/v1/wood/shop/",
             data: {
-                "pageNO": 1,
+                "pageNO": _page,
                 "pageSize": 10
             }
         );
         if (response["code"] == 200) {
-            final ShopModel shopModel =  new ShopModel.fromJson(response);
-            setState(() {
-                this.shopList = shopModel.data;
-            });
-        } else {
-
+            final ShopApiModel shopModel =  new ShopApiModel.fromJson(response);
+            if (isInit) {
+                setState(() {
+                    shopList = shopModel.data;
+                    isLoading = false;
+                });
+                return response;
+            } else {
+                setState(() {
+                    shopList.addAll(shopModel.data);
+                });
+                return response;
+            }
         }
-        
+        return response;
     }
 
-    _purchase () {
+    void _onLoading() async{
+        setState(() {
+            this._page++;
+        });
+        var response = await _getData();
+        if (response["data"].length == 0) {
+            _refreshController.loadNoData();
+        } else {
+            _refreshController.loadComplete();
+        }
+    }
+
+    void _onRefresh() async{
+        setState(() {
+            this._page = 1;
+        });
+        final Map res = await _getData(isInit: true);
+        _refreshController.refreshCompleted();
+    }
+
+    _purchase (Data val) {
+        Provider.of<ShopModel>(context).setShopNum(1);
 		showModalBottomSheet(
 			context: this._selfContext,
 			shape:  RoundedRectangleBorder(
@@ -48,12 +83,12 @@ class _ShopPageState extends State<ShopPage> {
 				)
 			),
 			builder: (BuildContext context) {
-				return Purchase();
+				return Purchase(id: val.woodId, price: double.parse(val.price));
 			}
 		);
 	}
 
-    Widget _commodityItem () {
+    Widget _commodityItem (Data val) {
         return Container(
             width: (ScreenAdaper.getScreenWidth() - 40 ) / 2,
             padding: EdgeInsets.only(bottom: ScreenAdaper.height(20)),
@@ -67,7 +102,9 @@ class _ShopPageState extends State<ShopPage> {
                         children: <Widget>[
                             GestureDetector(
                                 onTap: () {
-                                    Navigator.pushNamed(context, "/shenmuDetails");
+                                    Navigator.pushNamed(context, "/shenmuDetails", arguments: {
+                                        "id": val.woodId
+                                    });
                                 },
                                 child: AspectRatio(
                                     aspectRatio: 335 / 400,
@@ -77,7 +114,7 @@ class _ShopPageState extends State<ShopPage> {
                                             borderRadius: BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5)),
                                             child: Image.network(
                                                 "http://qcloud.dpfile.com/pc/pYPuondR-PaQO3rhSjRl7x1PBMlPubyBLeDC8IcaPQGC0AsVXyL223YOP11TLXmuTZlMcKwJPXLIRuRlkFr_8g.jpg",
-                                                fit: BoxFit.cover,
+                                                fit: BoxFit.fill,
                                             )
                                         ),
                                     )
@@ -97,7 +134,7 @@ class _ShopPageState extends State<ShopPage> {
                                         color: Color.fromRGBO(0, 0, 0, 0.5),
                                         borderRadius: BorderRadius.circular(5)
                                     ),
-                                    child: Text("金丝榔", style: TextStyle(
+                                    child: Text(val.name, style: TextStyle(
                                         color: Colors.white,
                                         fontSize: ScreenAdaper.fontSize(30)
                                     )),
@@ -118,7 +155,7 @@ class _ShopPageState extends State<ShopPage> {
                                     size: ScreenAdaper.fontSize(30)
                                 ),
                                 SizedBox(width: ScreenAdaper.width(20)),
-                                Text("神木基地名称", style: TextStyle(
+                                Text(val.baseName, style: TextStyle(
                                     fontSize: ScreenAdaper.fontSize(28, allowFontScaling: true),
                                     color: Color(0xFF666666)
                                 ))
@@ -135,9 +172,9 @@ class _ShopPageState extends State<ShopPage> {
                             children: <Widget>[
                                 Align(
                                     alignment: Alignment.centerLeft,
-                                    child: Text("¥1000.00", style: TextStyle(
+                                    child: Text("¥${val.price}", style: TextStyle(
                                         color: Color(0xFFfb4135),
-                                        fontSize: ScreenAdaper.fontSize(26)
+                                        fontSize: ScreenAdaper.fontSize(28)
                                     )),
                                 ),
                                 Align(
@@ -149,7 +186,7 @@ class _ShopPageState extends State<ShopPage> {
                                             height: ScreenAdaper.height(50),
                                             minWidth: ScreenAdaper.width(141),
                                             onPressed: () {
-												this._purchase();
+												this._purchase(val);
 											},
                                             color: Color(0xFF22b0a1),
                                             splashColor: Color.fromRGBO(0, 0, 0, 0),
@@ -158,7 +195,7 @@ class _ShopPageState extends State<ShopPage> {
                                                 borderRadius: BorderRadius.all(Radius.circular(ScreenAdaper.width(10)))
                                             ),
                                             child: Text("立即购买", style: TextStyle(
-                                                fontSize: ScreenAdaper.fontSize(20),
+                                                fontSize: ScreenAdaper.fontSize(24),
                                                 color: Color(0xFFffffff)
                                             )),
                                         ),
@@ -181,16 +218,41 @@ class _ShopPageState extends State<ShopPage> {
                 child: AppBarWidget().buildAppBar("商城"),
                 preferredSize: Size.fromHeight(ScreenAdaper.height(110))
             ),
-            body: SingleChildScrollView(
-                child: Container(
-                    padding: EdgeInsets.all(15),
-                    child: Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: this.shopList.map((Data val) {
-                            return this._commodityItem();
-                        }).toList(),
-                    )
+            body:  this.isLoading
+                ? Container(
+                    margin: EdgeInsets.only(
+                        top: ScreenAdaper.height(200)
+                    ),
+                    child: Loading()
+                )
+                : SmartRefresher(
+                controller: _refreshController,
+                enablePullDown: true,
+                enablePullUp: true,
+                header: WaterDropHeader(),
+                footer: ClassicFooter(
+                    loadStyle: LoadStyle.ShowWhenLoading,
+                    idleText: "上拉加载",
+                    failedText: "加载失败！点击重试！",
+                    canLoadingText: "加载更多",
+                    noDataText: "没有更多数据",
+                    loadingText: "加载中"
+                ),
+                onRefresh: _onRefresh,
+                onLoading: _onLoading,
+                child: ListView(
+                    children: <Widget>[
+                        Container(
+                            padding: EdgeInsets.all(15),
+                            child: Wrap(
+                                spacing: 10,
+                                runSpacing: 10,
+                                children: this.shopList.map((Data val) {
+                                    return this._commodityItem(val);
+                                }).toList(),
+                            )
+                        )
+                    ]
                 )
             )
         );

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/model/store/user/User.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../components/AppBarWidget.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
+import 'package:provider/provider.dart';
+import '../../common/HttpUtil.dart';
 import 'dart:ui';
 class FriendDynamicsReport extends StatefulWidget {
-    FriendDynamicsReport({Key key}) : super(key: key);
+    Map arguments;
+    FriendDynamicsReport({Key key, this.arguments}) : super(key: key);
     _FriendDynamicsReportState createState() => _FriendDynamicsReportState();
 }
 
@@ -18,7 +23,33 @@ class _FriendDynamicsReportState extends State<FriendDynamicsReport> {
         {"id": 5, "name": "侵权（冒充他人、侵犯名誉"},
         {"id": 6, "name": "其他"}
     ];
+    User _userModel;
+    @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        _userModel = Provider.of<User>(context);
+    }
 
+    _submit () async {
+        if (this._listIndex == -1) {
+            Fluttertoast.showToast(
+                msg: "请选择一项举报的内容",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+            return;
+        }
+        final Map response = await HttpUtil().post("/api/v1/circle/msg/${this.widget.arguments["id"]}/report/", data: {
+            "userId": this._userModel.userId,
+            "reason": this._list[this._listIndex]["name"]
+        });
+        if (response["code"] == 200) {
+            Navigator.pop(context);
+        }
+    }
     Widget _item (String name, int index, {bool isBorder = true}) {
         return Container(
             padding: EdgeInsets.only(
@@ -52,7 +83,7 @@ class _FriendDynamicsReportState extends State<FriendDynamicsReport> {
             )
         );
     }
-
+    
     @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
@@ -61,7 +92,7 @@ class _FriendDynamicsReportState extends State<FriendDynamicsReport> {
             backgroundColor: Colors.white,
             bottomSheet: Container(
                 width: double.infinity,
-                height: ScreenAdaper.height(88) + MediaQueryData.fromWindow(window).padding.bottom,
+                height: ScreenAdaper.height(108) + MediaQueryData.fromWindow(window).padding.bottom,
                 padding: EdgeInsets.only(
                     bottom: MediaQueryData.fromWindow(window).padding.bottom + ScreenAdaper.height(10),
                     top: ScreenAdaper.height(10),
@@ -79,8 +110,13 @@ class _FriendDynamicsReportState extends State<FriendDynamicsReport> {
                 ),
                 child: RaisedButton(
                     elevation: 0,
-                    onPressed: () {},
+                    onPressed: () {
+                        this._submit();
+                    },
                     color: ColorClass.common,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(ScreenAdaper.width(10))
+                    ),
                     child: Text("提交", style: TextStyle(
                         color: Colors.white,
                         fontSize: ScreenAdaper.fontSize(40)

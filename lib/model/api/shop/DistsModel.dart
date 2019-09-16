@@ -1,56 +1,50 @@
-class ShopApiModel {
+class DistsModel {
     int code;
-    List<Data> data;
     String msg;
+    List<Data> data;
 
-    ShopApiModel({this.code, this.data, this.msg});
+    DistsModel({this.code, this.msg, this.data});
 
-    ShopApiModel.fromJson(Map<String, dynamic> json) {
+    DistsModel.fromJson(Map<String, dynamic> json) {
         code = json['code'];
+        msg = json['msg'];
         if (json['data'] != null) {
             data = new List<Data>();
             json['data'].forEach((v) {
                 data.add(new Data.fromJson(v));
             });
         }
-        msg = json['msg'];
     }
 
     Map<String, dynamic> toJson() {
         final Map<String, dynamic> data = new Map<String, dynamic>();
         data['code'] = this.code;
+        data['msg'] = this.msg;
         if (this.data != null) {
             data['data'] = this.data.map((v) => v.toJson()).toList();
         }
-        data['msg'] = this.msg;
         return data;
     }
 }
 
 class Data {
-    String baseName;
-    String image;
-    String name;
-    int woodId;
-    String price;
+    int districtId;
+    String districtName;
+    int baseId;
 
-    Data({this.baseName, this.image, this.name, this.woodId, this.price});
+    Data({this.districtId, this.districtName, this.baseId});
 
     Data.fromJson(Map<String, dynamic> json) {
-        baseName = json['baseName'];
-        image = json['image'];
-        name = json['name'];
-        woodId = json['woodId'];
-        price = json['price'];
+        districtId = json['districtId'];
+        districtName = json['districtName'];
+        baseId = json['baseId'];
     }
 
     Map<String, dynamic> toJson() {
         final Map<String, dynamic> data = new Map<String, dynamic>();
-        data['baseName'] = this.baseName;
-        data['image'] = this.image;
-        data['name'] = this.name;
-        data['woodId'] = this.woodId;
-        data['price'] = this.price;
+        data['districtId'] = this.districtId;
+        data['districtName'] = this.districtName;
+        data['baseId'] = this.baseId;
         return data;
     }
 }

@@ -58,12 +58,12 @@ class _MyWalletState extends State<MyWallet> {
               height: ScreenAdaper.height(88),
               child: RaisedButton(
                   child: Text(
-                    '提现',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: ScreenAdaper.fontSize(40)
+                        '提现',
+                        style: TextStyle(
+                        color: Colors.white,
+                        fontSize: ScreenAdaper.fontSize(40)
+                        ),
                     ),
-                  ),
                     disabledColor: Color(0XFF86d4ca),//禁用时的颜色
                     splashColor: Color.fromARGB(0, 0, 0, 0),//水波纹
                     highlightColor:Color(0xff009a8a),

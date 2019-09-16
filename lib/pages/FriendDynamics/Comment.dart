@@ -1,17 +1,136 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/model/store/user/User.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
 import '../../components/AppBarWidget.dart';
-import 'dart:ui';
-class FriendDynamicsComment extends StatefulWidget {
-  FriendDynamicsComment({Key key}) : super(key: key);
+import '../../common/HttpUtil.dart';
+import '../../model/api/friendDynamics/CircleMsgApiModel.dart';
+import '../../model/api/friendDynamics/CommentModel.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-  _FriendDynamicsCommentState createState() => _FriendDynamicsCommentState();
+import 'dart:ui';
+
+class FriendDynamicsComment extends StatefulWidget {
+    final Map arguments;
+    FriendDynamicsComment({Key key, this.arguments}) : super(key: key);
+    _FriendDynamicsCommentState createState() => _FriendDynamicsCommentState();
 }
 
 class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
     var selfContext;
+    RefreshController _refreshController = RefreshController(initialRefresh: false);
+    HttpUtil http = HttpUtil();
+    Data data;
+    int _pageNO = 1;
+    int total = 0;
+    List _commentData = [];
+    int thumbsUpNum = 0;
+    int shareNum = 0;
+    BuildContext shareHandler;
     _FriendDynamicsCommentState({Key key});
+    TextEditingController controller = TextEditingController.fromValue(
+        TextEditingValue(
+            text: ""
+        )
+    );
+    User _userModel;
+
+    @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        _userModel = Provider.of<User>(context);
+    }
+
+    @override
+    initState () {
+        super.initState();
+        _getData();
+        _getCommentData(isInit: true);
+    }
+
+    _getCommentData ({bool isInit: false}) async {
+        Map<String, dynamic> response = await HttpUtil().get("/api/v1/circle/msg/${widget.arguments["id"]}/comment?pageNO=${this._pageNO}&pageSize=10");
+        if (response["code"] == 200) {
+            CommentModel baseModel = new CommentModel.fromJson(response["data"]);
+            if (isInit) {
+                setState(() {
+                    _commentData = baseModel.data;
+                    this.total = baseModel.total;
+                });
+            } else {
+                setState(() {
+                    _commentData.addAll(baseModel.data);
+                });
+            }
+        }
+        return response;
+    }
+
+    void _onRefresh() async{
+        setState(() {
+            this._pageNO = 1;
+        });
+        final Map res = await _getCommentData(isInit: true);
+        _refreshController.refreshCompleted();
+    }
+
+    void _onLoading() async{
+        setState(() {
+            this._pageNO++;
+        });
+        var response = await _getCommentData();
+        if (response["data"].length == 0) {
+            _refreshController.loadNoData();
+        } else {
+            _refreshController.loadComplete();
+        }
+    }
+    
+    void _addComent() async {
+        if (this.controller.text.isEmpty) {
+            Fluttertoast.showToast(
+                msg: "评论内容不可以为空",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+            return;
+        }
+        Map response = await this.http.post("/api/v1/circle/msg/${this.widget.arguments["id"]}/comment", params: {
+            "userId": this._userModel.userId,
+            "content": this.controller.text
+        });
+        if (response["code"] == 200) {
+            this.controller.clear();
+            Fluttertoast.showToast(
+                msg: "评论成功",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        }
+    }
+
+    _getData () async {
+        print("/api/v1/circle/msg/${widget.arguments["id"]}");
+        final Map response = await this.http.get("/api/v1/circle/msg/${widget.arguments["id"]}");
+        if (response["code"] == 200) {
+            Data data = new Data.fromJson(response["data"]);
+            print(response);
+            setState(() {
+                this.data = data;
+                this.thumbsUpNum = data.thumbup;
+                this.shareNum = response["data"]["shares"];
+            });
+        }
+    }
+    
     _reportHandler () {
         showModalBottomSheet(
             context: this.selfContext,
@@ -36,7 +155,9 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                                     child: GestureDetector(
                                         onTap: () {
                                             Navigator.of(context).pop();
-                                            Navigator.pushNamed(context, "/friendDynamicsReport");
+                                            Navigator.pushNamed(context, "/friendDynamicsReport", arguments: {
+                                                "id": this.widget.arguments["id"]
+                                            });
                                         },
                                         child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
@@ -92,6 +213,7 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
         showModalBottomSheet(
             context: this.selfContext,
             builder: (BuildContext context) {
+                this.shareHandler = context;
                 return Container(
                     height: ScreenAdaper.height(407),
                     width: double.infinity,
@@ -124,35 +246,41 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                                     child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
-                                            Column(
-                                                children: <Widget>[
-                                                    Icon(
-                                                        IconData(0xe667, fontFamily: "iconfont"),
-                                                        size: ScreenAdaper.fontSize(100),
-                                                        color: Color(0xFF22b0a1)
-                                                    ),
-                                                    SizedBox(height: ScreenAdaper.height(20)),
-                                                    Text("微信好友", style: TextStyle(
-                                                        fontSize: ScreenAdaper.fontSize(24),
-                                                        color: ColorClass.fontColor
-                                                    ))
-                                                ]
+                                            GestureDetector(
+                                                onTap: this._setShare,
+                                                child: Column(
+                                                    children: <Widget>[
+                                                        Icon(
+                                                            IconData(0xe667, fontFamily: "iconfont"),
+                                                            size: ScreenAdaper.fontSize(100),
+                                                            color: Color(0xFF22b0a1)
+                                                        ),
+                                                        SizedBox(height: ScreenAdaper.height(20)),
+                                                        Text("微信好友", style: TextStyle(
+                                                            fontSize: ScreenAdaper.fontSize(24),
+                                                            color: ColorClass.fontColor
+                                                        ))
+                                                    ]
+                                                )
                                             ),
                                             SizedBox(width: ScreenAdaper.width(167)),
-                                            Column(
-                                                children: <Widget>[
-                                                    Icon(
-                                                        IconData(0xe668, fontFamily: "iconfont"),
-                                                        size: ScreenAdaper.fontSize(100),
-                                                        color: Color(0xFF22b0a1)
-                                                    ),
-                                                    SizedBox(height: ScreenAdaper.height(20)),
-                                                    Text("微信朋友圈", style: TextStyle(
-                                                        fontSize: ScreenAdaper.fontSize(24),
-                                                        color: ColorClass.fontColor
-                                                    ))
-                                                ]
-                                            )
+                                            GestureDetector(
+                                                onTap: this._setShare,
+                                                child: Column(
+                                                    children: <Widget>[
+                                                        Icon(
+                                                            IconData(0xe668, fontFamily: "iconfont"),
+                                                            size: ScreenAdaper.fontSize(100),
+                                                            color: Color(0xFF22b0a1)
+                                                        ),
+                                                        SizedBox(height: ScreenAdaper.height(20)),
+                                                        Text("微信朋友圈", style: TextStyle(
+                                                            fontSize: ScreenAdaper.fontSize(24),
+                                                            color: ColorClass.fontColor
+                                                        ))
+                                                    ]
+                                                )
+                                            )                                            
                                         ]
                                     )
                                 ),
@@ -190,6 +318,43 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
         );
     }
 
+    _thumbsUp () async {
+        Map response = await this.http.post("/api/v1/circle/msg/${this.widget.arguments["id"]}/thumbup?type=0&userId=${this._userModel.userId}");
+        if (response["code"] == 200) {
+            setState(() {
+                this.thumbsUpNum = response["data"];
+            });
+        } else {
+            Fluttertoast.showToast(
+                msg: response["msg"],
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        }
+    }
+
+    _setShare() async {
+        Map response = await this.http.post("http://api.zhongyunkj.cn/api/v1/circle/msg/${this.widget.arguments["id"]}/share?type=1");
+        if (response["code"] == 200) {
+            setState(() {
+                this.shareNum = response["data"];
+            });
+            Navigator.pop(this.shareHandler);
+        } else {
+            Fluttertoast.showToast(
+                msg: response["msg"],
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        }
+    }
+
     Widget _headPortrait (String url) {
         return Row(
             children: <Widget>[
@@ -209,12 +374,12 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                        Text("张丽", style: TextStyle(
+                        Text(this.data != null ? this.data.nickName : "", style: TextStyle(
                             color: ColorClass.common,
                             fontSize: ScreenAdaper.fontSize(30),
                             fontWeight: FontWeight.w500
                         )),
-                        Text("昨天 12:31", style: TextStyle(
+                        Text(this.data != null ? this.data.createTime : "", style: TextStyle(
                             color: ColorClass.subTitleColor,
                             fontSize: ScreenAdaper.fontSize(24)
                         ))
@@ -248,59 +413,47 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                    this._headPortrait("123"),
-                    Container(
+                    this._headPortrait(this.data != null && this.data.imageUrl != null ? this.data.imageUrl : ""),
+                    this.data != null && this.data.content != null && this.data.content.isNotEmpty ? Container(
                         margin:EdgeInsets.only(
                             top: ScreenAdaper.width(30)
                         ),
-                        child: Text("品鉴停留在舌尖上的金丝楠、金丝榔、香樟亲身体验用味蕾感受金丝楠、金丝榔、香樟在这样的氛围里喝酒吃肉怎能不快哉？"),
-                    ),
-                    SizedBox(height: ScreenAdaper.height(30)),
-                    Wrap(
-                        spacing: ScreenAdaper.width(15),
-                        runSpacing: ScreenAdaper.width(15),
-                        children: <Widget>[
-                            Container(
-                                width: ScreenAdaper.width(220),
-                                height: ScreenAdaper.width(220),
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
-                                    child: Image.network(
-                                        "http://qcloud.dpfile.com/pc/pYPuondR-PaQO3rhSjRl7x1PBMlPubyBLeDC8IcaPQGC0AsVXyL223YOP11TLXmuTZlMcKwJPXLIRuRlkFr_8g.jpg",
-                                        fit: BoxFit.cover,
-                                    )
-                                )
-                            ),
-                            Container(
-                                width: ScreenAdaper.width(220),
-                                height: ScreenAdaper.width(220),
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
-                                    child: Image.network(
-                                        "http://qcloud.dpfile.com/pc/pYPuondR-PaQO3rhSjRl7x1PBMlPubyBLeDC8IcaPQGC0AsVXyL223YOP11TLXmuTZlMcKwJPXLIRuRlkFr_8g.jpg",
-                                        fit: BoxFit.cover,
-                                    )
-                                )
-                            ),
-                            Container(
-                                width: ScreenAdaper.width(220),
-                                height: ScreenAdaper.width(220),
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
-                                    child: Image.network(
-                                        "http://qcloud.dpfile.com/pc/pYPuondR-PaQO3rhSjRl7x1PBMlPubyBLeDC8IcaPQGC0AsVXyL223YOP11TLXmuTZlMcKwJPXLIRuRlkFr_8g.jpg",
-                                        fit: BoxFit.cover,
-                                    )
-                                )
-                            )
-                        ]
+                        child: Text(this.data.content),
                     )
+                    : SizedBox(),
+                    SizedBox(height: ScreenAdaper.height(30)),
+                    this.data != null && data.imageUrls != null &&  data.imageUrls.length > 0 ? GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            mainAxisSpacing: ScreenAdaper.width(15),
+                            crossAxisSpacing: ScreenAdaper.width(15),
+                            childAspectRatio: 1.0
+                        ),
+                        itemBuilder: (BuildContext context, int index) {
+                            print(data.imageUrls[index]);
+                            return ClipRRect(
+                                borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
+                                child: GestureDetector(
+                                    onTap: () {
+                                    },
+                                    child: Image.network(
+                                        data.imageUrls[index],
+                                        fit: BoxFit.cover,
+                                    )
+                                )
+                                
+                            );
+                        },
+                        itemCount: data.imageUrls.length
+                    ) : SizedBox(height: 0),
                 ]
             )
         );
     }
 
-    Widget _commentItem () {
+    Widget _commentItem (CommentData data) {
         return Container(
             padding: EdgeInsets.only(
                 left: ScreenAdaper.width(30),
@@ -328,7 +481,7 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                                 SizedBox(height: ScreenAdaper.height(10)),
-                                Text("小白", style: TextStyle(
+                                Text(data.nickName, style: TextStyle(
                                     color: ColorClass.fontColor,
                                     fontSize: ScreenAdaper.fontSize(30),
                                     fontWeight: FontWeight.w500
@@ -336,13 +489,13 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                                 SizedBox(height: ScreenAdaper.height(15)),
                                 Container(
                                     width: double.infinity,
-                                    child: Text("我最喜欢百合花了，这个养的真不错，等到收获得季节就更美了 。", style: TextStyle(
+                                    child: Text(data.content, style: TextStyle(
                                         color: ColorClass.titleColor,
                                         fontSize: ScreenAdaper.fontSize(28),
                                     )),
                                 ),
                                 SizedBox(height: ScreenAdaper.height(5)),
-                                Text("7月25日", style: TextStyle(
+                                Text(data.createTime, style: TextStyle(
                                     color: ColorClass.subTitleColor,
                                     fontSize: ScreenAdaper.fontSize(24),
                                 ))
@@ -355,6 +508,7 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
     }
 
     Widget _comment () {
+        print(this._commentData);
         return Container(
             color: Colors.white,
             margin: EdgeInsets.only(
@@ -376,15 +530,27 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                             )
                         ),
                         padding: EdgeInsets.all(ScreenAdaper.width(30)),
-                        child: Text("全部评论（2）", style: TextStyle(
+                        child: Text("全部评论（${this.total}）", style: TextStyle(
                             color: ColorClass.subTitleColor,
                             fontSize: ScreenAdaper.fontSize(30)
                         )),
                     ),
-                    this._commentItem(),
-                    this._commentItem(),
-                    this._commentItem(),
-                    this._commentItem(),
+                    this._commentData.isEmpty
+                        ? Container(
+                            color: Colors.white,
+                            height: ScreenAdaper.height(200),
+                            child: Center(
+                                child: Text("暂无评论", style: TextStyle(
+                                    color: ColorClass.subTitleColor,
+                                    fontSize: ScreenAdaper.fontSize(30)
+                                )),
+                            ),
+                        )
+                        : Wrap(
+                            children: this._commentData.map((val) {
+                                return _commentItem(val);
+                            }).toList(),
+                        )
                 ]
             )
         );
@@ -395,19 +561,38 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
         this.selfContext = context;
         ScreenAdaper.init(context);
         return Scaffold(
-            appBar: AppBarWidget().buildAppBar("详情"),
+            appBar: PreferredSize(
+                child: AppBarWidget().buildAppBar("详情"),
+                preferredSize: Size.fromHeight(ScreenAdaper.height(110))
+            ),
             body: Column(
                 children: <Widget>[
                     Expanded(
                         flex: 1,
-                        child: ListView(
-                            children: <Widget>[
-                                this._itemWidget(0),
-                                this._comment()
-                            ]
-                        ),
+                        child: SmartRefresher(
+                            controller: _refreshController,
+                            enablePullDown: true,
+                            enablePullUp: true,
+                            header: WaterDropHeader(),
+                            footer: ClassicFooter(
+                                loadStyle: LoadStyle.ShowWhenLoading,
+                                idleText: "上拉加载",
+                                failedText: "加载失败！点击重试！",
+                                canLoadingText: "加载更多",
+                                noDataText: "没有更多数据",
+                                loadingText: "加载中"
+                            ),
+                            onRefresh: _onRefresh,
+                            onLoading: _onLoading,
+                            child: ListView(
+                                physics: ClampingScrollPhysics(),
+                                children: <Widget>[
+                                    this._itemWidget(0),
+                                    this._comment()
+                                ]
+                            )
+                        )
                     ),
-                    
                     Container(
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -430,6 +615,10 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                             children: <Widget>[
                                 Expanded(
                                     child: TextField(
+                                        controller: controller,
+                                        onSubmitted: (String val) {
+                                            this._addComent();
+                                        },
                                         decoration: InputDecoration(
                                             fillColor: Color(0xFFf5f5f5),
                                             filled: true,
@@ -452,20 +641,23 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                                     )
                                 ),
                                 SizedBox(width: ScreenAdaper.width(40)),
-                                Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                        Text("128", style: TextStyle(
-                                            color: ColorClass.subTitleColor,
-                                            fontSize: ScreenAdaper.fontSize(18)
-                                        )),
-                                        SizedBox(height: ScreenAdaper.height(10)),
-                                        Icon(
-                                            IconData(0xe63f, fontFamily: "iconfont"),
-                                            color: ColorClass.iconColor,
-                                            size: ScreenAdaper.fontSize(35)
-                                        ),
-                                    ]
+                                GestureDetector(
+                                    onTap: this._thumbsUp,
+                                    child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                            Text("${this.thumbsUpNum}", style: TextStyle(
+                                                color: ColorClass.subTitleColor,
+                                                fontSize: ScreenAdaper.fontSize(18)
+                                            )),
+                                            SizedBox(height: ScreenAdaper.height(10)),
+                                            Icon(
+                                                IconData(0xe63f, fontFamily: "iconfont"),
+                                                color: ColorClass.iconColor,
+                                                size: ScreenAdaper.fontSize(35)
+                                            ),
+                                        ]
+                                    )
                                 ),
                                 SizedBox(width: ScreenAdaper.width(40)),
                                 GestureDetector(
@@ -475,7 +667,7 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                                     child: Column(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
-                                            Text("2", style: TextStyle(
+                                            Text("${this.shareNum}", style: TextStyle(
                                                 color: ColorClass.subTitleColor,
                                                 fontSize: ScreenAdaper.fontSize(18)
                                             )),

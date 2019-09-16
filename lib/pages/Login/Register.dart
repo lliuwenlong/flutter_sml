@@ -64,7 +64,7 @@ class _RegisterPageState extends State<RegisterPage> {
         if (_formKey.currentState.validate()) {
             final String phone = this._phoneController.text;
             final String password = this._passwordController.text;
-            Map response =  await HttpUtil().post("http://api.zhongyunkj.cn/api/v11/regist", params: {
+            Map response =  await HttpUtil().post("/api/v11/regist", params: {
                 "phone": phone,
                 "password": password
             });

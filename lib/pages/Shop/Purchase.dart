@@ -3,13 +3,56 @@ import 'package:provider/provider.dart';
 import '../../model/store/shop/Shop.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
+import '../../model/api/shop/DistsModel.dart';
+import '../../common/HttpUtil.dart';
+import '../../model/store/shop/Shop.dart';
 import 'dart:ui';
 
-class Purchase extends StatelessWidget {
-    Purchase({Key key}) : super(key: key);
+class Purchase extends StatefulWidget {
+    int id;
+    double price;
+    Purchase({Key key, this.id, this.price});
+    _PurchaseState createState() => _PurchaseState(id: this.id, price: this.price);
+}
+
+class _PurchaseState extends State<Purchase>  {
     ShopModel cloneShopModel;
     BuildContext _selfContext;
+    int id;
+    double price;
+    List<Data> list = [];
+    ShopModel shopModel; 
+    _PurchaseState({this.id = 0, Key key, this.price});
+    bool isPay = false;
+    String payType = "wx";
+    @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        shopModel = Provider.of<ShopModel>(context);
+    }
 
+    @override
+    initState () {
+        super.initState();
+        this._getData();
+    }
+
+    _getData () async {
+        final response = await HttpUtil().get("/api/v1/wood/${this.id}/dists");
+        if (response["code"] == 200) {
+            final DistsModel res = new DistsModel.fromJson(response);
+            setState(() {
+                this.list = res.data;
+                if (response["data"].length > 0) {
+                    this.shopModel.setForestTypes(res.data[0].districtId);
+                }
+            });
+        }
+    }
+
+    _onPay () {
+        print(this.payType);
+    }
     Widget _choiceChip (String name, int curStatus, {int status = 0, Function onTapHandler}) {
         bool selected = curStatus == status;
         return Container(
@@ -58,7 +101,7 @@ class Purchase extends StatelessWidget {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                    Text("购买数量", style: TextStyle(
+                    Text(name, style: TextStyle(
                         color: ColorClass.fontColor,
                         fontSize: ScreenAdaper.fontSize(30)
                     )),
@@ -82,48 +125,48 @@ class Purchase extends StatelessWidget {
             child: Column(
                 children: <Widget>[
                     Container(
-                                    margin: EdgeInsets.only(
-                                        top: ScreenAdaper.height(30)
-                                    ),
+                        margin: EdgeInsets.only(
+                            top: ScreenAdaper.height(30)
+                        ),
+                        padding: EdgeInsets.only(
+                            left: ScreenAdaper.width(30),
+                            right: ScreenAdaper.width(30)
+                        ),
+                        child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                                Container(
                                     padding: EdgeInsets.only(
-                                        left: ScreenAdaper.width(30),
-                                        right: ScreenAdaper.width(30)
+                                        top: ScreenAdaper.height(20)
                                     ),
-                                    child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                            Container(
-                                                padding: EdgeInsets.only(
-                                                    top: ScreenAdaper.height(20)
-                                                ),
-                                                child: Text("树林", style: TextStyle(
-                                                    color: ColorClass.titleColor,
-                                                    fontSize: ScreenAdaper.fontSize(28),
-                                                    fontWeight: FontWeight.w500
-                                                )),
-                                            ),
-                                            SizedBox(width: ScreenAdaper.width(30)),
-                                            Expanded(
-                                                flex: 1,
-                                                child: Container(
-                                                    child: Wrap(
-                                                        spacing: ScreenAdaper.width(20),
-                                                        children: shopModel.forestList.map((val) {
-                                                            return _choiceChip(
-                                                                val["name"],
-                                                                val["id"],
-                                                                status: shopModel.forestTypes,
-                                                                onTapHandler: (int val) {
-                                                                    shopModel.setForestTypes(val);
-                                                                }
-                                                            ); 
-                                                        }).toList(),
-                                                    )
-                                                )
-                                            )
-                                        ]
-                                    )
+                                    child: Text("树林", style: TextStyle(
+                                        color: ColorClass.titleColor,
+                                        fontSize: ScreenAdaper.fontSize(28),
+                                        fontWeight: FontWeight.w500
+                                    )),
                                 ),
+                                SizedBox(width: ScreenAdaper.width(30)),
+                                Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                        child: Wrap(
+                                            spacing: ScreenAdaper.width(20),
+                                            children: this.list.map((val) {
+                                                return _choiceChip(
+                                                    val.districtName,
+                                                    val.districtId,
+                                                    status: shopModel.forestTypes,
+                                                    onTapHandler: (int val) {
+                                                        shopModel.setForestTypes(val);
+                                                    }
+                                                ); 
+                                            }).toList(),
+                                        )
+                                    )
+                                )
+                            ]
+                        )
+                    ),
                     Container(
                         padding: EdgeInsets.only(
                             left: ScreenAdaper.width(30),
@@ -158,7 +201,7 @@ class Purchase extends StatelessWidget {
                                                         shopModel.setShopNum(shopModel.shopNum - 1);
                                                     },
                                                     icon: Icon(IconData(0xe635, fontFamily: "iconfont")),
-                                                    color: Color(0xFFd9d9d9),
+                                                    color: shopModel.shopNum == 1 ? Color(0xFFd9d9d9) : ColorClass.fontRed,
                                                     iconSize: ScreenAdaper.fontSize(20),
                                                 )
                                             ),
@@ -233,15 +276,27 @@ class Purchase extends StatelessWidget {
                         Text(obj["text"])
                     ]
                 ),
-                Container(
-                    width: ScreenAdaper.width(40),
-                    height: ScreenAdaper.width(40),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(150),
-                        color: Color(0xFFf7f7f7),
-                        border: Border.all(
-                            width: ScreenAdaper.width(2),
-                            color: ColorClass.subTitleColor
+                this.payType == type
+                ? Icon(IconData(
+                    0xe621,
+                    fontFamily: "iconfont"
+                ), size: ScreenAdaper.fontSize(40), color: Color(0xFFd4746c))
+                : GestureDetector(
+                    onTap: () {
+                        setState(() {
+                            this.payType = type;
+                        });
+                    },
+                    child: Container(
+                        width: ScreenAdaper.width(40),
+                        height: ScreenAdaper.width(40),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(150),
+                            color: Color(0xFFf7f7f7),
+                            border: Border.all(
+                                width: ScreenAdaper.width(2),
+                                color: ColorClass.subTitleColor
+                            )
                         )
                     )
                 )
@@ -262,7 +317,7 @@ class Purchase extends StatelessWidget {
                                 color: ColorClass.titleColor,
                                 fontSize: ScreenAdaper.fontSize(34)
                             )),
-                            Text("¥1000.00", style: TextStyle(
+                            Text("${this.shopModel.shopNum * this.price}", style: TextStyle(
                                 color: ColorClass.fontRed,
                                 fontSize: ScreenAdaper.fontSize(34)
                             )),
@@ -324,7 +379,7 @@ class Purchase extends StatelessWidget {
         );
     }
 
-    Widget _button () {
+    Widget _button ({Function onTap}) {
         return Container(
             width: double.infinity,
             padding: EdgeInsets.fromLTRB(
@@ -338,7 +393,7 @@ class Purchase extends StatelessWidget {
                 child: RaisedButton(
                     elevation: 0,
                     onPressed: () {
-
+                        onTap != null && onTap();
                     },
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(ScreenAdaper.width(10))
@@ -365,13 +420,24 @@ class Purchase extends StatelessWidget {
                 child: Consumer<ShopModel>(
                     builder: (BuildContext context, ShopModel shopModel, child) {
                         this.cloneShopModel = shopModel;
-                        return Wrap(
+                        return !isPay ? Wrap(
                             children: <Widget>[
                                 _header("购买数量"),
                                 _purchaseQuantity(shopModel),
-                                // _header("确认支付"),
-                                // _paymentType(),
-                                _button()
+                                _button(
+                                    onTap: () {
+                                        setState(() {
+                                            isPay = true;
+                                        });
+                                    }
+                                )
+                            ]
+                        )
+                        :  Wrap(
+                            children: <Widget>[
+                                _header("确认支付"),
+                                _paymentType(),
+                                _button(onTap: _onPay)
                             ]
                         );
                     },

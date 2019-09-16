@@ -74,7 +74,6 @@ class HttpUtil {
    * post请求
    */
     post(url, {data, options, cancelToken, params}) async {
-        print(data);
         Response response;
         try {
             response = await dio.post(
@@ -86,6 +85,7 @@ class HttpUtil {
             );
         } on DioError catch (e) {
             formatError(e);
+            print(e);
         }
         return response.data;
     }

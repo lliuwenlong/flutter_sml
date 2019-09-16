@@ -5,6 +5,7 @@ import '../../common/HttpUtil.dart';
 import '../../model/api/restaurant/FoodModel.dart';
 import '../../components/LoadingSm.dart';
 import '../../components/AppBarWidget.dart';
+import './RestaurantDetails.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class Restaurant extends StatefulWidget {
@@ -14,7 +15,7 @@ class Restaurant extends StatefulWidget {
 
 class _RestaurantState extends State<Restaurant> {
     HttpUtil http = HttpUtil();
-    List list = [];
+    List<ListModel> list = [];
     bool isLoading = true;
     RefreshController _refreshController = RefreshController(initialRefresh: false);
     int _page = 1;
@@ -124,6 +125,7 @@ class _RestaurantState extends State<Restaurant> {
     @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
+        final selft = context;
         return Scaffold(
             appBar: PreferredSize(
                 child: AppBarWidget().buildAppBar("神木餐饮"),
@@ -157,7 +159,12 @@ class _RestaurantState extends State<Restaurant> {
                         itemBuilder: (BuildContext context, int index) {
                             return GestureDetector(
                                 onTap: () {
-                                    Navigator.pushNamed(context, "/restaurantDetails");
+                                    // Navigator.pushNamed(context, '/restaurantDetails', arguments: {
+                                    //     "id": "123"
+                                    // });
+                                    Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
+                                        return new RestaurantDetails(params: this.list[index]);
+                                    }));
                                 },
                                 child: CommonListItem(
                                     "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",

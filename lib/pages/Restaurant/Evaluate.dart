@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
+import '../../model/api/restaurant/AppraiseList.dart';
+
 class Evaluate extends StatelessWidget {
-    const Evaluate({Key key}) : super(key: key);
+    ListItem listItem;
+    Evaluate({Key key, ListItem val}) {
+        this.listItem = val;
+    }
 
     @override
     Widget build(BuildContext context) {

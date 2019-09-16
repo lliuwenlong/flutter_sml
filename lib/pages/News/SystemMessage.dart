@@ -12,6 +12,7 @@ class _SystemMessageState extends State<SystemMessage> {
   _SystemMessageState({this.arguments});
   @override
   Widget build(BuildContext context) {
+      print(arguments);
     return Scaffold(
       appBar: AppBarWidget().buildAppBar('${arguments['appTabName']}'),
       body: SafeArea(

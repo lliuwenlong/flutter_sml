@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
         setState(() {
             this._page = 1;
         });
-        await getArticleData(isInit: true);
+        final Map res = await getArticleData(isInit: true);
         _refreshController.refreshCompleted();
     }
 
