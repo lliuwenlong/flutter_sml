@@ -58,6 +58,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
             "userId": this.userModel.userId,
             "type": _tabController.index + 1
         });
+
         // final CouponDataModel res = new CouponDataModel.fromJson(response);
         Map<String, dynamic> resItem = {
             "couponSn": "string",
@@ -198,7 +199,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                                 fontSize: ScreenAdaper.fontSize(28)
                                             )),
                                             SizedBox(height: ScreenAdaper.height(15)),
-                                            Text("有效期至：2019-09-151", style: TextStyle(
+                                            Text("有效期至：2019-09-15", style: TextStyle(
                                                 color: isBeOverdue ? ColorClass.iconColor : Color(0XFF999999),
                                                 fontSize: ScreenAdaper.fontSize(24)
                                             ))

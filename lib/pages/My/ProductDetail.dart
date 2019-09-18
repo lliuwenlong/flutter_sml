@@ -13,7 +13,15 @@ class ProductDetail extends StatefulWidget {
 
 class _ProductDetailState extends State<ProductDetail> {
   final Map arguments;
+  String woodSn;
   _ProductDetailState({this.arguments});
+void didChangeDependencies() {
+       super.didChangeDependencies();
+       setState(() {
+         this.woodSn = arguments['woodSn'];
+       });
+    }
+  
   List<Map> bannerList = [
     {
       "url":
@@ -80,7 +88,9 @@ class _ProductDetailState extends State<ProductDetail> {
   Widget _treeRecord (String recordName,String text,String routeName,{String time='',String oldName='',String newName='',bool isShow=true}) {
     return GestureDetector(
       onTap: (){
-        Navigator.pushNamed(context, routeName);
+        Navigator.pushNamed(context, routeName,arguments: {
+          'woodSn':this.woodSn
+        });
       },
       child: Container(
         color: Colors.white,
@@ -474,7 +484,9 @@ class _ProductDetailState extends State<ProductDetail> {
                           ),
                         ),
                         onTap: () {
-                          Navigator.pushNamed(context, '/transfer');
+                          Navigator.pushNamed(context, '/transfer',arguments: {
+                            'woodSn':this.woodSn
+                          });
                         },
                       ),
                       GestureDetector(

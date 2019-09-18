@@ -1,15 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
+import '../../model/store/user/User.dart';
+import 'package:provider/provider.dart';
+import '../../common/HttpUtil.dart';
 class MyWallet extends StatefulWidget {
-  final Map arguments;
-  MyWallet({Key key, this.arguments}) : super(key: key);
-
+  MyWallet({Key key}) : super(key: key);
   _MyWalletState createState() => _MyWalletState();
 }
 
 class _MyWalletState extends State<MyWallet> {
-  
+  User _userModel;
+  String _moneyNum;
+  final HttpUtil http = HttpUtil();
+  @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        _userModel = Provider.of<User>(context);
+        this._getData();
+    }
+
+    _getData () async {
+        Map response = await this.http.get("/api/v1/user/account", data: {
+            "userId": this._userModel.userId
+        });
+       print(response["data"]);
+       if (response["code"] == 200) {
+            setState(() {
+              this._moneyNum = response["data"];
+            });
+        } else {
+            Fluttertoast.showToast(
+                msg: response["msg"],
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        }
+    }
   @override
   Widget build(BuildContext context) {
     ScreenAdaper.init(context);
@@ -45,7 +76,7 @@ class _MyWalletState extends State<MyWallet> {
               margin: EdgeInsets.only(top: ScreenAdaper.height(10)),
                alignment: Alignment.center,
               child: Text(
-                '¥ 5000.00',
+                '¥ $_moneyNum',
                 style: TextStyle(
                   color: Color(0xff333333),
                   fontSize: ScreenAdaper.fontSize(60)

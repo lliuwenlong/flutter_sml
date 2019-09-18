@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/Label.dart';
 import '../../common/Color.dart';
+import '../../model/store/user/User.dart';
+import '../../common/HttpUtil.dart';
+import '../../components/LoadingSm.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import '../../model//api/my/ProductData.dart';
 class Product extends StatefulWidget {
   final Map arguments;
     Product({Key key,this.arguments}) : super(key: key);
@@ -11,26 +17,154 @@ class Product extends StatefulWidget {
 
 class _ProductState extends State<Product> with SingleTickerProviderStateMixin{
   final Map arguments;
-  int _currentIndex;
+
+  User _userModel;
+  final HttpUtil http = HttpUtil();
+  TabController _tabController;
+  RefreshController _transferRefreshController = new RefreshController(initialRefresh: false);
+  RefreshController _subscrieRefreshController = new RefreshController(initialRefresh: false);
+  bool isTransferLoading = true;
+  bool isSubscrieLoading = true;
+  int transferPage = 1;
+  int subscriePage = 1;
+  List transferList = [];
+  List subscrieList = [];
   _ProductState({this.arguments});
-    TabController _tabController;
-    void initState () {
+  
+   void initState () {
         super.initState();
-        _currentIndex =arguments==null?0:arguments.isNotEmpty? arguments['index']:0;
         _tabController = new TabController(
             vsync: this,
             length: 2,
-            initialIndex: _currentIndex
         );
     }
-    Widget _item ({bool isTransfer = true}) {
+void didChangeDependencies() {
+        super.didChangeDependencies();
+        _userModel = Provider.of<User>(context);
+        setState(() {
+          this._tabController.index = arguments!=null&&arguments['index']==1?arguments['index']:0;
+        });
+        this._getData(isInit: true);
+    }
+  _getData ({bool isInit = false}) async {
+    if (isInit&& 
+        ((this._tabController.index == 0 && this.isSubscrieLoading == false)
+        || (this._tabController.index == 1 && this.isTransferLoading == false))
+    ) {
+        return null;
+    }  
+   
+    final Map<String, dynamic> response = await this.http.post("/api/v1/user/wood", data: {
+        "pageNO": _tabController.index == 0 ? this.subscriePage : this.transferPage,
+        "pageSize": 10,
+        "userId": this._userModel.userId,
+        "type": _tabController.index==0?1:0
+    });
+
+   
+    Map<String, dynamic> resItem = {
+            "baseName": "string",
+            "buyTime": "2019-10-10 12:12:20",
+            "districtName": "string",
+            "endDate": "2019-10-10",
+            "hasDays": 0,
+            "image": "string",
+            "name": "string",
+            "woodSn": "string"
+        };
+
+    Map<String, dynamic> resData = {
+            "code": 200,
+            "data": {
+                "currPage": 10,
+                "list": [
+                    resItem,
+                    resItem,
+                    resItem,
+                    resItem,
+                    resItem,
+                    resItem,
+                    resItem,
+                    resItem,
+                    resItem,
+                    resItem
+                ],
+                "pageSize": 0,
+                "totalCount": 0,
+                "totalPage": 0
+            },
+            "msg": "string"
+    };
+    if (response["code"] == 200) {
+            final res = new ProductDataModel.fromJson(resData);
+            if (isInit) {
+                setState(() {
+                    if (_tabController.index == 0) {
+                        subscrieList = res.data.list;
+                        isSubscrieLoading = false;
+                    } else {
+                        transferList = res.data.list;
+                        isTransferLoading = false;
+                    }
+                    
+                });
+            } else {
+                setState(() {
+                    if (_tabController.index == 0) {
+                        subscrieList.addAll(res.data.list);
+                    } else {
+                        transferList.addAll(res.data.list);
+                    }
+                });
+            }
+        }
+        return response;
+    }
+
+
+void _onLoading() async{
+        setState(() {
+            if (_tabController.index == 0) {
+                this.subscriePage++;
+            } else {
+                this.transferPage++;
+            }
+        });
+        var controller = _tabController.index == 0
+            ? this._subscrieRefreshController
+            : this._transferRefreshController;
+        var response = await _getData();
+        if (response["data"].length == 0) {
+            controller.loadNoData();
+        } else {
+            controller.loadComplete();
+        }
+    }
+    void _onRefresh() async{
+        setState(() {
+            if (_tabController.index == 0) {
+                this.subscriePage = 1;
+            } else {
+                this.transferPage = 1;
+            }
+        });
+        var controller = _tabController.index == 0
+            ? this._subscrieRefreshController
+            : this._transferRefreshController;
+        final Map res = await _getData(isInit: true);
+        controller.refreshCompleted();
+    }
+
+    
+   
+    Widget _item ({bool isTransfer = true, var data}) {
         return GestureDetector(
           onTap: (){
-            if(this._currentIndex==1 || !isTransfer){
+            if(this._tabController.index == 1 || !isTransfer){
               return;
             }
             Navigator.pushNamed(context, '/productDetail',arguments: {
-              "id":1
+              "woodSn":data.woodSn
             });
           },
           child: Stack(
@@ -63,7 +197,7 @@ class _ProductState extends State<Product> with SingleTickerProviderStateMixin{
                                     Positioned(
                                         top: ScreenAdaper.width(20),
                                         left: ScreenAdaper.width(20),
-                                        child: Label("金丝楠"),
+                                        child: Label("${data.districtName}"),
                                     )
                                 ],
                             ),
@@ -87,7 +221,7 @@ class _ProductState extends State<Product> with SingleTickerProviderStateMixin{
                                                 Expanded(
                                                     flex: 1,
                                                     child: Text(
-                                                        "生态园林 . 学子林",
+                                                        "${data.baseName} . ${data.districtName}",
                                                         overflow: TextOverflow.ellipsis,
                                                         style: TextStyle(
                                                             color: ColorClass.fontColor,
@@ -98,12 +232,12 @@ class _ProductState extends State<Product> with SingleTickerProviderStateMixin{
                                             ]
                                         ),
                                         SizedBox(height: ScreenAdaper.height(15)),
-                                        Text("编号：001", style: TextStyle(
+                                        Text("编号：${data.woodSn}", style: TextStyle(
                                             color: ColorClass.subTitleColor,
                                             fontSize: ScreenAdaper.fontSize(24)
                                         )),
                                         SizedBox(height: ScreenAdaper.height(10)),
-                                        Text("有效期：300天", style: TextStyle(
+                                        Text("有效期：${data.hasDays}天", style: TextStyle(
                                             color: ColorClass.subTitleColor,
                                             fontSize: ScreenAdaper.fontSize(24)
                                         ))
@@ -150,9 +284,6 @@ class _ProductState extends State<Product> with SingleTickerProviderStateMixin{
         ),
         );
     }
-void onTap(value){
-  this._currentIndex = value;
-}
     @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
@@ -187,8 +318,11 @@ void onTap(value){
                     indicatorWeight: ScreenAdaper.height(6),
                     indicatorColor: Color(0XFF22b0a1),
                     controller: this._tabController,
-                    onTap: (value){
-                      this._currentIndex = value;
+                    onTap: (int index){
+                      setState(() {
+                        this._tabController.index = index;
+                      });
+                      this._getData(isInit: true);
                     },
                     tabs: <Widget>[
                         Tab(child: Text("认购中", style: TextStyle(
@@ -211,34 +345,77 @@ void onTap(value){
                 child: TabBarView(
                     controller: this._tabController,
                     children: <Widget>[
-                        ListView(
-                          children: <Widget>[
-                            Wrap(
-                            spacing: ScreenAdaper.width(10),
-                            runSpacing: ScreenAdaper.width(10),
-                            children: <Widget>[
-                                this._item(),
-                                this._item(),
-                                this._item(),
-                                this._item()
-                            ]
-                        )
-                          ],
+                       
+                        SmartRefresher(
+                        controller: _subscrieRefreshController,
+                        enablePullDown: true,
+                        enablePullUp: true,
+                        header: WaterDropHeader(),
+                        footer: ClassicFooter(
+                            loadStyle: LoadStyle.ShowWhenLoading,
+                            idleText: "上拉加载",
+                            failedText: "加载失败！点击重试！",
+                            canLoadingText: "加载更多",
+                            noDataText: "没有更多数据",
+                            loadingText: "加载中"
                         ),
-                        ListView(
-                          children: <Widget>[
-                            Wrap(
-                            spacing: ScreenAdaper.width(10),
-                            runSpacing: ScreenAdaper.width(10),
-                            children: <Widget>[
-                                this._item(isTransfer: false),
-                                this._item(isTransfer: false),
-                                this._item(isTransfer: false),
-                                this._item(isTransfer: false)
-                            ]
-                        )
-                          ],
-                        )
+                        onRefresh: _onRefresh,
+                        onLoading: _onLoading,
+                        child: this.isSubscrieLoading
+                            ? Container(
+                                margin: EdgeInsets.only(
+                                    top: ScreenAdaper.height(200)
+                                ),
+                                child: Loading(),
+                            ):
+                            ListView(
+                                children: <Widget>[
+                                    Wrap(
+                                        spacing: ScreenAdaper.width(10),
+                                        runSpacing: ScreenAdaper.width(10),
+                                        children: this.subscrieList.map((val){
+                                            return this._item(data:val);
+                                        }).toList(),
+                                    )
+                                ],
+                            )
+                    ),
+
+                    SmartRefresher(
+                        controller: _transferRefreshController,
+                        enablePullDown: true,
+                        enablePullUp: true,
+                        header: WaterDropHeader(),
+                        footer: ClassicFooter(
+                            loadStyle: LoadStyle.ShowWhenLoading,
+                            idleText: "上拉加载",
+                            failedText: "加载失败！点击重试！",
+                            canLoadingText: "加载更多",
+                            noDataText: "没有更多数据",
+                            loadingText: "加载中"
+                        ),
+                        onRefresh: _onRefresh,
+                        onLoading: _onLoading,
+                        child: this.isTransferLoading
+                            ? Container(
+                                margin: EdgeInsets.only(
+                                    top: ScreenAdaper.height(200)
+                                ),
+                                child: Loading(),
+                            ) : ListView(
+                                children: <Widget>[
+                                    Wrap(
+                                        spacing: ScreenAdaper.width(10),
+                                        runSpacing:ScreenAdaper.width(10) ,
+                                        children:this.transferList.map((val){
+                                            return this._item(isTransfer: false,data:val);
+                                        }).toList(),
+                                    )
+                                ],
+                            )
+                            ,
+                    ),
+                        
                     ]
                 )
             )

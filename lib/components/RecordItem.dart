@@ -13,7 +13,7 @@ class RecordItem extends StatelessWidget {
     return Container(
       width: double.infinity,
       color: Colors.white,
-      padding: EdgeInsets.fromLTRB(ScreenAdaper.width(30), ScreenAdaper.height(20), ScreenAdaper.width(30), ScreenAdaper.height(20)),
+      padding: EdgeInsets.fromLTRB(ScreenAdaper.width(30), ScreenAdaper.height(30), ScreenAdaper.width(30), ScreenAdaper.height(30)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

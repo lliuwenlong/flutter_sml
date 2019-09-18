@@ -12,7 +12,6 @@ class _AiCustomerServiceState extends State<AiCustomerService> {
     var value = this._chatList[index];
     return Container(
       margin: EdgeInsets.only(top: ScreenAdaper.height(30)),
-      
       width: double.infinity,
       child: Stack(
         alignment: value["customer"]

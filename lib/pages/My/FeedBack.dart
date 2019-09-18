@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
+import '../../model/store/user/User.dart';
+import 'package:provider/provider.dart';
+import '../../common/HttpUtil.dart';
+import '../../components/LoadingSm.dart';
 class FeedBack extends StatefulWidget {
   FeedBack({Key key}) : super(key: key);
   _FeedBackState createState() => _FeedBackState();
 }
 
+
 class _FeedBackState extends State<FeedBack> {
   static String _inputText ='';
+   User _userModel;
+   final HttpUtil http = HttpUtil();
   TextEditingController input = TextEditingController.fromValue(
       TextEditingValue(
         text: _inputText,
@@ -18,6 +26,46 @@ class _FeedBackState extends State<FeedBack> {
   void initState() { 
     super.initState();
   }
+
+    @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        _userModel = Provider.of<User>(context);
+    }
+
+    _submitData (String text) async {
+      
+        Map response = await this.http.post("/api/v1/feedback", data: {
+            "content": text,
+            "userId": this._userModel.userId
+        });
+
+        print(response);
+        if (response["code"] == 200) {
+            Fluttertoast.showToast(
+                msg: '提交成功',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                backgroundColor: Colors.black87,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+
+            this.input.text ='';
+            Navigator.pop(context);
+        } else {
+            Fluttertoast.showToast(
+                msg: response["msg"],
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        }
+    }
+
   Widget build(BuildContext context) {
     ScreenAdaper.init(context);
     return Scaffold(
@@ -72,8 +120,8 @@ class _FeedBackState extends State<FeedBack> {
                     ),
                     color: Color(0XFF22b0a1),//默认颜色
                     onPressed: (){
-                      print(input.text);
-                      Navigator.pop(context);
+                     this._submitData(input.text);
+                     
                     },
                 ),
               )

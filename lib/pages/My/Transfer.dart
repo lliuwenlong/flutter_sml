@@ -1,23 +1,78 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_sml/common/HttpUtil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
-
+import '../../model/store/user/User.dart';
 class Transfer extends StatefulWidget {
-  Transfer({Key key}) : super(key: key);
+  final Map arguments;
+  Transfer({Key key,this.arguments}) : super(key: key);
 
-  _TransferState createState() => _TransferState();
+  _TransferState createState() => _TransferState(arguments:this.arguments);
 }
 
 class _TransferState extends State<Transfer> {
- 
+  final Map arguments;
+  _TransferState({this.arguments});
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
    String _inputText='';
+   User userModel;
+   String text='';
+   final HttpUtil http = HttpUtil();
+  void didChangeDependencies() {
+        super.didChangeDependencies();
+        userModel = Provider.of<User>(context);
+    }
+String _phoneValidate (val) {
+        RegExp exp = RegExp('^((13[0-9])|(15[^4])|(166)|(17[0-8])|(18[0-9])|(19[8-9])|(147,145))\\d{8}\$');
+        if(val == null || val == "") {
+            return "手机号不可以为空";
+        } else if (!exp.hasMatch(val)) {
+            return "手机号不正确";
+        }
+        return 'true';
+    }
 
+_submitData () async {
+      
+        Map response = await this.http.post("/api/v1/wood/transfer", data: {
+            "phone": this._inputText,
+            "userId": this.userModel.userId,
+            "woodSn":1
+        });
+
+        print(response);
+        if (response["code"] == 200) {
+            Fluttertoast.showToast(
+                msg: '转让成功',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                backgroundColor: Colors.black87,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+
+            this._inputText ='';
+             Navigator.pushReplacementNamed(context, '/product',arguments: {
+                       'index':1
+                    });
+        } else {
+            Fluttertoast.showToast(
+                msg: response["msg"],
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        }
+    }
   @override
   Widget build(BuildContext context) {
     TextEditingController input = new TextEditingController.fromValue(
@@ -94,6 +149,17 @@ class _TransferState extends State<Transfer> {
                   ],
                 ),
               ),
+             text.isEmpty||text=='true'?Text(''): Container(
+                margin: EdgeInsets.only(top: ScreenAdaper.height(20)),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: ScreenAdaper.fontSize(30),
+                    color: Color(0xfffb4135),
+                  ),
+                ),
+              ),
               Container(
               margin: EdgeInsets.only(top: ScreenAdaper.height(52)),
               padding: EdgeInsets.only(
@@ -114,10 +180,13 @@ class _TransferState extends State<Transfer> {
                     borderRadius: BorderRadius.all(Radius.circular(5))),
                 color: Color(0XFF22b0a1), //默认颜色
                 onPressed: () {
-                  // print(this._inputText);
-                  Navigator.pushReplacementNamed(context, '/product',arguments: {
-                    'index':1
+                  setState(() {
+                    this.text = this._phoneValidate(this._inputText);
                   });
+                  if(this.text=='true'){
+                    this._submitData();
+                  }
+                 
                 },
               ),
             ),

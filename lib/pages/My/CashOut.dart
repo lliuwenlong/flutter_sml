@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
+import '../../model/store/user/User.dart';
+import 'package:provider/provider.dart';
+import '../../common/HttpUtil.dart';
 class CashOut extends StatefulWidget {
   CashOut({Key key}) : super(key: key);
   _CashOutState createState() => _CashOutState();
@@ -9,6 +13,70 @@ class CashOut extends StatefulWidget {
 
 class _CashOutState extends State<CashOut> {
   String _inputText = '';
+  User _userModel;
+  String _moneyNum;
+  final HttpUtil http = HttpUtil();
+  @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        _userModel = Provider.of<User>(context);
+        this._getData();
+    }
+
+  _getData () async {
+        Map response = await this.http.get("/api/v1/user/account", data: {
+            "userId": this._userModel.userId
+        });
+       print(response["data"]);
+       if (response["code"] == 200) {
+            setState(() {
+              this._moneyNum = response["data"];
+            });
+        } else {
+            Fluttertoast.showToast(
+                msg: response["msg"],
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        }
+    }
+
+    _cashOut(String amount) async {
+        print(double.parse(this._moneyNum) >= double.parse(amount));
+      if(double.parse(amount)>0 && double.parse(this._moneyNum) >= double.parse(amount)){
+        Map response = await this.http.post('/api/v1/user/account/case',data:{
+          'amount':amount,
+          'userId':this._userModel.userId
+        });
+        if(response['code']==200){
+          this._getData();
+        }else{
+            Fluttertoast.showToast(
+                msg: response["msg"],
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        }
+      }else{
+         Fluttertoast.showToast(
+                msg: '余额不足',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+      }
+      
+    }
+
+   
   @override
   Widget build(BuildContext context) {
     TextEditingController _controller = new TextEditingController.fromValue(
@@ -107,7 +175,7 @@ class _CashOutState extends State<CashOut> {
                     padding: EdgeInsets.fromLTRB(
                         0, ScreenAdaper.height(28), 0, ScreenAdaper.height(30)),
                     child: Text(
-                      '账户当前余额：¥5000.00',
+                      '账户当前余额：¥ $_moneyNum',
                       style: TextStyle(
                           color: Color(0xff999999),
                           fontSize: ScreenAdaper.fontSize(24)),
@@ -136,7 +204,7 @@ class _CashOutState extends State<CashOut> {
                     borderRadius: BorderRadius.all(Radius.circular(5))),
                 color: Color(0XFF22b0a1), //默认颜色
                 onPressed: () {
-                  print(this._inputText);
+                  this._cashOut(this._inputText);
                 },
               ),
             ),
