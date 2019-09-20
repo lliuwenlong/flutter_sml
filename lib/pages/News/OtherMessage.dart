@@ -3,6 +3,7 @@ import 'ListItem.dart';
 import '../../components/AppBarWidget.dart';
 class OtherMessage extends StatefulWidget {
  final Map arguments;
+ 
   OtherMessage({Key key,this.arguments}) : super(key: key);
   _OtherMessageState createState() => _OtherMessageState(arguments:this.arguments);
 }

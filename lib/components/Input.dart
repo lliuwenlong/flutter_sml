@@ -7,6 +7,7 @@ class Input extends StatefulWidget {
     final bool isShowSuffixIcon;
     final bool showBorder;
     final String errorText;
+    final TextInputType type;
     Function onSave;
     Function validate;
     Function onChange;
@@ -22,7 +23,8 @@ class Input extends StatefulWidget {
             this.onSave,
             this.validate,
             this.onChange,
-            this.controller
+            this.controller,
+            this.type
         }
     ) : super(key: key);
     _InputState createState() => _InputState(onSave: onSave, controller: controller);
@@ -75,6 +77,7 @@ class _InputState extends State<Input> {
             child: TextFormField(
                 obscureText: widget.isPwd,
                 controller: input,
+                keyboardType: widget.type,
                 style: TextStyle(
                     color: ColorClass.titleColor,
                     fontSize: ScreenAdaper.fontSize(30)

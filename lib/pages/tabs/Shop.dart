@@ -70,6 +70,9 @@ class _ShopPageState extends State<ShopPage> {
         });
         final Map res = await _getData(isInit: true);
         _refreshController.refreshCompleted();
+        if (_refreshController.footerStatus == LoadStatus.noMore) {
+            _refreshController.loadComplete();
+        }
     }
 
     _purchase (Data val) {

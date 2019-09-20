@@ -108,7 +108,7 @@ final Map routes = {
     '/friendDynamicsComment': (context, {arguments}) => FriendDynamicsComment(arguments: arguments),
     '/friendDynamicsReport': (context, {arguments}) => FriendDynamicsReport(arguments: arguments),
     '/friendDynamicsRelease': (context) => FriendDynamicsRelease(),
-    '/friendInformation': (context) => FriendInformation(),
+    '/friendInformation': (context, {arguments}) => FriendInformation(arguments: arguments),
     '/aiCustomerService': (context) => AiCustomerService(),
     '/followOrFans': (context, {arguments}) => FollowOrFans(arguments: arguments),
     '/productDetail': (context, {arguments}) => ProductDetail(arguments: arguments),
@@ -129,7 +129,6 @@ final Map routes = {
 };
 
 var onGenerateRoute = (RouteSettings settings) {
-    print(settings);
     final String name = settings.name;
     final Function pageContentBuilder = routes[name];
     if (pageContentBuilder != null) {

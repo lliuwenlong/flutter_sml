@@ -121,6 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                                                             isShowSuffixIcon: true,
                                                             controller: _phoneController,
                                                             validate: _phoneValidate,
+                                                            type: TextInputType.phone,
                                                         ),
                                                         Input(
                                                             "请输入密码",

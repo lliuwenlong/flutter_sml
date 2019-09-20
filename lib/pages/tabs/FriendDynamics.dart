@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/components/NullContent.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../services/ScreenAdaper.dart';
@@ -8,8 +9,6 @@ import '../../model/store/user/User.dart';
 import 'package:provider/provider.dart';
 import '../../common/HttpUtil.dart';
 import '../../components/LoadingSm.dart';
-import '../../components/PhotoDialog.dart';
-import '../../components/PictureShow.dart';
 
 class FriendDynamicsPage extends StatefulWidget {
     FriendDynamicsPage({Key key}) : super(key: key);
@@ -33,6 +32,7 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
     List<Data> _friendDynamicsMsgList = [];
 
     final HttpUtil http = HttpUtil();
+
     @override
     void initState() {
         super.initState();
@@ -43,13 +43,37 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
     void didChangeDependencies() {
         super.didChangeDependencies();
         _userModel = Provider.of<User>(context);
+        this._circleMsgPage = 1;
+        this._friendDynamicsPage = 1;
+        _circleMsgController.loadComplete();
+        _friendDynamicsController.loadComplete();
         this._getData(isInit: true);
     }
 
-    _thumbsUp (int id) async {
-        Map response = await this.http.post("/api/v1/circle/msg/${id}/thumbup?type=0&userId=${this._userModel.userId}");
+    _thumbsUp (int id, int isThumbup, int index) async {
+        Map response = await this.http.post("/api/v1/circle/msg/${id}/thumbup?type=${isThumbup == 0 ? 1 : 0}&userId=${this._userModel.userId}");
         if (response["code"] == 200) {
-            this._getData();
+            if (_tabController.index == 0) {
+                this._circleMsgList[index].isThumbup = isThumbup == 0 ? 1 : 0;
+                if (isThumbup == 0) {
+                    this._circleMsgList[index].thumbup++;
+                } else {
+                    this._circleMsgList[index].thumbup--;
+                }
+                setState(() {
+                    this._circleMsgList = this._circleMsgList;
+                });
+            } else {
+                this._friendDynamicsMsgList[index].isThumbup = isThumbup == 0 ? 1 : 0;
+                if (isThumbup == 0) {
+                    this._friendDynamicsMsgList[index].thumbup++;
+                } else {
+                    this._friendDynamicsMsgList[index].thumbup--;
+                }
+                setState(() {
+                    this._friendDynamicsMsgList = this._friendDynamicsMsgList;
+                });
+            }
         } else {
             Fluttertoast.showToast(
                 msg: response["msg"],
@@ -63,11 +87,20 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
     }
 
     _getData ({isInit = false}) async {
-        Map response = await this.http.get("/api/v1/circle/msg", data: {
-            "pageNO": _circleMsgPage,
-            "pageSize": 10,
-            "userId": this._userModel.userId
-        });
+        Map response;
+        if (_tabController.index == 0) {
+            response = await this.http.get("/api/v1/circle/msg", data: {
+                "pageNO": _circleMsgPage,
+                "pageSize": 10
+            });
+        } else {
+            response = await this.http.get("/api/v1/circle/frieds/msg", data: {
+                "pageNO": _friendDynamicsPage,
+                "pageSize": 10,
+                "userId": this._userModel.userId
+            });
+        }
+
         if (response["code"] == 200) {
             CircleMsgApiModel res = new CircleMsgApiModel.fromJson(response);
             if (isInit) {
@@ -126,7 +159,11 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
             : this._friendDynamicsController;
         final Map res = await _getData(isInit: true);
         controller.refreshCompleted();
+        if (controller.footerStatus == LoadStatus.noMore) {
+            controller.loadComplete();
+        }
     }
+
     AppBar _appBar () {
         return AppBar(
             title: Text("树友圈", style: TextStyle(
@@ -174,12 +211,18 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
         );
     }
 
-    Widget _headPortrait (String name, String time, String url) {
+    Widget _headPortrait (String name, String time, String url, int id) {
         return Row(
             children: <Widget>[
                 GestureDetector(
                     onTap: () {
-                        Navigator.pushNamed(context, "/friendInformation");
+                        if (id == this._userModel.userId) {
+                            Navigator.pushNamed(context, "/myDynamics");
+                        } else {
+                            Navigator.pushNamed(context, "/friendInformation", arguments: {
+                                "id": id
+                            });
+                        }
                     },
                     child: Container(
                         width: ScreenAdaper.width(85),
@@ -187,7 +230,7 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(150),
                             child: Image.network(
-                                "http://qcloud.dpfile.com/pc/pYPuondR-PaQO3rhSjRl7x1PBMlPubyBLeDC8IcaPQGC0AsVXyL223YOP11TLXmuTZlMcKwJPXLIRuRlkFr_8g.jpg",
+                                url,
                                 fit: BoxFit.cover,
                             ),
                         ),
@@ -213,7 +256,7 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
         );
     }
 
-    Widget iconFont (int icon, String text, {bool isBorder = false}) {
+    Widget iconFont (int icon, String text, {bool isBorder = false, int selectIcon}) {
         return Container(
             margin: EdgeInsets.only(
                 top: ScreenAdaper.height(30)
@@ -228,30 +271,31 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                     Icon(
-                        IconData(icon, fontFamily: "iconfont"),
-                        color: ColorClass.iconColor,
+                        IconData(selectIcon != null ? selectIcon : icon, fontFamily: "iconfont"),
+                        color: selectIcon != null ? ColorClass.common : ColorClass.iconColor,
                         size: ScreenAdaper.fontSize(35),
                     ),
                     SizedBox(width: ScreenAdaper.width(15)),
                     Text(text, style: TextStyle(
                         fontSize: ScreenAdaper.fontSize(27),
-                        color: ColorClass.iconColor
+                        color: selectIcon != null ? ColorClass.common : ColorClass.iconColor
                     ))
                 ]
             )
         );
                     
     }
-    Widget _optBar (int thumbup, int comment, int share, int id) {
+
+    Widget _optBar (int thumbup, int comment, int share, int id, int isThumbup, int index) {
         return Row(
             children: <Widget>[
                 Expanded(
                     flex: 1,
                     child: GestureDetector(
                         onTap: () {
-                            _thumbsUp(id);
+                            _thumbsUp(id, isThumbup, index);
                         },
-                        child: this.iconFont(0xe63f, (thumbup).toString())
+                        child: this.iconFont(0xe63f, (thumbup).toString(), selectIcon: isThumbup != 0 ? 0xe63e : null)
                     )
                 ),
                 Expanded(
@@ -259,7 +303,8 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
                     child: GestureDetector(
                         onTap: () {
                             Navigator.pushNamed(context, "/friendDynamicsComment", arguments: {
-                                "id": id
+                                "id": id,
+                                "isThumbup": isThumbup == 0
                             });
                         },
                         child: this.iconFont(0xe640, (comment).toString(), isBorder: true)
@@ -270,7 +315,8 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
                     child: GestureDetector(
                         onTap: () {
                             Navigator.pushNamed(context, "/friendDynamicsComment", arguments: {
-                                "id": id
+                                "id": id,
+                                "isThumbup": isThumbup == 0
                             });
                         },
                         child: this.iconFont(0xe641, (share).toString())
@@ -280,7 +326,7 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
         );
     }
 
-    Widget _itemWidget (double marginNum, {Data data}) {
+    Widget _itemWidget (double marginNum, int index, {Data data}) {
         return Container(
             padding: EdgeInsets.all(ScreenAdaper.width(30)),
             margin: EdgeInsets.only(
@@ -290,12 +336,26 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                    this._headPortrait(data.nickName != null ? data.nickName : "", data.createTime, data.imageUrl),
+                    this._headPortrait(
+                        data.nickName != null ? data.nickName : "",
+                        data.createTime,
+                        data.headerImage != null ? data.headerImage: "",
+                        data.userId
+                    ),
                     Container(
                         margin:EdgeInsets.only(
                             top: ScreenAdaper.width(30)
                         ),
-                        child: Text(data.content, maxLines: 3, overflow: TextOverflow.ellipsis,),
+                        child: GestureDetector(
+                            onTap: () {
+                                Navigator.pushNamed(context, "/friendDynamicsComment", arguments: {
+                                    "id": data.messageId,
+                                    "isThumbup": data.isThumbup == 0
+                                });
+                            },
+                            child: Text(data.content, maxLines: 3, overflow: TextOverflow.ellipsis),
+                        )
+                        
                     ),
                     SizedBox(height: ScreenAdaper.height(30)),
                     data.imageUrls != null &&  data.imageUrls.length > 0 ? GridView.builder(
@@ -324,7 +384,7 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
                         },
                         itemCount: data.imageUrls.length
                     ) : SizedBox(height: 0),
-                    this._optBar(data.thumbup, data.comment, data.share, data.messageId)
+                    this._optBar(data.thumbup, data.comment, data.share, data.messageId, data.isThumbup, index)
                 ]
             )
         );
@@ -344,60 +404,63 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
                             ),
                             child: Loading()
                         )
-                        : SmartRefresher(
-                        controller: _circleMsgController,
-                        enablePullDown: true,
-                        enablePullUp: true,
-                        header: WaterDropHeader(),
-                        footer: ClassicFooter(
-                            loadStyle: LoadStyle.ShowWhenLoading,
-                            idleText: "上拉加载",
-                            failedText: "加载失败！点击重试！",
-                            canLoadingText: "加载更多",
-                            noDataText: "没有更多数据",
-                            loadingText: "加载中"
-                        ),
-                        onRefresh: _onRefresh,
-                        onLoading: _onLoading,
-                        child: ListView.builder(
-                            itemBuilder: (BuildContext context, int index) {
-                                Data data = this._circleMsgList[index];
-                                return this._itemWidget(index == 0 ? 0 : 20, data: data);
-                            },
-                            itemCount: this._circleMsgList.length
-                        )
-                    ),
-                    
-                    this._friendDynamicsLoading 
+                        : this._circleMsgList.isEmpty
+                            ? NullContent("暂无数据")
+                            : SmartRefresher(
+                                controller: _circleMsgController,
+                                enablePullDown: true,
+                                enablePullUp: true,
+                                header: WaterDropHeader(),
+                                footer: ClassicFooter(
+                                    loadStyle: LoadStyle.ShowWhenLoading,
+                                    idleText: "上拉加载",
+                                    failedText: "加载失败！点击重试！",
+                                    canLoadingText: "加载更多",
+                                    noDataText: "没有更多数据",
+                                    loadingText: "加载中"
+                                ),
+                                onRefresh: _onRefresh,
+                                onLoading: _onLoading,
+                                child: ListView.builder(
+                                    itemBuilder: (BuildContext context, int index) {
+                                        Data data = this._circleMsgList[index];
+                                        return this._itemWidget(index == 0 ? 0 : 20, index, data: data);
+                                    },
+                                    itemCount: this._circleMsgList.length
+                                )
+                            ),
+                    this._friendDynamicsLoading
                         ? Container(
                             margin: EdgeInsets.only(
                                 top: ScreenAdaper.height(200)
                             ),
                             child: Loading()
                         )
-                        : SmartRefresher(
-                        controller: this._friendDynamicsController,
-                        enablePullDown: true,
-                        enablePullUp: true,
-                        header: WaterDropHeader(),
-                        footer: ClassicFooter(
-                            loadStyle: LoadStyle.ShowWhenLoading,
-                            idleText: "上拉加载",
-                            failedText: "加载失败！点击重试！",
-                            canLoadingText: "加载更多",
-                            noDataText: "没有更多数据",
-                            loadingText: "加载中"
-                        ),
-                        onRefresh: _onRefresh,
-                        onLoading: _onLoading,
-                        child: ListView.builder(
-                            itemBuilder: (BuildContext context, int index) {
-                                Data data = this._friendDynamicsMsgList[index];
-                                return this._itemWidget(index == 0 ? 0 : 20, data: data);
-                            },
-                            itemCount: this._friendDynamicsMsgList.length
-                        )
-                    ),
+                        : this._friendDynamicsMsgList.isEmpty
+                            ? NullContent("暂无数据")
+                            : SmartRefresher(
+                                controller: this._friendDynamicsController,
+                                enablePullDown: true,
+                                enablePullUp: true,
+                                header: WaterDropHeader(),
+                                footer: ClassicFooter(
+                                    loadStyle: LoadStyle.ShowWhenLoading,
+                                    idleText: "上拉加载",
+                                    failedText: "加载失败！点击重试！",
+                                    canLoadingText: "加载更多",
+                                    noDataText: "没有更多数据",
+                                    loadingText: "加载中"
+                                ),
+                                onRefresh: _onRefresh,
+                                onLoading: _onLoading,
+                                child: ListView.builder(
+                                    itemBuilder: (BuildContext context, int index) {
+                                        Data data = this._friendDynamicsMsgList[index];
+                                        return this._itemWidget(index == 0 ? 0 : 20, index, data: data);
+                                    },
+                                    itemCount: this._friendDynamicsMsgList.length
+                                )
+                            ),
                     
                 ]
             ),

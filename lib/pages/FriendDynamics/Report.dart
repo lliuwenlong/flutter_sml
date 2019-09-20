@@ -15,19 +15,26 @@ class FriendDynamicsReport extends StatefulWidget {
 
 class _FriendDynamicsReportState extends State<FriendDynamicsReport> {
     int _listIndex = -1;
-    List<Map> _list = [
-        {"id": 1, "name": "淫秽色情"},
-        {"id": 2, "name": "不实信息"},
-        {"id": 3, "name": "违法犯罪"},
-        {"id": 4, "name": "骚扰"},
-        {"id": 5, "name": "侵权（冒充他人、侵犯名誉"},
-        {"id": 6, "name": "其他"}
-    ];
+    List _list = [];
     User _userModel;
     @override
     void didChangeDependencies() {
         super.didChangeDependencies();
         _userModel = Provider.of<User>(context);
+    }
+
+    @override 
+    void initState() {
+        this._getData();
+    }
+
+    _getData () async {
+        Map response = await HttpUtil().get("/api/v1/circle/msg/{messageId}/report/reasons");
+        if (response["code"] == 200) {
+            setState(() {
+                this._list = response["data"];
+            });
+        }
     }
 
     _submit () async {
@@ -102,10 +109,7 @@ class _FriendDynamicsReportState extends State<FriendDynamicsReport> {
                 decoration: BoxDecoration(
                     color: Colors.white,
                     boxShadow: [
-                        BoxShadow(color: Colors.grey[300],offset: Offset(1, 1)),
-                        BoxShadow(color: Colors.grey[300], offset: Offset(-1, -1), blurRadius: 2),
-                        BoxShadow(color: Colors.grey[300], offset: Offset(1, -1), blurRadius: 2),
-                        BoxShadow(color: Colors.grey[300], offset: Offset(-1, 1), blurRadius: 2)
+                        BoxShadow(color: Colors.black12, blurRadius: 1)
                     ]
                 ),
                 child: RaisedButton(
@@ -153,7 +157,7 @@ class _FriendDynamicsReportState extends State<FriendDynamicsReport> {
                                             });
                                         },
                                         child: _item(
-                                            this._list[index]['name'],
+                                            this._list[index],
                                             index,
                                             isBorder: index != _list.length - 1
                                         )

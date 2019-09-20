@@ -1,11 +1,178 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/model/api/friendDynamics/CircleMsgApiModel.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import '../../model/store/user/User.dart';
+import 'package:provider/provider.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
+import '../../common/HttpUtil.dart';
+import '../../model/api/friendDynamics/InformationApiModel.dart';
+import '../../components/NullContent.dart';
 import 'dart:ui';
 
-class FriendInformation extends StatelessWidget {
-    BuildContext context;
-    FriendInformation({Key key}) : super(key: key);
+class FriendInformation extends StatefulWidget {
+    final Map arguments;
+    FriendInformation({Key key, this.arguments}) : super(key: key);
+    _FriendInformationState createState() => _FriendInformationState();
+}
+
+
+class _FriendInformationState extends State<FriendInformation> {
+    BuildContext selfContext;
+    RefreshController _friendDynamicsController = RefreshController(initialRefresh: false);
+    _FriendInformationState({Key key});
+    HttpUtil http = HttpUtil();
+    InformationApiModel informationApiModel;
+    List _circleMsgList = [];
+    int _circleMsgPage = 1;
+    User _userModel;
+    int _subStatus = 0;
+
+    @override
+    initState () {
+        super.initState();
+        this._getOverviewData();
+    }
+
+    @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        _userModel = Provider.of<User>(context);
+        this._getData(isInit: true);
+        this._isub();
+    }
+
+    _subscribe () async {
+        Map response = await this.http.post("/api/v1/circle/subscribe", data: {
+            "fanId": this._userModel.userId,
+            "userId": widget.arguments["id"]
+        });
+        if (response["code"] != 200) {
+            Fluttertoast.showToast(
+                msg: response["msg"],
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.TOP,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                backgroundColor: Colors.black87,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        } else {
+            this._isub();
+            this._getOverviewData();
+        }
+    }
+
+    _isub () async {
+        Map response = await this.http.get("/api/v1/circle/user/isub?fanId=${this._userModel.userId}&userId=${this.widget.arguments["id"]}");
+        if (response["code"] == 200) {
+            setState(() {
+                this._subStatus = response["data"] ;
+            });
+        }
+    }
+    
+    _unsubscribe () async {
+        Map response = await this.http.post("/api/v1/circle/unsubscribe", data: {
+            "userId": this._userModel.userId,
+            "focusId": widget.arguments["id"]
+        });
+        if (response["code"] != 200) {
+            Fluttertoast.showToast(
+                msg: response["msg"],
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.TOP,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                backgroundColor: Colors.black87,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        } else {
+            this._isub();
+            this._getOverviewData();
+        }
+    }
+
+    _thumbsUp (int id, int isThumbup, int index) async {
+        Map response = await this.http.post("/api/v1/circle/msg/${id}/thumbup?type=${isThumbup == 0 ? 1 : 0}&userId=${this._userModel.userId}");
+        if (response["code"] == 200) {
+            this._circleMsgList[index].isThumbup = isThumbup == 0 ? 1 : 0;
+            if (isThumbup == 0) {
+                this._circleMsgList[index].thumbup++;
+            } else {
+                this._circleMsgList[index].thumbup--;
+            }
+            setState(() {
+                this._circleMsgList = this._circleMsgList;
+            });
+        } else {
+            Fluttertoast.showToast(
+                msg: response["msg"],
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        }
+    }
+
+    _getOverviewData () async {
+        Map response = await this.http.get("/api/v1/circle/overview?userId=${widget.arguments["id"]}");
+        if (response["code"] == 200) {
+            InformationApiModel info = new InformationApiModel.fromJson(response["data"]);
+            setState(() {
+                this.informationApiModel = info;
+            });
+        }
+    }
+
+
+    _getData ({isInit = false}) async {
+        Map response = await this.http.get("/api/v1/circle/msg", data: {
+            "pageNO": this._circleMsgPage,
+            "pageSize": 10,
+            "userId": widget.arguments["id"]
+        });
+        if (response["code"] == 200) {
+            CircleMsgApiModel res = new CircleMsgApiModel.fromJson(response);
+            if (isInit) {
+                setState(() {
+                    _circleMsgList = res.data;
+                });
+            } else {
+                setState(() {
+                    _circleMsgList.addAll(res.data);
+                });
+            }
+        }
+        return response;
+    }
+
+    void _onRefresh() async{
+        setState(() {
+            this._circleMsgPage = 1;
+        });
+        await _getData(isInit: true);
+        _friendDynamicsController.refreshCompleted();
+        if (_friendDynamicsController.footerStatus == LoadStatus.noMore) {
+            _friendDynamicsController.loadComplete();
+        }
+    }
+
+    void _onLoading() async{
+        setState(() {
+            this._circleMsgPage++;
+        });
+        var response = await _getData();
+        if (response["data"].length == 0) {
+            _friendDynamicsController.loadNoData();
+        } else {
+            _friendDynamicsController.loadComplete();
+        }
+    }
+
     Widget _buildTopBar () {
         double top = MediaQueryData.fromWindow(window).padding.top;
         return Container(
@@ -27,7 +194,7 @@ class FriendInformation extends StatelessWidget {
                             padding: EdgeInsets.fromLTRB(ScreenAdaper.width(30), 0, ScreenAdaper.width(30), 0),
                             child: GestureDetector(
                                 onTap: () {
-                                    Navigator.pop(this.context);
+                                    Navigator.pop(this.selfContext);
                                 },
                                 child: Icon(
                                     Icons.arrow_back_ios,
@@ -52,7 +219,11 @@ class FriendInformation extends StatelessWidget {
                                                         decoration: BoxDecoration(
                                                             borderRadius: BorderRadius.circular(150),
                                                             image: DecorationImage(
-                                                                image: NetworkImage("https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws"),
+                                                                image: NetworkImage(
+                                                                    this.informationApiModel != null && this.informationApiModel.headerImage != null
+                                                                        ? this.informationApiModel.headerImage
+                                                                        : ""
+                                                                    ),
                                                                 fit: BoxFit.cover
                                                             )
                                                         )
@@ -74,10 +245,44 @@ class FriendInformation extends StatelessWidget {
                                         )
                                     ),
                                     SizedBox(width: ScreenAdaper.width(20)),
-                                    Text("小童宝贝", style: TextStyle(
+                                    Text(this.informationApiModel != null && this.informationApiModel.nickName != null
+                                        ? this.informationApiModel.nickName.toString()
+                                        : "", style: TextStyle(
                                         fontSize: ScreenAdaper.fontSize(40),
                                         color: Colors.white
-                                    ))
+                                    )),
+                                    Expanded(
+                                        flex: 1,
+                                        child: Stack(
+                                            children: <Widget>[
+                                                Align(
+                                                    alignment: Alignment.centerRight,
+                                                    child: Container(
+                                                        height: ScreenAdaper.height(60),
+                                                        child: OutlineButton(
+                                                            onPressed: this._subStatus == 0 ?_subscribe : _unsubscribe,
+                                                            highlightedBorderColor: Colors.white,
+                                                            padding: EdgeInsets.only(
+                                                                left: ScreenAdaper.width(25),
+                                                                right: ScreenAdaper.width(25)
+                                                            ),
+                                                            borderSide: BorderSide(
+                                                                color: Colors.white
+                                                            ),
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(ScreenAdaper.width(10))
+                                                            ),
+                                                            child: Text(this._subStatus == 0 ? "关注" : "取消关注", style: TextStyle(
+                                                                color: Colors.white,
+                                                                fontSize: ScreenAdaper.fontSize(30)
+                                                            )),
+                                                        ),
+                                                    )
+                                                )
+                                            ]
+                                        )
+                                    )
+                                    
                                 ]
                             )
                         ),
@@ -90,7 +295,10 @@ class FriendInformation extends StatelessWidget {
                                     flex: 1,
                                     child: Column(
                                         children: <Widget>[
-                                            Text("186", style: TextStyle(
+                                            Text(this.informationApiModel != null && this.informationApiModel.focus != null
+                                                ? this.informationApiModel.focus.toString()
+                                                : "0",
+                                            style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: ScreenAdaper.fontSize(34),
                                                 fontWeight: FontWeight.w500
@@ -106,10 +314,13 @@ class FriendInformation extends StatelessWidget {
                                     flex: 1,
                                     child: Column(
                                         children: <Widget>[
-                                            Text("1490", style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: ScreenAdaper.fontSize(34),
-                                                fontWeight: FontWeight.w500
+                                            Text(this.informationApiModel != null && this.informationApiModel.fans != null
+                                                ? this.informationApiModel.fans.toString()
+                                                : "0",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: ScreenAdaper.fontSize(34),
+                                                    fontWeight: FontWeight.w500
                                             )),
                                             Text("粉丝", style: TextStyle(
                                                 color: Colors.white,
@@ -122,7 +333,9 @@ class FriendInformation extends StatelessWidget {
                                     flex: 1,
                                     child: Column(
                                         children: <Widget>[
-                                            Text("12", style: TextStyle(
+                                            Text(this.informationApiModel != null && this.informationApiModel.messages != null
+                                                ? this.informationApiModel.messages.toString()
+                                                : "0", style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: ScreenAdaper.fontSize(34),
                                                 fontWeight: FontWeight.w500
@@ -142,31 +355,33 @@ class FriendInformation extends StatelessWidget {
         );
     }
 
-    Widget _headPortrait (String url) {
+    Widget _headPortrait (String name, String time, String url) {
         return Row(
             children: <Widget>[
-                Container(
-                    width: ScreenAdaper.width(85),
-                    height: ScreenAdaper.width(85),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(150),
-                        child: Image.network(
-                            "http://qcloud.dpfile.com/pc/pYPuondR-PaQO3rhSjRl7x1PBMlPubyBLeDC8IcaPQGC0AsVXyL223YOP11TLXmuTZlMcKwJPXLIRuRlkFr_8g.jpg",
-                            fit: BoxFit.cover,
+                GestureDetector(
+                    child: Container(
+                        width: ScreenAdaper.width(85),
+                        height: ScreenAdaper.width(85),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(150),
+                            child: Image.network(
+                                url,
+                                fit: BoxFit.cover,
+                            ),
                         ),
-                    ),
+                    )
                 ),
                 SizedBox(width: ScreenAdaper.width(20)),
                 Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                        Text("张丽", style: TextStyle(
+                        Text(name, style: TextStyle(
                             color: ColorClass.common,
                             fontSize: ScreenAdaper.fontSize(30),
                             fontWeight: FontWeight.w500
                         )),
-                        Text("昨天 12:31", style: TextStyle(
+                        Text(time, style: TextStyle(
                             color: ColorClass.subTitleColor,
                             fontSize: ScreenAdaper.fontSize(24)
                         ))
@@ -176,7 +391,7 @@ class FriendInformation extends StatelessWidget {
         );
     }
 
-    Widget iconFont (int icon, String text, {bool isBorder = false}) {
+    Widget iconFont (int icon, String text, {bool isBorder = false, int selectIcon}) {
         return Container(
             margin: EdgeInsets.only(
                 top: ScreenAdaper.height(30)
@@ -191,45 +406,61 @@ class FriendInformation extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                     Icon(
-                        IconData(icon, fontFamily: "iconfont"),
-                        color: ColorClass.iconColor,
+                        IconData(selectIcon != null ? selectIcon : icon, fontFamily: "iconfont"),
+                        color: selectIcon != null ? ColorClass.common : ColorClass.iconColor,
                         size: ScreenAdaper.fontSize(35),
                     ),
                     SizedBox(width: ScreenAdaper.width(15)),
                     Text(text, style: TextStyle(
                         fontSize: ScreenAdaper.fontSize(27),
-                        color: ColorClass.iconColor
+                        color: selectIcon != null ? ColorClass.common : ColorClass.iconColor
                     ))
                 ]
             )
-        );         
+        );                
     }
 
-    Widget _optBar () {
+    Widget _optBar (int thumbup, int comment, int share, int id, int isThumbup, int index) {
         return Row(
             children: <Widget>[
                 Expanded(
                     flex: 1,
-                    child: this.iconFont(0xe63f, (158).toString()),
+                    child: GestureDetector(
+                        onTap: () {
+                            _thumbsUp(id, isThumbup, index);
+                        },
+                        child: this.iconFont(0xe63f, (thumbup).toString(), selectIcon: isThumbup != 0 ? 0xe63e : null)
+                    )
                 ),
                 Expanded(
                     flex: 1,
                     child: GestureDetector(
                         onTap: () {
-                            Navigator.pushNamed(context, "/friendDynamicsComment");
+                            Navigator.pushNamed(context, "/friendDynamicsComment", arguments: {
+                                "id": id,
+                                "isThumbup": isThumbup == 0
+                            });
                         },
-                        child: this.iconFont(0xe640, (158).toString(), isBorder: true)
+                        child: this.iconFont(0xe640, (comment).toString(), isBorder: true)
                     ),
                 ),
                 Expanded(
                     flex: 1,
-                    child: this.iconFont(0xe641, (158).toString()),
+                    child: GestureDetector(
+                        onTap: () {
+                            Navigator.pushNamed(context, "/friendDynamicsComment", arguments: {
+                                "id": id,
+                                "isThumbup": isThumbup == 0
+                            });
+                        },
+                        child: this.iconFont(0xe641, (share).toString())
+                    ),
                 )
             ]
         );
     }
 
-    Widget _itemWidget (double marginNum) {
+    Widget _itemWidget (double marginNum, int index, {Data data}) {
         return Container(
             padding: EdgeInsets.all(ScreenAdaper.width(30)),
             margin: EdgeInsets.only(
@@ -239,54 +470,55 @@ class FriendInformation extends StatelessWidget {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                    this._headPortrait("123"),
+                    this._headPortrait(
+                        data.nickName != null ? data.nickName : "",
+                        data.createTime,
+                        data.headerImage != null ? data.headerImage: "",
+                    ),
                     Container(
                         margin:EdgeInsets.only(
                             top: ScreenAdaper.width(30)
                         ),
-                        child: Text("品鉴停留在舌尖上的金丝楠、金丝榔、香樟亲身体验用味蕾感受金丝楠、金丝榔、香樟在这样的氛围里喝酒吃肉怎能不快哉？"),
+                        child: GestureDetector(
+                            onTap: () {
+                                Navigator.pushNamed(context, "/friendDynamicsComment", arguments: {
+                                    "id": data.messageId,
+                                    "isThumbup": data.isThumbup == 0
+                                });
+                            },
+                            child: Container(
+                                child: Text(data.content, maxLines: 3, overflow: TextOverflow.ellipsis)
+                            )
+                        )
                     ),
                     SizedBox(height: ScreenAdaper.height(30)),
-                    Wrap(
-                        spacing: ScreenAdaper.width(15),
-                        runSpacing: ScreenAdaper.width(15),
-                        children: <Widget>[
-                            Container(
-                                width: ScreenAdaper.width(220),
-                                height: ScreenAdaper.width(220),
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
+                    data.imageUrls != null &&  data.imageUrls.length > 0 ? GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            mainAxisSpacing: ScreenAdaper.width(15),
+                            crossAxisSpacing: ScreenAdaper.width(15),
+                            childAspectRatio: 1.0
+                        ),
+                        itemBuilder: (BuildContext context, int index) {
+                            return ClipRRect(
+                                borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
+                                child: GestureDetector(
+                                    onTap: () {
+                                        
+                                    },
                                     child: Image.network(
-                                        "http://qcloud.dpfile.com/pc/pYPuondR-PaQO3rhSjRl7x1PBMlPubyBLeDC8IcaPQGC0AsVXyL223YOP11TLXmuTZlMcKwJPXLIRuRlkFr_8g.jpg",
+                                        data.imageUrls[index],
                                         fit: BoxFit.cover,
                                     )
                                 )
-                            ),
-                            Container(
-                                width: ScreenAdaper.width(220),
-                                height: ScreenAdaper.width(220),
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
-                                    child: Image.network(
-                                        "http://qcloud.dpfile.com/pc/pYPuondR-PaQO3rhSjRl7x1PBMlPubyBLeDC8IcaPQGC0AsVXyL223YOP11TLXmuTZlMcKwJPXLIRuRlkFr_8g.jpg",
-                                        fit: BoxFit.cover,
-                                    )
-                                )
-                            ),
-                            Container(
-                                width: ScreenAdaper.width(220),
-                                height: ScreenAdaper.width(220),
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
-                                    child: Image.network(
-                                        "http://qcloud.dpfile.com/pc/pYPuondR-PaQO3rhSjRl7x1PBMlPubyBLeDC8IcaPQGC0AsVXyL223YOP11TLXmuTZlMcKwJPXLIRuRlkFr_8g.jpg",
-                                        fit: BoxFit.cover,
-                                    )
-                                )
-                            )
-                        ]
-                    ),
-                    this._optBar()
+                                
+                            );
+                        },
+                        itemCount: data.imageUrls.length
+                    ) : SizedBox(height: 0),
+                    this._optBar(data.thumbup, data.comment, data.share, data.messageId, data.isThumbup, index)
                 ]
             )
         );
@@ -295,23 +527,58 @@ class FriendInformation extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
-        this.context = context;
+        this.selfContext = context;
         return Scaffold(
             body: Column(
                 children: <Widget>[
                     this._buildTopBar(),
                     Expanded(
                         // flex: 1,
-                        child: new MediaQuery.removePadding(
-                            removeTop: true,
-                            context: context,
-                            child: ListView.builder(
-                                itemBuilder: (BuildContext context, int index) {
-                                    return this._itemWidget(index ==0 ? 0 : 20);
-                                },
-                                itemCount: 10,
+                        child: this._circleMsgList.isEmpty
+                            ? NullContent("暂无数据")
+                            : SmartRefresher(
+                                controller: this._friendDynamicsController,
+                                enablePullDown: true,
+                                enablePullUp: true,
+                                header: WaterDropHeader(),
+                                footer: ClassicFooter(
+                                    loadStyle: LoadStyle.ShowWhenLoading,
+                                    idleText: "上拉加载",
+                                    failedText: "加载失败！点击重试！",
+                                    canLoadingText: "加载更多",
+                                    noDataText: "没有更多数据",
+                                    loadingText: "加载中"
+                                ),
+                                onRefresh: _onRefresh,
+                                onLoading: _onLoading,
+                                child: ListView(
+                                    children: <Widget>[
+                                        Container(
+                                            color: Colors.white,
+                                            height: ScreenAdaper.height(110),
+                                            padding: EdgeInsets.only(left: ScreenAdaper.width(30),right: ScreenAdaper.width(30)),
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                                'TA的动态（${this._circleMsgList.length}）',
+                                                style: TextStyle(
+                                                    color: Color(0xff999999),
+                                                    fontSize: ScreenAdaper.fontSize(30)
+                                                ),
+                                            ),
+                                        ),
+                                        Wrap(
+                                            children: this._circleMsgList.map((data) {
+                                                int index = this._circleMsgList.indexOf(data);
+                                                return this._itemWidget(
+                                                    index== 0 ? 0 : 20,
+                                                    index,
+                                                    data: data
+                                                );
+                                            }).toList(),
+                                        )
+                                    ],
+                                )
                             )
-                        )
                     )
                 ],
             ),

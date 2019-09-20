@@ -119,6 +119,9 @@ class _AccommodationState extends State<Accommodation> {
         });
         await _getData(isInit: true);
         _refreshController.refreshCompleted();
+        if (_refreshController.footerStatus == LoadStatus.noMore) {
+            _refreshController.loadComplete();
+        }
     }
 
     Widget _label () {

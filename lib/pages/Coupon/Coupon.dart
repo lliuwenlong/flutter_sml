@@ -154,6 +154,9 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
             : this._beOverdueListRefreshController;
         final Map res = await _getData(isInit: true);
         controller.refreshCompleted();
+        if (controller.footerStatus == LoadStatus.noMore) {
+            controller.loadComplete();
+        }
     }
 
     Widget _cardItem ({isBeOverdue: false}) {

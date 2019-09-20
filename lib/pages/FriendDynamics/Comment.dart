@@ -9,13 +9,13 @@ import '../../common/HttpUtil.dart';
 import '../../model/api/friendDynamics/CircleMsgApiModel.dart';
 import '../../model/api/friendDynamics/CommentModel.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'dart:ui';
 
 class FriendDynamicsComment extends StatefulWidget {
     final Map arguments;
     FriendDynamicsComment({Key key, this.arguments}) : super(key: key);
-    _FriendDynamicsCommentState createState() => _FriendDynamicsCommentState();
+    _FriendDynamicsCommentState createState() => _FriendDynamicsCommentState(isThumbup: arguments["isThumbup"]);
 }
 
 class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
@@ -29,13 +29,22 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
     int thumbsUpNum = 0;
     int shareNum = 0;
     BuildContext shareHandler;
-    _FriendDynamicsCommentState({Key key});
+    bool isDisabled = false;
+    bool isThumbup;
+    _FriendDynamicsCommentState({Key key, this.isThumbup});
     TextEditingController controller = TextEditingController.fromValue(
         TextEditingValue(
             text: ""
         )
     );
+    TextEditingController controllerII = TextEditingController.fromValue(
+        TextEditingValue(
+            text: "",
+        )
+    );
     User _userModel;
+    bool isOpenKeyboard = false;
+    FocusNode _commentFocus = FocusNode();
 
     @override
     void didChangeDependencies() {
@@ -48,6 +57,16 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
         super.initState();
         _getData();
         _getCommentData(isInit: true);
+        KeyboardVisibilityNotification().addNewListener(
+            onChange: (bool visible) {
+                print(visible);
+                if (!visible) {
+                    setState(() {
+                        this.isOpenKeyboard = false;
+                    });
+                };
+            },
+        );
     }
 
     _getCommentData ({bool isInit: false}) async {
@@ -74,6 +93,9 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
         });
         final Map res = await _getCommentData(isInit: true);
         _refreshController.refreshCompleted();
+        if (_refreshController.footerStatus == LoadStatus.noMore) {
+            _refreshController.loadComplete();
+        }
     }
 
     void _onLoading() async{
@@ -104,6 +126,7 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
             "userId": this._userModel.userId,
             "content": this.controller.text
         });
+        this._commentFocus.unfocus();
         if (response["code"] == 200) {
             this.controller.clear();
             Fluttertoast.showToast(
@@ -118,11 +141,9 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
     }
 
     _getData () async {
-        print("/api/v1/circle/msg/${widget.arguments["id"]}");
         final Map response = await this.http.get("/api/v1/circle/msg/${widget.arguments["id"]}");
         if (response["code"] == 200) {
             Data data = new Data.fromJson(response["data"]);
-            print(response);
             setState(() {
                 this.data = data;
                 this.thumbsUpNum = data.thumbup;
@@ -319,10 +340,11 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
     }
 
     _thumbsUp () async {
-        Map response = await this.http.post("/api/v1/circle/msg/${this.widget.arguments["id"]}/thumbup?type=0&userId=${this._userModel.userId}");
+        Map response = await this.http.post("/api/v1/circle/msg/${this.widget.arguments["id"]}/thumbup?type=${!this.isThumbup ? 0 : 1}&userId=${this._userModel.userId}");
         if (response["code"] == 200) {
             setState(() {
                 this.thumbsUpNum = response["data"];
+                this.isThumbup = !this.isThumbup;
             });
         } else {
             Fluttertoast.showToast(
@@ -364,7 +386,7 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(150),
                         child: Image.network(
-                            "http://qcloud.dpfile.com/pc/pYPuondR-PaQO3rhSjRl7x1PBMlPubyBLeDC8IcaPQGC0AsVXyL223YOP11TLXmuTZlMcKwJPXLIRuRlkFr_8g.jpg",
+                            url,
                             fit: BoxFit.cover,
                         ),
                     ),
@@ -413,7 +435,7 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                    this._headPortrait(this.data != null && this.data.imageUrl != null ? this.data.imageUrl : ""),
+                    this._headPortrait(this.data != null && this.data.headerImage != null ? this.data.headerImage : ""),
                     this.data != null && this.data.content != null && this.data.content.isNotEmpty ? Container(
                         margin:EdgeInsets.only(
                             top: ScreenAdaper.width(30)
@@ -432,7 +454,6 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                             childAspectRatio: 1.0
                         ),
                         itemBuilder: (BuildContext context, int index) {
-                            print(data.imageUrls[index]);
                             return ClipRRect(
                                 borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
                                 child: GestureDetector(
@@ -508,7 +529,6 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
     }
 
     Widget _comment () {
-        print(this._commentData);
         return Container(
             color: Colors.white,
             margin: EdgeInsets.only(
@@ -556,6 +576,153 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
         );
     }
 
+    Widget _readInput () {
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+                Expanded(
+                    child: GestureDetector(
+                        onTap: () {
+                            setState(() {
+                                this.isOpenKeyboard = true;
+                            });
+                        },
+                        child: Container(
+                            height: ScreenAdaper.height(75),
+                            alignment: Alignment.centerLeft,
+                            padding: EdgeInsets.only(
+                                left: ScreenAdaper.width(30),
+                                right: ScreenAdaper.width(30),
+                            ),
+                            decoration: BoxDecoration(
+                                color: Color(0xFFf5f5f5),
+                                borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
+                            ),
+                            child: Text("快给他评价一下吧", style: TextStyle(
+                                color: Color(0xFF999999),
+                                fontSize: ScreenAdaper.fontSize(28)
+                            ))
+                        )
+                    )
+                ),
+                SizedBox(width: ScreenAdaper.width(40)),
+                GestureDetector(
+                    onTap: this._thumbsUp,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                            Text("${this.thumbsUpNum}", style: TextStyle(
+                                color: this.isThumbup ? ColorClass.subTitleColor : ColorClass.common,
+                                fontSize: ScreenAdaper.fontSize(18)
+                            )),
+                            SizedBox(height: ScreenAdaper.height(10)),
+                            Icon(
+                                IconData(this.isThumbup ? 0xe63f : 0xe63e, fontFamily: "iconfont"),
+                                color: this.isThumbup ? ColorClass.iconColor : ColorClass.common,
+                                size: ScreenAdaper.fontSize(35)
+                            ),
+                        ]
+                    )
+                ),
+                SizedBox(width: ScreenAdaper.width(40)),
+                GestureDetector(
+                    onTap: () {
+                        this._shareHandler();
+                    },
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                            Text("${this.shareNum}", style: TextStyle(
+                                color: ColorClass.subTitleColor,
+                                fontSize: ScreenAdaper.fontSize(18)
+                            )),
+                            SizedBox(height: ScreenAdaper.height(10)),
+                            Icon(
+                                IconData(0xe641, fontFamily: "iconfont"),
+                                color: ColorClass.iconColor,
+                                size: ScreenAdaper.fontSize(35)
+                            ),
+                        ]
+                    )
+                )
+            ],
+        );
+    }
+
+    Widget _editInput () {
+        return Container(
+            padding: EdgeInsets.all(ScreenAdaper.width(30)),
+            child: Column(
+                children: <Widget>[
+                    TextField(
+                        focusNode: _commentFocus,
+                        autofocus: true,
+                        maxLines: 5,
+                        controller: controller,
+                        onChanged: (String val) {
+                            if (val.isNotEmpty) {
+                                setState(() {
+                                    this.isDisabled = true;
+                                });
+                            } else {
+                                setState(() {
+                                    this.isDisabled = false;
+                                });
+                            }
+                        },
+                        decoration: InputDecoration(
+                            fillColor: Color(0xFFf5f5f5),
+                            filled: true,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
+                                borderSide: BorderSide.none,
+                            ),
+                            contentPadding: EdgeInsets.fromLTRB(
+                                ScreenAdaper.width(30),
+                                ScreenAdaper.width(25),
+                                ScreenAdaper.width(30),
+                                ScreenAdaper.width(25)
+                            ),
+                            hintText: "快给他评价一下吧",
+                            hintStyle: TextStyle(
+                                color: ColorClass.subTitleColor,
+                                fontSize: ScreenAdaper.fontSize(28)
+                            )
+                        ),
+                    ),
+                    Container(
+                        alignment: Alignment.centerRight,
+                        margin: EdgeInsets.only(
+                            top: ScreenAdaper.height(20)
+                        ),
+                        child: Container(
+                            width: ScreenAdaper.width(160),
+                            height: ScreenAdaper.height(75),
+                            child: RaisedButton(
+                                color: ColorClass.common,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
+                                    side: BorderSide(
+                                        color: Color(0xFFc1a786)
+                                    )
+                                ),
+                                elevation: 0,
+                                disabledColor: Color(0xFF86d4ca),
+                                onPressed: this.isDisabled ? () {
+                                    this._addComent();
+                                } : null,
+                                child: Text("发送", style: TextStyle(
+                                    fontSize: ScreenAdaper.fontSize(32),
+                                    color: Colors.white
+                                )),
+                            ),
+                        ),
+                    )
+                ],
+            ),
+        );
+    }
+
     @override
     Widget build(BuildContext context) {
         this.selfContext = context;
@@ -597,10 +764,7 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                         decoration: BoxDecoration(
                             color: Colors.white,
                             boxShadow: [
-                                BoxShadow(color: Colors.grey[300],offset: Offset(1, 1)),
-                                BoxShadow(color: Colors.grey[300], offset: Offset(-1, -1), blurRadius: 2),
-                                BoxShadow(color: Colors.grey[300], offset: Offset(1, -1), blurRadius: 2),
-                                BoxShadow(color: Colors.grey[300], offset: Offset(-1, 1), blurRadius: 2)
+                                BoxShadow(color: Colors.black12, blurRadius: 1)
                             ]
                         ),
                         padding: EdgeInsets.fromLTRB(
@@ -610,78 +774,9 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                             ScreenAdaper.height(10) + MediaQueryData.fromWindow(window).padding.bottom
                         ),
                         width: double.infinity,
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                                Expanded(
-                                    child: TextField(
-                                        controller: controller,
-                                        onSubmitted: (String val) {
-                                            this._addComent();
-                                        },
-                                        decoration: InputDecoration(
-                                            fillColor: Color(0xFFf5f5f5),
-                                            filled: true,
-                                            border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
-                                                borderSide: BorderSide.none,
-                                            ),
-                                            contentPadding: EdgeInsets.fromLTRB(
-                                                ScreenAdaper.width(30),
-                                                ScreenAdaper.width(25),
-                                                ScreenAdaper.width(30),
-                                                ScreenAdaper.width(25)
-                                            ),
-                                            hintText: "快给他评价一下吧",
-                                            hintStyle: TextStyle(
-                                                color: ColorClass.subTitleColor,
-                                                fontSize: ScreenAdaper.fontSize(28)
-                                            )
-                                        ),
-                                    )
-                                ),
-                                SizedBox(width: ScreenAdaper.width(40)),
-                                GestureDetector(
-                                    onTap: this._thumbsUp,
-                                    child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                            Text("${this.thumbsUpNum}", style: TextStyle(
-                                                color: ColorClass.subTitleColor,
-                                                fontSize: ScreenAdaper.fontSize(18)
-                                            )),
-                                            SizedBox(height: ScreenAdaper.height(10)),
-                                            Icon(
-                                                IconData(0xe63f, fontFamily: "iconfont"),
-                                                color: ColorClass.iconColor,
-                                                size: ScreenAdaper.fontSize(35)
-                                            ),
-                                        ]
-                                    )
-                                ),
-                                SizedBox(width: ScreenAdaper.width(40)),
-                                GestureDetector(
-                                    onTap: () {
-                                        this._shareHandler();
-                                    },
-                                    child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                            Text("${this.shareNum}", style: TextStyle(
-                                                color: ColorClass.subTitleColor,
-                                                fontSize: ScreenAdaper.fontSize(18)
-                                            )),
-                                            SizedBox(height: ScreenAdaper.height(10)),
-                                            Icon(
-                                                IconData(0xe641, fontFamily: "iconfont"),
-                                                color: ColorClass.iconColor,
-                                                size: ScreenAdaper.fontSize(35)
-                                            ),
-                                        ]
-                                    )
-                                )
-                            ],
-                        )
+                        child: !this.isOpenKeyboard
+                            ? this._readInput()
+                            : this._editInput()
                     )
                 ]
             )

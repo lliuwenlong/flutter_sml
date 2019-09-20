@@ -112,7 +112,7 @@ class _BaseListState extends State<BaseList> {
             this._page++;
         });
         var response = await _getData();
-        if (response["data"].length) {
+        if (response["data"].length == 0) {
             _refreshController.loadNoData();
         } else {
             _refreshController.loadComplete();

@@ -66,6 +66,9 @@ class _HomePageState extends State<HomePage> {
         });
         final Map res = await getArticleData(isInit: true);
         _refreshController.refreshCompleted();
+        if (_refreshController.footerStatus == LoadStatus.noMore) {
+            _refreshController.loadComplete();
+        }
     }
 
     List<Map> _nivoListData = [

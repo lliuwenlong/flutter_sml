@@ -50,6 +50,9 @@ class _BaseState extends State<Base> {
         });
         await _getData(isInit: true);
         _refreshController.refreshCompleted();
+        if (_refreshController.footerStatus == LoadStatus.noMore) {
+            _refreshController.loadComplete();
+        }
     }
 
     void _onLoading() async{
@@ -57,7 +60,7 @@ class _BaseState extends State<Base> {
             this._page++;
         });
         var response = await _getData();
-        if (response["data"].length) {
+        if (response["data"].length == 0) {
             _refreshController.loadNoData();
         } else {
             _refreshController.loadComplete();

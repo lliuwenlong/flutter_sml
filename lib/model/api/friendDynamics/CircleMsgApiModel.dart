@@ -38,6 +38,8 @@ class Data {
     String nickName;
     int share;
     int thumbup;
+    int isThumbup;
+    int userId;
 
     Data(
         {this.comment,
@@ -49,7 +51,9 @@ class Data {
         this.messageId,
         this.nickName,
         this.share,
-        this.thumbup});
+        this.thumbup,
+        this.isThumbup,
+        this.userId});
 
     Data.fromJson(Map<String, dynamic> json) {
         comment = json['comment'];
@@ -66,6 +70,8 @@ class Data {
         nickName = json['nickName'];
         share = json['share'];
         thumbup = json['thumbup'];
+        isThumbup = json['isThumbup'];
+        userId = json['userId'];
     }
 
     Map<String, dynamic> toJson() {
@@ -80,6 +86,8 @@ class Data {
         data['nickName'] = this.nickName;
         data['share'] = this.share;
         data['thumbup'] = this.thumbup;
+        data['isThumbup'] = this.isThumbup;
+        data['userId'] = this.userId;
         return data;
     }
 }

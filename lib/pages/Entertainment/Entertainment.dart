@@ -118,6 +118,9 @@ class _EntertainmentState extends State<Entertainment> {
         });
         await _getData(isInit: true);
         _refreshController.refreshCompleted();
+        if (_refreshController.footerStatus == LoadStatus.noMore) {
+            _refreshController.loadComplete();
+        }
     }
 
     @override
