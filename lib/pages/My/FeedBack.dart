@@ -42,7 +42,7 @@ class _FeedBackState extends State<FeedBack> {
 
         print(response);
         if (response["code"] == 200) {
-            Fluttertoast.showToast(
+           await Fluttertoast.showToast(
                 msg: '提交成功',
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.CENTER,
@@ -50,7 +50,7 @@ class _FeedBackState extends State<FeedBack> {
                 textColor: Colors.white,
                 backgroundColor: Colors.black87,
                 fontSize: ScreenAdaper.fontSize(30)
-            );
+            ).then((m) => Navigator.pop(context));
 
             this.input.text ='';
             Navigator.pop(context);
@@ -61,6 +61,7 @@ class _FeedBackState extends State<FeedBack> {
                 gravity: ToastGravity.CENTER,
                 timeInSecForIos: 1,
                 textColor: Colors.white,
+                 backgroundColor: Colors.black87,
                 fontSize: ScreenAdaper.fontSize(30)
             );
         }

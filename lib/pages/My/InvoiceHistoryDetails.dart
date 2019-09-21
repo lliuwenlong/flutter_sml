@@ -1,12 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../components/AppBarWidget.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
+import '../../common/HttpUtil.dart';
+import '../../components/LoadingSm.dart';
+class InvoiceHistoryDetails extends StatefulWidget {
+  final arguments;
+  InvoiceHistoryDetails({Key key,this.arguments}) : super(key: key);
 
-class InvoiceHistoryDetails extends StatelessWidget {
-    const InvoiceHistoryDetails({Key key}) : super(key: key);
+  _InvoiceHistoryDetailsState createState() => _InvoiceHistoryDetailsState(arguments:this.arguments);
+}
 
-    Widget _itemRow (String name, String content, Color contentColor) {
+class _InvoiceHistoryDetailsState extends State<InvoiceHistoryDetails> {
+  final arguments;
+  _InvoiceHistoryDetailsState({this.arguments});
+  final HttpUtil http = HttpUtil();
+  var invoiceData;
+  bool _isInvoiceLoading = true;
+@override
+void didChangeDependencies() {
+  super.didChangeDependencies();
+  _getData();
+}
+_getData() async {
+  Map  response = await this.http.get('/receipt/1/his/${arguments['receiptId']}');
+  	if(response['code'] == 200){
+		setState(() {
+			this.invoiceData = response['data'];
+			this._isInvoiceLoading = false;
+		});
+  	}else{
+		Fluttertoast.showToast(
+		msg: response['msg'],
+		toastLength: Toast.LENGTH_SHORT,
+		timeInSecForIos:1,
+		fontSize:ScreenAdaper.fontSize(30),
+		gravity:ToastGravity.CENTER,
+		backgroundColor:Colors.black87,
+		textColor:Colors.white,
+		);
+  }
+} 
+   Widget _itemRow (String name, String content, Color contentColor) {
         return Row(
             children: <Widget>[
                 Container(
@@ -23,12 +59,17 @@ class InvoiceHistoryDetails extends StatelessWidget {
             ],
         );
     }
-
-    @override
-    Widget build(BuildContext context) {
-        return Scaffold(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
             appBar: AppBarWidget().buildAppBar("开票详情"),
-            body: Column(
+            body:this._isInvoiceLoading
+                            ? Container(
+                                margin: EdgeInsets.only(
+                                    top: ScreenAdaper.height(200)
+                                ),
+                                child: Loading(),
+                            ) : Column(
                 children: <Widget>[
                     Container(
                         height: ScreenAdaper.height(350),
@@ -38,7 +79,7 @@ class InvoiceHistoryDetails extends StatelessWidget {
                             left: ScreenAdaper.width(30),
                             right: ScreenAdaper.width(30)
                         ),
-                        child: Column(
+                        child:Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
@@ -49,17 +90,19 @@ class InvoiceHistoryDetails extends StatelessWidget {
                                         fontWeight: FontWeight.w500
                                     )),
                                 ),
-                                this._itemRow("发票抬头", "发票抬头", ColorClass.fontColor),
-                                this._itemRow("税号", "6845145578121221MM", ColorClass.fontColor),
-                                this._itemRow("发票内容", "购树服务费", ColorClass.fontColor),
-                                this._itemRow("发票金额", "¥1000.00", ColorClass.fontRed),
-                                this._itemRow("申请时间", "2019-05-06  12:25", ColorClass.fontColor),
+                                this._itemRow("发票抬头", invoiceData['header'], ColorClass.fontColor),
+                                this._itemRow("税号", invoiceData['code'], ColorClass.fontColor),
+                                this._itemRow("发票内容",invoiceData['content'], ColorClass.fontColor),
+                                this._itemRow("发票金额", "¥${invoiceData['amount']}", ColorClass.fontRed),
+                                this._itemRow("申请时间", invoiceData['applyTime'], ColorClass.fontColor),
                             ],
                         ),
                     ),
                     GestureDetector(
                         onTap: () {
-                            Navigator.pushNamed(context, '/invoiceSee');
+                            Navigator.pushNamed(context, '/invoiceSee',arguments: {
+                              "rid":arguments['receiptId']
+                            });
                         },
                         child: Container(
                             color: Colors.white,
@@ -78,7 +121,7 @@ class InvoiceHistoryDetails extends StatelessWidget {
                                 child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                        Text("1张发票，含一个订单", style: TextStyle(
+                                        Text("${invoiceData['num']}张发票，含${invoiceData['orderNum']}个订单", style: TextStyle(
                                             color: ColorClass.titleColor,
                                             fontSize: ScreenAdaper.fontSize(24)
                                         )),
@@ -104,5 +147,8 @@ class InvoiceHistoryDetails extends StatelessWidget {
                 ]
             )
         );
-    }
+  }
 }
+
+
+

@@ -7,7 +7,7 @@ import '../../model/store/user/User.dart';
 import '../../components/LoadingSm.dart';
 import '../../model/api/coupon/CouponData.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
+import '../../components/NullContent.dart';
 class Coupon extends StatefulWidget {
     Coupon({Key key}) : super(key: key);
     _CouponState createState() => _CouponState();
@@ -58,46 +58,8 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
             "userId": this.userModel.userId,
             "type": _tabController.index + 1
         });
-
-        // final CouponDataModel res = new CouponDataModel.fromJson(response);
-        Map<String, dynamic> resItem = {
-            "couponSn": "string",
-            "coverImage": "string",
-            "endDate": "2019-10-10",
-            "firmId": 0,
-            "id": 0,
-            "name": "string",
-            "title": "string",
-            "type": "house",
-            "worth": "string"
-        };
-
-        Map<String, dynamic> resData = {
-            "code": 200,
-            "data": {
-                "currPage": 10,
-                "list": [
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem
-                ],
-                "pageSize": 0,
-                "totalCount": 0,
-                "totalPage": 0
-            },
-            "msg": "string"
-        };
-
         if (response["code"] == 200) {
-            // final res = new CouponDataModel.fromJson(response);
-            final res = new CouponDataModel.fromJson(resData);
+            final res = new CouponDataModel.fromJson(response);
             if (isInit) {
                 setState(() {
                     if (_tabController.index == 0) {
@@ -159,7 +121,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
         }
     }
 
-    Widget _cardItem ({isBeOverdue: false}) {
+    Widget _cardItem (var data,{isBeOverdue: false}) {
         return Container(
             padding: EdgeInsets.fromLTRB(
                 ScreenAdaper.width(25),
@@ -187,7 +149,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                         child: ClipRRect(
                                             borderRadius: BorderRadius.circular(5),
                                             child: Image.network(
-                                                "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
+                                                data.coverImage,
                                                 fit: BoxFit.cover,
                                             ),
                                         ),
@@ -197,12 +159,12 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: <Widget>[
-                                            Text("住宿代金券", style: TextStyle(
+                                            Text(data.name, style: TextStyle(
                                                 color: isBeOverdue ? ColorClass.iconColor : Color(0XFF333333),
                                                 fontSize: ScreenAdaper.fontSize(28)
                                             )),
                                             SizedBox(height: ScreenAdaper.height(15)),
-                                            Text("有效期至：2019-09-15", style: TextStyle(
+                                            Text("有效期至：${data.endDate}", style: TextStyle(
                                                 color: isBeOverdue ? ColorClass.iconColor : Color(0XFF999999),
                                                 fontSize: ScreenAdaper.fontSize(24)
                                             ))
@@ -216,7 +178,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                                 children: <Widget>[
                                                     Align(
                                                         alignment: Alignment.bottomRight,
-                                                        child: Text("¥ 300", style: TextStyle(
+                                                        child: Text("¥ ${data.worth}", style: TextStyle(
                                                             color: isBeOverdue ? ColorClass.iconColor : Color(0XFFfb4135),
                                                             fontSize: ScreenAdaper.fontSize(44)
                                                         )),
@@ -251,7 +213,10 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                    Text("平台赠送", style: TextStyle(
+                                    data.firmId==0?Text("平台赠送", style: TextStyle(
+                                        color: isBeOverdue ? ColorClass.iconColor : ColorClass.fontColor,
+                                        fontSize: ScreenAdaper.fontSize(28)
+                                    )):Text(data.title, style: TextStyle(
                                         color: isBeOverdue ? ColorClass.iconColor : ColorClass.fontColor,
                                         fontSize: ScreenAdaper.fontSize(28)
                                     )),
@@ -271,7 +236,17 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                             height: ScreenAdaper.height(50),
                                             child: OutlineButton(
                                                 padding: EdgeInsets.all(0),
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  if(data.firmId == 0){
+                                                      if(data.type == 'house'){
+                                                          Navigator.pushNamed(context, '/accommodation');
+                                                      }else if(data.type == 'food'){
+                                                          Navigator.pushNamed(context, '/restaurant');
+                                                      }
+                                                  }else{
+                                                          Navigator.pushNamed(context, '/restaurant');
+                                                  }
+                                                },
                                                 child: Text("立即使用", style: TextStyle(
                                                     color: ColorClass.common,
                                                     fontSize: ScreenAdaper.fontSize(24)
@@ -356,11 +331,12 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                     top: ScreenAdaper.height(200)
                                 ),
                                 child: Loading(),
-                            )
-                            : ListView.builder(
+                            ) : this.notUseList.length <= 0 ? NullContent('暂无数据'):
+                             ListView.builder(
                                 itemCount: this.notUseList.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                    return this._cardItem();
+                                    var data = this.notUseList[index];
+                                    return this._cardItem(data);
                                 }
                             )
                     ),
@@ -385,11 +361,12 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                     top: ScreenAdaper.height(200)
                                 ),
                                 child: Loading(),
-                            )
+                            ):this.beOverdueList.length <=0 ? NullContent('暂无数据')
                             : ListView.builder(
                                 itemCount: this.beOverdueList.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                    return this._cardItem(isBeOverdue: true);
+                                  var data = this.beOverdueList[index];
+                                    return this._cardItem(data,isBeOverdue: true);
                                 }
                             )
                     )

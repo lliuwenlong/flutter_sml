@@ -43,10 +43,8 @@ _submitData () async {
         Map response = await this.http.post("/api/v1/wood/transfer", data: {
             "phone": this._inputText,
             "userId": this.userModel.userId,
-            "woodSn":1
+            "woodSn":arguments['woodSn']
         });
-
-        print(response);
         if (response["code"] == 200) {
             Fluttertoast.showToast(
                 msg: '转让成功',

@@ -6,6 +6,7 @@ import '../../components/RecordItem.dart';
 import '../../common/HttpUtil.dart';
 import '../../components/LoadingSm.dart';
 import '../../model/api/my/GrowthRecordData.dart';
+import '../../components/NullContent.dart';
 class GrowthRecord extends StatefulWidget {
   final Map arguments;
   GrowthRecord({Key key,this.arguments}) : super(key: key);
@@ -31,38 +32,13 @@ void didChangeDependencies() {
       return null;
     }
 
-    final Map<String, dynamic> response = await this.http.get(
-        "/api/v1/user/wood/grow",
-        data: {"pageNO": growthPage, "pageSize": 10, "woodSn": 1});
-      Map<String, dynamic> resItem = {
-        "content": "string",
-        "createTime": "2019-10-01 12:10:00"
-      };
-
-    Map<String, dynamic> resData = {
-      "code": 200,
-      "data": {
-        "currPage": 10,
-        "list": [
-          resItem,
-          resItem,
-          resItem,
-          resItem,
-          resItem,
-          resItem,
-          resItem,
-          resItem,
-          resItem,
-          resItem,
-        ],
-        "pageSize": 0,
-        "totalCount": 0,
-        "totalPage": 0
-      },
-      "msg": "string"
-    };
+    final Map<String, dynamic> response = await this.http.get("/api/v1/user/wood/grow",data: {
+        "pageNO": growthPage, 
+        "pageSize": 10, 
+        "woodSn": arguments['woodSn']
+    });
     if (response["code"] == 200) {
-      final res = new GrowthRecordDataModel.fromJson(resData);
+      final res = new GrowthRecordDataModel.fromJson(response);
       if (isInit) {
         setState(() {
           growthList = res.data.list;
@@ -81,7 +57,6 @@ void didChangeDependencies() {
     setState(() {
       this.growthPage++;
     });
-    print(this.growthPage);
     var controller = this._growthRefreshController;
     var response = await _getData();
     if (response["data"].length == 0) {
@@ -127,7 +102,8 @@ void didChangeDependencies() {
                                     top: ScreenAdaper.height(200)
                                 ),
                                 child: Loading(),
-                            ): ListView.builder(
+                            ): this.growthList.length <= 0 ? NullContent('暂无数据'):
+							ListView.builder(
                     itemCount: this.growthList.length,
                     itemBuilder: (BuildContext context, int index) {
                       var data = this.growthList[index];

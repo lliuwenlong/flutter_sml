@@ -37,8 +37,10 @@ class _LoginPageState extends State<LoginPage> {
                     userName: data.userName,
                     phone: data.phone,
                     password: data.password,
+                    headerImage:data.headerImage,
                     nickName: data.nickName,
                     createTime: data.createTime
+                    
                 );
                 Navigator.pushReplacementNamed(context, "/");
             } else {

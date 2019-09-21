@@ -1,12 +1,36 @@
 import 'package:flutter/material.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
+import '../../common/HttpUtil.dart';
 class AiCustomerService extends StatefulWidget {
   AiCustomerService({Key key}) : super(key: key);
   _AiCustomerServiceState createState() => _AiCustomerServiceState();
 }
 
 class _AiCustomerServiceState extends State<AiCustomerService> {
+  	final HttpUtil http = HttpUtil();
+	List<dynamic> _chatList = [];
+//发送消息
+ 	_sendMessage (String question) async {
+	    Map response = await this.http.post('/api/v1/faq', data:{
+		   'question':question
+	    });
+		if(response['code']== 200){
+			setState(() {
+				this._chatList.add({
+					"text": response['data'],
+					"customer": false
+				});
+			});
+		}
+  	}
+
+@override
+void didChangeDependencies() {
+	super.didChangeDependencies();
+	this._controller.text = '';
+}
+
   //聊天
   Widget chatContent(BuildContext context, int index) {
     var value = this._chatList[index];
@@ -52,27 +76,15 @@ class _AiCustomerServiceState extends State<AiCustomerService> {
     );
   }
 
-  List<Map> _chatList = [
-    {"text": "HI,你好啊，遇到什么问题可以咨询我哦~", "customer": false},
-    {"text": "例如：如何购买神树？", "customer": false},
-    {"text": "如何购买神树？", "customer": true},
-    {
-      "text":
-          "在软件首页中，点击“神木基地”，进入到神木基地列表中后，可点击查看基地的神木，选择好神木后，点击进入到神木详情页面，在底部有“购买”按钮，点击“购买”后，进行支付即可。",
-      "customer": false
-    }
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-  String _inputText = '';
+	static String _inputText = '';
     TextEditingController _controller = new TextEditingController.fromValue(
         TextEditingValue(
             text: _inputText,
             selection: TextSelection.fromPosition(TextPosition(
                 affinity: TextAffinity.downstream,
                 offset: _inputText.length))));
-
+  @override
+  Widget build(BuildContext context) {
     ScreenAdaper.init(context);
     return Scaffold(
         appBar: AppBarWidget().buildAppBar('AI客服'),
@@ -129,17 +141,15 @@ class _AiCustomerServiceState extends State<AiCustomerService> {
                           controller: _controller,
                           onChanged: (value) {
                             setState(() {
-                              _inputText = value;
+                              _controller.text = value;
                             });
                           },
                           onSubmitted: (value) {
-                            print(value);
                             setState(() {
-                              this
-                                  ._chatList
-                                  .add({"text": value, "customer": true});
+                              	this._chatList.add({"text": value, "customer": true});
+								_controller.text = '';
                             });
-                            _inputText = '';
+							this._sendMessage(value);
                           },
                         ),
                       ),

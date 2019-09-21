@@ -3,7 +3,8 @@ import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import '../Shop/Purchase.dart';
-
+import '../../common/HttpUtil.dart';
+import '../../components/LoadingSm.dart';
 class ValueDetail extends StatefulWidget {
   final Map arguments;
   ValueDetail({Key key, this.arguments}) : super(key: key);
@@ -15,6 +16,27 @@ class ValueDetail extends StatefulWidget {
 class _ValueDetailState extends State<ValueDetail> {
   final Map arguments;
   _ValueDetailState({this.arguments});
+
+  final HttpUtil http = HttpUtil();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _getData();
+  } 
+  Map detailData;
+  bool _isLoading = true;
+
+  _getData () async {
+    Map response = await this.http.get('/api/v1/vp/${arguments['sid']}');
+    print(response);
+    if ( response['code'] == 200 ) {
+      setState(() {
+        this.detailData = response['data'];
+        this._isLoading = false;
+      });
+    }
+  }
   List<Map> bannerList = [
     {
       "url":
@@ -119,9 +141,15 @@ class _ValueDetailState extends State<ValueDetail> {
     this._selfContext = context;
     return Scaffold(
         appBar: AppBarWidget().buildAppBar('详情'),
-        body: SafeArea(
+        body:SafeArea(
           bottom: true,
-          child: ConstrainedBox(
+          child: _isLoading? 
+            Container(
+                margin: EdgeInsets.only(
+                    top: ScreenAdaper.height(200)
+                ),
+                child: Loading(),
+            ): ConstrainedBox(
             constraints: BoxConstraints.expand(),
             child: Stack(
               alignment: Alignment.topLeft,
@@ -140,10 +168,11 @@ class _ValueDetailState extends State<ValueDetail> {
                                   decoration: BoxDecoration(
                                       image: DecorationImage(
                                           image: NetworkImage(
-                                              bannerList[index]['url']),
+                                              detailData['cover']
+                                          ),
                                           fit: BoxFit.cover)));
                             },
-                            itemCount: bannerList.length,
+                            itemCount:1,
                             control: new SwiperPagination(
                               builder: FractionPaginationBuilder(
                                   color: Colors.white,
@@ -171,7 +200,7 @@ class _ValueDetailState extends State<ValueDetail> {
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Text(
-                                    '灵芝',
+                                    detailData['name'],
                                     style: TextStyle(
                                         color: Color(0xff333333),
                                         fontFamily: 'ourceHanSansCN-Bold',
@@ -179,7 +208,7 @@ class _ValueDetailState extends State<ValueDetail> {
                                         fontWeight: FontWeight.w700),
                                   ),
                                   Text(
-                                    '¥1000.00',
+                                    '¥${detailData['price']}',
                                     style: TextStyle(
                                       color: Color(0xfffb4135),
                                       fontFamily: 'SourceHanSansCN-Medium',
@@ -198,10 +227,10 @@ class _ValueDetailState extends State<ValueDetail> {
                                 child: Wrap(
                                   alignment: WrapAlignment.start,
                                   children: <Widget>[
-                                    this._treeInfo('树龄', '1年生'),
-                                    this._treeInfo('枝条数', '3'),
-                                    this._treeInfo('树维', '280cm'),
-                                    this._treeInfo('树高', '800cm')
+                                    this._treeInfo('树龄', detailData['treeLife']),
+                                    this._treeInfo('枝条数', '${detailData['branch']}'),
+                                    this._treeInfo('树维', '${detailData['cricle']}cm'),
+                                    this._treeInfo('树高', '${detailData['height']}cm')
                                   ],
                                 )),
                           ],

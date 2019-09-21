@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/pages/My/Invoice.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import '../../components/AppBarWidget.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
+import '../../common/HttpUtil.dart';
+import '../../model/store/user/User.dart';
+import '../../model/store/invoice/InvoiceInfo.dart';
 class InvoiceInformation extends StatefulWidget {
+ 
     InvoiceInformation({Key key}) : super(key: key);
     _InvoiceInformationState createState() => _InvoiceInformationState();
 }
 
 class _InvoiceInformationState extends State<InvoiceInformation> {
     int status = 0;
-    Widget _input (String hintText) {
+    Widget _input (String hintText,TextEditingController controller) {
         return TextField(
+            controller: controller,
             decoration: InputDecoration(
                 border: InputBorder.none,
                 contentPadding: const EdgeInsets.symmetric(vertical: 1),
@@ -18,7 +26,8 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                 hintStyle: TextStyle(
                     color: ColorClass.iconColor,
                     fontSize: ScreenAdaper.fontSize(24)
-                )
+                ),
+                
             ),
         );
     }
@@ -55,6 +64,49 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                 selected: selected
             )
         );
+    }
+    TextEditingController _invoiceRiseController = new TextEditingController();//发票抬头
+    TextEditingController _dutyParagraphController = new TextEditingController();//税号
+    final HttpUtil  http  = HttpUtil();
+    User _userModel;
+	InvoiceInfo _invoiceModel;
+    @override
+    void didChangeDependencies() {
+      super.didChangeDependencies();
+      _userModel = Provider.of<User>(context);
+	  _invoiceModel = Provider.of<InvoiceInfo>(context);
+    }
+
+    _submitData () async {
+      	Map response = await this.http.post('/receipt/0/data',params:{
+			"address":this._invoiceModel.address,
+			"city": this._invoiceModel.city,
+			"county": this._invoiceModel.county,
+			"orderSns": [
+				this._invoiceModel.orderSn
+			],
+			"phone": this._invoiceModel.phone,
+			"province": this._invoiceModel.province,
+			"receiptCode": this._dutyParagraphController.text,
+			"receiptHeader": this._invoiceRiseController.text,
+			"receiverUser": this._invoiceModel.receiverUser,
+			"remark": this._invoiceModel.remarks,
+			"userId": this._userModel.userId
+      	});
+      	print(response);
+      	if(response['code'] == 200){
+          	print(response);
+      	}else{
+			Fluttertoast.showToast(
+				msg: response['msg'],
+				toastLength: Toast.LENGTH_SHORT,
+				textColor: Colors.white,
+				backgroundColor: Colors.black87,
+				fontSize: ScreenAdaper.fontSize(30),
+				timeInSecForIos: 1,
+				gravity: ToastGravity.CENTER
+			);
+      	}
     }
     @override
     Widget build(BuildContext context) {
@@ -152,7 +204,10 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                                     ),
                                     Expanded(
                                         child: Container(
-                                            child: this._input("请填写发票抬头")
+                                            child: this._input(
+                                              "请填写发票抬头",
+                                              _invoiceRiseController
+                                            )
                                         )
                                     )
                                 ]
@@ -195,7 +250,10 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                                         ),
                                         Expanded(
                                             child: Container(
-                                                child: this._input("请填写纳税人识别号")
+                                                child: this._input(
+                                                  "请填写纳税人识别号",
+                                                  _dutyParagraphController
+                                                )
                                             )
                                         )
                                     ]
@@ -236,17 +294,19 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                                             child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: <Widget>[
-                                                    Text("请填写备注信息（非必填）", style: TextStyle(
+                                                  	this._invoiceModel.remarks == null? Text('请填写备注信息(非必填)', style: TextStyle(
                                                         color: ColorClass.iconColor,
                                                         fontSize: ScreenAdaper.fontSize(24)
-                                                    )),
-                                                    Icon(
-                                                        IconData(0Xe61e, fontFamily: "iconfont"),
-                                                        size: ScreenAdaper.fontSize(24),
-                                                        color:  ColorClass.iconColor
-                                                    )
-                                                ]
-                                            ),
+                                                    )):Text(
+														this._invoiceModel.remarks,
+														style: TextStyle(
+															color: ColorClass.fontColor,
+															fontSize: ScreenAdaper.fontSize(30)
+														),
+													)
+													
+                                                	]
+                                           		),
                                         )
                                     ]
                                 )
@@ -289,9 +349,12 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                                             child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.end,
                                                 children: <Widget>[
-                                                    Text("发票收货地址", style: TextStyle(
+                                                  this._invoiceModel.province==null? Text("发票收货地址", style: TextStyle(
                                                         color: ColorClass.iconColor,
                                                         fontSize: ScreenAdaper.fontSize(24)
+                                                    )):Text("${this._invoiceModel.province}${this._invoiceModel.city}${this._invoiceModel.county}${this._invoiceModel.address}", style: TextStyle(
+                                                        color: ColorClass.fontColor,
+                                                        fontSize: ScreenAdaper.fontSize(30)
                                                     )),
                                                     SizedBox(width: ScreenAdaper.width(20)),
                                                     Icon(
@@ -345,7 +408,7 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                                                 children: <Widget>[
                                                     Expanded(
                                                         flex: 1,
-                                                        child: Text("¥188.00", style: TextStyle(
+                                                        child: Text("¥${this._invoiceModel.amount}", style: TextStyle(
                                                             fontSize: ScreenAdaper.fontSize(24),
                                                             color: ColorClass.fontRed
                                                         )),
@@ -384,6 +447,20 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                                 borderRadius: BorderRadius.circular(ScreenAdaper.width(10))
                             ),
                             onPressed: () {
+                              if(this._dutyParagraphController.text==null||this._dutyParagraphController.text==''||this._invoiceRiseController.text==null||this._invoiceRiseController.text==''){
+                                Fluttertoast.showToast(
+                                  msg: '信息填写不完整',
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  textColor: Colors.white,
+                                  backgroundColor: Colors.black87,
+                                  gravity: ToastGravity.CENTER,
+                                  timeInSecForIos: 1,
+                                  fontSize: ScreenAdaper.fontSize(30)
+                                );
+                                return;
+                              }
+                             
+                              this._submitData();
                             },
                             child: Text("提交", style: TextStyle(
                                 color: Colors.white,

@@ -2,11 +2,36 @@ import 'package:flutter/material.dart';
 import '../../components/AppBarWidget.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
+import '../../common/HttpUtil.dart';
+import '../../components/LoadingSm.dart';
+class InvoiceSee extends StatefulWidget {
+  final arguments;
+  InvoiceSee({Key key,this.arguments}) : super(key: key);
 
-class InvoiceSee extends StatelessWidget {
-    const InvoiceSee({Key key}) : super(key: key);
+  _InvoiceSeeState createState() => _InvoiceSeeState(arguments:arguments);
+}
 
-    Widget _itemRow ({bool isBorder = true}) {
+class _InvoiceSeeState extends State<InvoiceSee> {
+  final arguments;
+  _InvoiceSeeState({this.arguments});
+  final HttpUtil http = HttpUtil();
+  List dataList = [];
+  bool isLoading = true;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    this._getData();
+  }
+  	_getData () async {
+		Map response = await this.http.get('/receipt/1/his/${arguments['rid']}/orders');
+		if(response['code'] == 200){
+			setState(() {
+			  this.dataList = response['data'];
+			  this.isLoading = false;
+			});
+		}
+  	}
+  Widget _itemRow (var data,{bool isBorder = true}) {
         return Container(
             color: Colors.white,
             padding: EdgeInsets.only(
@@ -25,12 +50,18 @@ class InvoiceSee extends StatelessWidget {
                             : BorderSide.none
                     )
                 ),
-                child: Column(
+                child:isLoading ? 
+					Container(
+                        margin: EdgeInsets.only(
+                            top: ScreenAdaper.height(200)
+                        ),
+                        child: Loading(),
+                    ) : Column(
                     children: <Widget>[
                         Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
-                                Text("2019-08-05  12:05", style: TextStyle(
+                                Text(data['createTime'], style: TextStyle(
                                     color: ColorClass.fontColor,
                                     fontSize: ScreenAdaper.fontSize(24)
                                 ))
@@ -40,11 +71,11 @@ class InvoiceSee extends StatelessWidget {
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                                Text("购买一颗生态园林的金丝楠木", style: TextStyle(
+                                Text(data['name'], style: TextStyle(
                                     fontSize: ScreenAdaper.fontSize(28),
                                     color: ColorClass.titleColor
                                 )),
-                                Text("¥1000.00", style: TextStyle(
+                                Text("¥${data['amount']}", style: TextStyle(
                                     fontSize: ScreenAdaper.fontSize(24),
                                     color: ColorClass.fontRed
                                 ))
@@ -55,17 +86,18 @@ class InvoiceSee extends StatelessWidget {
             )
         );
     }
-
-    @override
-    Widget build(BuildContext context) {
-        ScreenAdaper.init(context);
+  @override
+  Widget build(BuildContext context) {
+    ScreenAdaper.init(context);
         return Scaffold(
             appBar: AppBarWidget().buildAppBar("查看"),
-            body: Column(
-                children: <Widget>[
-                    _itemRow(isBorder: false)
-                ]
-            )
+            body: ListView.builder(
+				itemCount: this.dataList.length,
+				itemBuilder: (BuildContext context,int index){
+					var data = this.dataList[index];
+					return this._itemRow(data,isBorder: index==this.dataList.length-1?false:true);
+				},
+			)
         );
-    }
+  }
 }

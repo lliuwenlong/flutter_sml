@@ -1,14 +1,14 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_sml/common/HttpUtil.dart';
 import 'package:flutter_sml/model/api/user/UserModel.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import '../../components/AppBarWidget.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
 import 'package:image_picker/image_picker.dart';
-
+import '../../model/store/user/User.dart';
 
 class Authentication extends StatefulWidget {
   Authentication({Key key}) : super(key: key);
@@ -24,7 +24,7 @@ class _AuthenticationState extends State<Authentication>{
   String _card = "";
   File  _positiveImage;
   File  _negativeImage;
-
+  User _userMedel;
   @override
   void initState() { 
     super.initState();
@@ -36,7 +36,11 @@ class _AuthenticationState extends State<Authentication>{
       _card = _cardController.text;
     });
   }
-
+	@override
+	void didChangeDependencies() {
+	  super.didChangeDependencies();
+	  _userMedel = Provider.of<User>(context);
+	}
    @override
     void dispose() {
       if (_nameController != null) {
@@ -246,8 +250,11 @@ class _AuthenticationState extends State<Authentication>{
                 "idcardBack": _positiveImage.path,
                 "idcardFront": _negativeImage.path,
                 "realName": _name,
-                "userId": UserModel().data.userId
+                "userId": this._userMedel.userId
             });
+
+
+			print(response);
             if (response["code"] == 200 ) {
                 // UserModel userModel = new UserModel.fromJson(response);
                 // Data data = userModel.data;
@@ -259,6 +266,14 @@ class _AuthenticationState extends State<Authentication>{
                 //     nickName: data.nickName,
                 //     createTime: data.createTime
                 // );
+                Fluttertoast.showToast(
+                    msg: '认证成功',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.TOP,
+                    timeInSecForIos: 1,
+                    textColor: Colors.white,
+                    fontSize: ScreenAdaper.fontSize(30)
+                );
             } else {
                 Fluttertoast.showToast(
                     msg: response["msg"],

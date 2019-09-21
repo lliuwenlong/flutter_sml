@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
+import 'package:flutter_sml/model/store/invoice/InvoiceInfo.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import './routers/routers.dart';
 import 'model/store/shop/Shop.dart';
 import 'model/store/user/User.dart';
+import 'dart:ui';
 void main() {
     // 强制竖屏
     SystemChrome.setPreferredOrientations([
@@ -17,7 +19,9 @@ void main() {
         MultiProvider(
             providers: [
                 ChangeNotifierProvider.value(value: ShopModel()),
-                ChangeNotifierProvider.value(value: User())
+                ChangeNotifierProvider.value(value: User()),
+                ChangeNotifierProvider.value(value: InvoiceInfo()),
+
             ],
             child: MyApp()
         )

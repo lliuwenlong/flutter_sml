@@ -7,7 +7,6 @@ import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
 import 'package:provider/provider.dart';
 import '../../common/HttpUtil.dart';
-import 'package:sy_flutter_qiniu_storage/sy_flutter_qiniu_storage.dart';
 import 'dart:ui';
 
 class FriendDynamicsRelease extends StatefulWidget {

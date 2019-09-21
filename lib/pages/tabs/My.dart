@@ -1,15 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../My/Menu.dart';
 import '../My/MenuItem.dart';
 import '../../services/ScreenAdaper.dart';
 import 'dart:ui';
-
+import '../../model/store/user/User.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import '../../common/HttpUtil.dart';
 class MyPage extends StatefulWidget {
     MyPage({Key key}) : super(key: key);
     _MyPageState createState() => _MyPageState();
 }
 
 class _MyPageState extends State<MyPage> {
+    User _userModel;
+    final HttpUtil http = HttpUtil();
+	String _codeData;
+    @override
+    void didChangeDependencies() {
+      super.didChangeDependencies();
+      _userModel = Provider.of<User>(context);
+      this._getQrCode();
+    }
+    _getQrCode () async {
+        Map response = await this.http.get('/qrcode', data: {
+            'userId':this._userModel.userId
+        });
+		if(response['code'] == 200){
+			setState(() {
+			  this._codeData = response['data'];
+			});
+		}
+    }
     Widget _buildTopBar () {
         double top = MediaQueryData.fromWindow(window).padding.top;
         return Container(
@@ -75,7 +97,7 @@ class _MyPageState extends State<MyPage> {
                                                         decoration: BoxDecoration(
                                                             borderRadius: BorderRadius.circular(150),
                                                             image: DecorationImage(
-                                                                image: NetworkImage("https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws"),
+                                                                image: NetworkImage(this._userModel.headerImage),
                                                                 fit: BoxFit.cover
                                                             )
                                                         )
@@ -98,9 +120,9 @@ class _MyPageState extends State<MyPage> {
                                     )
                                     ),
                                     SizedBox(width: ScreenAdaper.width(20)),
-                                    Text("小童宝贝", style: TextStyle(
+                                    Text(this._userModel.nickName, style: TextStyle(
                                         fontSize: ScreenAdaper.fontSize(40),
-                                        color: Colors.white
+                                        color: Colors.white,
                                     )),
                                     Expanded(
                                         flex: 1,
@@ -110,11 +132,13 @@ class _MyPageState extends State<MyPage> {
                                                     alignment: Alignment.centerRight,
                                                     child: Padding(
                                                         padding: EdgeInsets.only(right: ScreenAdaper.width(30)),
-                                                        child: Icon(
-                                                            IconData(0Xe654, fontFamily: "iconfont"),
-                                                            size: ScreenAdaper.fontSize(60),
-                                                            color: Colors.white,
-                                                        ),
+                                                        child: _codeData==null?Text('')
+														                            :QrImage(
+                                                          data: this._codeData,
+                                                          size: 60.0,
+                                                          foregroundColor:Colors.white,
+                                                          )
+                                                        
                                                     ),
                                                 )
                                             ],

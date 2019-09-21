@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
+import '../../model/store/user/User.dart';
  enum Action {
     Ok,
     Cancel
@@ -103,7 +104,7 @@ class _SettingState extends State<Setting> {
                   )
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/');
+                  Navigator.pushNamedAndRemoveUntil(context, '/login', (router) => false);
                   // Navigator.pop(context, Action.Ok);
                 },
               ),

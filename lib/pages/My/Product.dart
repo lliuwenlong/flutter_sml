@@ -8,6 +8,7 @@ import '../../common/HttpUtil.dart';
 import '../../components/LoadingSm.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../model//api/my/ProductData.dart';
+import '../../components/NullContent.dart';
 class Product extends StatefulWidget {
   final Map arguments;
     Product({Key key,this.arguments}) : super(key: key);
@@ -17,7 +18,6 @@ class Product extends StatefulWidget {
 
 class _ProductState extends State<Product> with SingleTickerProviderStateMixin{
   final Map arguments;
-
   User _userModel;
   final HttpUtil http = HttpUtil();
   TabController _tabController;
@@ -55,48 +55,13 @@ void didChangeDependencies() {
     }  
    
     final Map<String, dynamic> response = await this.http.post("/api/v1/user/wood", data: {
-        "pageNO": _tabController.index == 0 ? this.subscriePage : this.transferPage,
+        "pageNO": this._tabController.index == 0 ? subscriePage : transferPage,
         "pageSize": 10,
         "userId": this._userModel.userId,
-        "type": _tabController.index==0?1:0
+        "type": this._tabController.index == 0? 1 : 0
     });
-
-   
-    Map<String, dynamic> resItem = {
-            "baseName": "string",
-            "buyTime": "2019-10-10 12:12:20",
-            "districtName": "string",
-            "endDate": "2019-10-10",
-            "hasDays": 0,
-            "image": "string",
-            "name": "string",
-            "woodSn": "string"
-        };
-
-    Map<String, dynamic> resData = {
-            "code": 200,
-            "data": {
-                "currPage": 10,
-                "list": [
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem
-                ],
-                "pageSize": 0,
-                "totalCount": 0,
-                "totalPage": 0
-            },
-            "msg": "string"
-    };
     if (response["code"] == 200) {
-            final res = new ProductDataModel.fromJson(resData);
+            final res = new ProductDataModel.fromJson(response);
             if (isInit) {
                 setState(() {
                     if (_tabController.index == 0) {
@@ -140,7 +105,7 @@ void _onLoading() async{
             controller.loadComplete();
         }
     }
-    void _onRefresh() async{
+void _onRefresh() async{
         setState(() {
             if (_tabController.index == 0) {
                 this.subscriePage = 1;
@@ -189,7 +154,7 @@ void _onLoading() async{
                                                 topRight: Radius.circular(ScreenAdaper.width(10))
                                             ),
                                             child: Image.network(
-                                                "http://qcloud.dpfile.com/pc/pYPuondR-PaQO3rhSjRl7x1PBMlPubyBLeDC8IcaPQGC0AsVXyL223YOP11TLXmuTZlMcKwJPXLIRuRlkFr_8g.jpg",
+                                                data.image,
                                                 fit: BoxFit.cover,
                                             ),
                                         ),
@@ -197,7 +162,7 @@ void _onLoading() async{
                                     Positioned(
                                         top: ScreenAdaper.width(20),
                                         left: ScreenAdaper.width(20),
-                                        child: Label("${data.districtName}"),
+                                        child: Label(data.name),
                                     )
                                 ],
                             ),
@@ -221,7 +186,7 @@ void _onLoading() async{
                                                 Expanded(
                                                     flex: 1,
                                                     child: Text(
-                                                        "${data.baseName} . ${data.districtName}",
+                                                        data.baseName,
                                                         overflow: TextOverflow.ellipsis,
                                                         style: TextStyle(
                                                             color: ColorClass.fontColor,
@@ -368,6 +333,8 @@ void _onLoading() async{
                                 ),
                                 child: Loading(),
                             ):
+                            this.subscrieList.length<=0?
+                            NullContent('暂无数据'):
                             ListView(
                                 children: <Widget>[
                                     Wrap(
@@ -402,7 +369,8 @@ void _onLoading() async{
                                     top: ScreenAdaper.height(200)
                                 ),
                                 child: Loading(),
-                            ) : ListView(
+                            ) : this.transferList.length<=0? NullContent('暂无数据'):
+                            ListView(
                                 children: <Widget>[
                                     Wrap(
                                         spacing: ScreenAdaper.width(10),

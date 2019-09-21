@@ -45,12 +45,13 @@ class _CashOutState extends State<CashOut> {
     }
 
     _cashOut(String amount) async {
-        print(double.parse(this._moneyNum) >= double.parse(amount));
+      
       if(double.parse(amount)>0 && double.parse(this._moneyNum) >= double.parse(amount)){
         Map response = await this.http.post('/api/v1/user/account/case',data:{
           'amount':amount,
           'userId':this._userModel.userId
         });
+        print(response);
         if(response['code']==200){
           this._getData();
         }else{

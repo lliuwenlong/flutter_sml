@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
 import '../../components/Label.dart';
-
+import '../../model/api/my/ValueAddedData.dart';
+import '../../common/HttpUtil.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import '../../components/LoadingSm.dart';
+import '../../components/NullContent.dart';
 class ValueAddedServices extends StatefulWidget {
   ValueAddedServices({Key key}) : super(key: key);
 
@@ -10,12 +15,76 @@ class ValueAddedServices extends StatefulWidget {
 }
 
 class _ValueAddedServicesState extends State<ValueAddedServices> {
+  final HttpUtil http = HttpUtil();
+  int valueAddPage = 1;
+  bool isValueLoading = true;
+  List valueAddList = [];
+  RefreshController _valueAddRefresController = new RefreshController(initialRefresh: false);
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    this._getData(isInit:true);
+  }
+
+    _getData({isInit:false}) async {
+      	Map response = await this.http.post('/api/v1/vp/data', data: {
+          "pageNO":1,
+          "pageSize":10
+      	});
+		if(response['code'] == 200){
+			ValueAddedDataModel  res = new ValueAddedDataModel.fromJson(response);
+			if (isInit) {
+            setState(() {
+                valueAddList = res.data;
+                isValueLoading = false;
+            });
+      	} else {
+			setState(() {
+				valueAddList.addAll(res.data);
+			});
+            }
+		}else{
+			Fluttertoast.showToast(
+                msg: response["msg"],
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+				backgroundColor: Colors.black87,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+		}
+
+		return response;
+    }
+
+	void _onLoading () async{
+		setState(() {
+            this.valueAddPage++;
+        });
+        var controller = this._valueAddRefresController;
+        var response = await _getData();
+        if (response["data"].length == 0) {
+            controller.loadNoData();
+        } else {
+            controller.loadComplete();
+        }
+	}
+
+	void _onRefresh() async{
+        setState(() {
+            this.valueAddPage = 1;
+        });
+        var controller = this._valueAddRefresController;
+        final Map res = await _getData(isInit: true);
+        controller.refreshCompleted();
+    }
 
   Widget _item (String imageUrl,String name,int id) {
         return GestureDetector(
           onTap: (){
             Navigator.pushNamed(context, '/valueDetail',arguments: {
-              "id":id
+              "sid":id
             });
           },
           child: Stack(
@@ -39,7 +108,7 @@ class _ValueAddedServicesState extends State<ValueAddedServices> {
                                                 Radius.circular(ScreenAdaper.width(10)),
                                             ),
                                             child: Image.network(
-                                               imageUrl,
+                                                imageUrl,
                                                 fit: BoxFit.cover,
                                             ),
                                         ),
@@ -68,27 +137,42 @@ class _ValueAddedServicesState extends State<ValueAddedServices> {
       body: SafeArea(
         top: false,
         child: Container(
-          padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
-          child: ListView(
-            children: <Widget>[
-              Wrap(
-            spacing: ScreenAdaper.width(14),
-            runSpacing: ScreenAdaper.height(14),
-            children: <Widget>[
-              this._item(
-                'http://img.qqzhi.com/upload/img_5_3768788503D3268726448_27.jpg',
-                '百合花',
-                1
-              ),
-              this._item(
-                'http://file16.zk71.com/File/CorpProductImages/2017/11/26/sucang_6688_0_20171126122445.jpg_w400.jpg', 
-                '灵芝', 
-                2
-              ),
-            ],
-          )
-            ],
-          ),
+			padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
+			child: SmartRefresher(
+			controller: this._valueAddRefresController,
+				enablePullDown: true,
+				enablePullUp: true,
+				header: WaterDropHeader(),
+				footer: ClassicFooter(
+					loadStyle: LoadStyle.ShowWhenLoading,
+					idleText: "上拉加载",
+					failedText: "加载失败！点击重试！",
+					canLoadingText: "加载更多",
+					noDataText: "没有更多数据",
+					loadingText: "加载中"
+				),
+				onRefresh: _onRefresh,
+				onLoading: _onLoading,
+				child:this.isValueLoading
+                            ? Container(
+                                margin: EdgeInsets.only(
+                                    top: ScreenAdaper.height(200)
+                                ),
+                                child: Loading(),
+                            ):
+                            this.valueAddList.length<=0?
+                            NullContent('暂无数据'): ListView(
+					children: <Widget>[
+						Wrap(
+							spacing: ScreenAdaper.width(14),
+							runSpacing: ScreenAdaper.height(14),
+							children: this.valueAddList.map((val){
+								return this._item(val.cover, val.name, val.productId);
+							}).toList(),
+						)
+            		],
+          		),
+		  	)
         ),
       ),
     );

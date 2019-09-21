@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../components/AppBarWidget.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
+import '../../model/store/invoice/InvoiceInfo.dart';
 
-class RemarksInformation extends StatelessWidget {
-    RemarksInformation({Key key}) : super(key: key);
 
+class RemarksInformation extends StatefulWidget {
+  RemarksInformation({Key key}) : super(key: key);
+
+  _RemarksInformationState createState() => _RemarksInformationState();
+}
+
+class _RemarksInformationState extends State<RemarksInformation> {
+    TextEditingController _remarksInformationController = new TextEditingController();
+    InvoiceInfo _invoiceModel;
+    @override
+    void didChangeDependencies() {
+      super.didChangeDependencies();
+      _invoiceModel = Provider.of<InvoiceInfo>(context);
+    }
     @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
@@ -34,7 +48,8 @@ class RemarksInformation extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
                                     borderSide: BorderSide.none
                                 )
-                            )
+                            ),
+                            controller: _remarksInformationController,
                         ),
                         Container(
                             margin: EdgeInsets.only(
@@ -48,6 +63,19 @@ class RemarksInformation extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(ScreenAdaper.width(10))
                                 ),
                                 onPressed: () {
+                                  print(this._remarksInformationController.text);
+                                  Navigator.pushReplacementNamed(context, '/invoiceInformation');
+                                  this._invoiceModel.initInvoiceInfo(
+                                    province: this._invoiceModel.province,
+                                    city: this._invoiceModel.city,
+                                    county: this._invoiceModel.county,
+                                    address: this._invoiceModel.address,
+                                    phone: this._invoiceModel.phone,
+                                    receiverUser: this._invoiceModel.receiverUser,
+                                    amount: this._invoiceModel.amount,
+                                    orderSn: this._invoiceModel.orderSn,
+                                    remarks: this._remarksInformationController.text
+                                  );
                                 },
                                 child: Text("提交", style: TextStyle(
                                     color: Colors.white,

@@ -6,7 +6,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../components/LoadingSm.dart';
 import '../../model/api/my/TransferRecordData.dart';
 import '../../services/ScreenAdaper.dart';
-
+import '../../components/NullContent.dart';
 class TransferRecord extends StatefulWidget {
   final Map arguments;
   TransferRecord({Key key,this.arguments}) : super(key: key);
@@ -34,37 +34,13 @@ class _TransferRecordState extends State<TransferRecord> {
 
     final Map<String, dynamic> response = await this.http.get(
         "/api/v1/user/wood/transfer",
-        data: {"pageNO": transferPage, "pageSize": 10, "woodSn": 1});
-      Map<String, dynamic> resItem = {
-        "reciever": "string",
-        "sender": "string",
-        "transferTime": "2019-10-01 12:10:00"
-      };
-
-    Map<String, dynamic> resData = {
-      "code": 200,
-      "data": {
-        "currPage": 10,
-        "list": [
-          resItem,
-          resItem,
-          resItem,
-          resItem,
-          resItem,
-          resItem,
-          resItem,
-          resItem,
-          resItem,
-          resItem,
-        ],
-        "pageSize": 0,
-        "totalCount": 0,
-        "totalPage": 0
-      },
-      "msg": "string"
-    };
+        data: {
+          "pageNO": transferPage, 
+          "pageSize": 10, 
+          "woodSn": arguments['woodSn']
+        });
     if (response["code"] == 200) {
-      final res = new TransferRecordDataModel.fromJson(resData);
+      final res = new TransferRecordDataModel.fromJson(response);
       if (isInit) {
         setState(() {
           transferList = res.data.list;
@@ -128,7 +104,8 @@ class _TransferRecordState extends State<TransferRecord> {
                                     top: ScreenAdaper.height(200)
                                 ),
                                 child: Loading(),
-                            ): ListView.builder(
+                            ): this.transferList.length <= 0 ? NullContent('暂无数据'):
+							ListView.builder(
                     itemCount: this.transferList.length,
                     itemBuilder: (BuildContext context, int index) {
                       var data = this.transferList[index];
