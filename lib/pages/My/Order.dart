@@ -19,7 +19,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
         {"id": 3, "name": "待使用"},
         {"id": 4, "name": "待评价"},
         {"id": 5, "name": "退款"},
-		{"id": 6, "name": "已完成"}
+		    {"id": 6, "name": "已完成"}
     ];
     
     TabController _tabController;
@@ -186,64 +186,38 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
 			OrderDataModel res = OrderDataModel.fromJson(response);
 			if (isInit) {
                 setState(() {
-					switch (_tabController.index) {
-						case 0 : {
-							allList = res.data.list;
-							allLoading = false;
-							this.loading = allLoading;
-						} break;
-						case 1 : {
-							paymentList = res.data.list;
-							paymentLoading = false;
-							this.loading = paymentLoading;
-						} break;
-						case 2 : {
-							toBeUsedList = res.data.list;
-							toBeUsedLoading = false;
-							this.loading = toBeUsedLoading;
-						} break;
-						case 3 : {
-							toBeEvaluatedList = res.data.list;
-							toBeEvaluatedLoading = false;
-							this.loading = toBeEvaluatedLoading;
-						} break;
-						case 4 : {
-							refundList = res.data.list;
-							refundLoading = false;
-							this.loading = refundLoading;
-						} break;
-						case 5 : {
-							finishedList = res.data.list;
-							finishedLoading = false;
-							this.loading = finishedLoading;
-						} break;
-					}
-                    // if (_tabController.index == 0) {
-                    //     allList = res.data.list;
-                    //     allLoading = false;
-					// 	this.loading = allLoading;
-                    // } else if (_tabController.index == 1) {
-					// 	paymentList = res.data.list;
-                    //     paymentLoading = false;
-					// 	this.loading = paymentLoading;
-					// }else if (_tabController.index == 2){
-                    //     toBeUsedList = res.data.list;
-                    //     toBeUsedLoading = false;
-					// 	this.loading = toBeUsedLoading;
-                    // } else if (_tabController.index == 3) {
-					// 	toBeEvaluatedList = res.data.list;
-                    //     toBeEvaluatedLoading = false;
-					// 	this.loading = toBeEvaluatedLoading;
-					// } else if (_tabController.index == 4) {
-					// 	refundList = res.data.list;
-                    //     refundLoading = false;
-					// 	this.loading = refundLoading;
-					// } else {
-					// 	finishedList = res.data.list;
-                    //     finishedLoading = false;
-					// 	this.loading = finishedLoading;
-					// }
-                    
+                    switch (_tabController.index) {
+                      case 0 : {
+                        allList = res.data.list;
+                        allLoading = false;
+                        this.loading = allLoading;
+                      } break;
+                      case 1 : {
+                        paymentList = res.data.list;
+                        paymentLoading = false;
+                        this.loading = paymentLoading;
+                      } break;
+                      case 2 : {
+                        toBeUsedList = res.data.list;
+                        toBeUsedLoading = false;
+                        this.loading = toBeUsedLoading;
+                      } break;
+                      case 3 : {
+                        toBeEvaluatedList = res.data.list;
+                        toBeEvaluatedLoading = false;
+                        this.loading = toBeEvaluatedLoading;
+                      } break;
+                      case 4 : {
+                        refundList = res.data.list;
+                        refundLoading = false;
+                        this.loading = refundLoading;
+                      } break;
+                      case 5 : {
+                        finishedList = res.data.list;
+                        finishedLoading = false;
+                        this.loading = finishedLoading;
+                      } break;
+                    }
                 });
             } else {
                 setState(() {
@@ -380,7 +354,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
         ScreenAdaper.init(context);
         return Scaffold(
             appBar: AppBar(
-                title: Text("我的神木", style: TextStyle(
+                title: Text("我的订单", style: TextStyle(
                     color: Colors.black,
                     fontSize: ScreenAdaper.fontSize(32)
                 )),
@@ -402,7 +376,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                     ),
                     labelColor: ColorClass.titleColor,
                     labelStyle: TextStyle(
-                        fontSize: ScreenAdaper.fontSize(34),
+                        fontSize: ScreenAdaper.fontSize(30),
                         fontWeight: FontWeight.w600
                     ),
                     tabs: this._tabList.map((val) {

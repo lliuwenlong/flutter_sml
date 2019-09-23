@@ -46,7 +46,7 @@ class _SettingState extends State<Setting> {
                                     Icon(
                                       IconData(0xe61e, fontFamily: 'iconfont'), 
                                       size: ScreenAdaper.fontSize(24, allowFontScaling: true),
-                                      color: Color(color)
+                                      color: Color(0xffaaaaaa)
                                     )
                                 ]
                             ),

@@ -72,6 +72,7 @@ class _NewsPageState extends State<NewsPage> {
                 centerTitle: true,
             ),
             body: Container(
+              color: Colors.white,
                 child: Container(
                     padding: EdgeInsets.fromLTRB(
                         ScreenAdaper.width(30), 0, ScreenAdaper.width(30),0

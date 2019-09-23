@@ -312,12 +312,13 @@ class _PurchaseState extends State<Purchase>  {
                 children: <Widget>[
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                             Text("支付金额：", style: TextStyle(
                                 color: ColorClass.titleColor,
                                 fontSize: ScreenAdaper.fontSize(34)
                             )),
-                            Text("${this.shopModel.shopNum * this.price}", style: TextStyle(
+                            Text("¥ ${this.shopModel.shopNum * this.price}", style: TextStyle(
                                 color: ColorClass.fontRed,
                                 fontSize: ScreenAdaper.fontSize(34)
                             )),
@@ -339,7 +340,7 @@ class _PurchaseState extends State<Purchase>  {
                             border: Border(
                                 bottom: BorderSide(
                                     color: ColorClass.borderColor,
-                                    width: ScreenAdaper.width(2)
+                                    width: ScreenAdaper.width(1)
                                 )
                             )
                         ),

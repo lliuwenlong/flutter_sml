@@ -263,8 +263,8 @@ class _FriendInformationState extends State<FriendInformation> {
                                                             onPressed: this._subStatus == 0 ?_subscribe : _unsubscribe,
                                                             highlightedBorderColor: Colors.white,
                                                             padding: EdgeInsets.only(
-                                                                left: ScreenAdaper.width(25),
-                                                                right: ScreenAdaper.width(25)
+                                                                left: ScreenAdaper.width(0),
+                                                                right: ScreenAdaper.width(0)
                                                             ),
                                                             borderSide: BorderSide(
                                                                 color: Colors.white
@@ -555,9 +555,9 @@ class _FriendInformationState extends State<FriendInformation> {
                                     children: <Widget>[
                                         Container(
                                             color: Colors.white,
-                                            height: ScreenAdaper.height(110),
+                                            height: ScreenAdaper.height(70),
                                             padding: EdgeInsets.only(left: ScreenAdaper.width(30),right: ScreenAdaper.width(30)),
-                                            alignment: Alignment.centerLeft,
+                                            alignment: Alignment.bottomLeft,
                                             child: Text(
                                                 'TA的动态（${this._circleMsgList.length}）',
                                                 style: TextStyle(

@@ -221,7 +221,7 @@ class _ShenmuDetailsState extends State<ShenmuDetails> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                         Container(
-                                            padding: EdgeInsets.all(ScreenAdaper.width(15)),
+                                            padding: EdgeInsets.all(ScreenAdaper.width(30)),
                                             child: Text(
                                             this.data.name,
                                             style: TextStyle(
@@ -235,9 +235,9 @@ class _ShenmuDetailsState extends State<ShenmuDetails> {
                                             padding: EdgeInsets.only(
                                                 right: ScreenAdaper.width(15)
                                             ),
-                                            child: Text(this.data.price, style: TextStyle(
+                                            child: Text('¥ ${this.data.price}', style: TextStyle(
                                                 color: ColorClass.fontRed,
-                                                fontSize: ScreenAdaper.fontSize(28)
+                                                fontSize: ScreenAdaper.fontSize(30)
                                             ))
                                         )
                                     ]

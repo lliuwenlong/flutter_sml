@@ -43,7 +43,11 @@ class MenuItem extends StatelessWidget {
                                         fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true)
                                     )),
                                     SizedBox(width: ScreenAdaper.width(20)),
-                                    Icon(IconData(0xe61e, fontFamily: 'iconfont'), size: ScreenAdaper.fontSize(24, allowFontScaling: true))
+                                    Icon(
+                                      IconData(0xe61e, fontFamily: 'iconfont'), 
+                                      size: ScreenAdaper.fontSize(24, allowFontScaling: true),
+                                      color: Color(0xffaaaaaa)
+                                    )
                                 ]
                             ),
                         )

@@ -27,7 +27,6 @@ class _FriendDynamicsReportState extends State<FriendDynamicsReport> {
     void initState() {
         this._getData();
     }
-
     _getData () async {
         Map response = await HttpUtil().get("/api/v1/circle/msg/{messageId}/report/reasons");
         if (response["code"] == 200) {
@@ -67,7 +66,7 @@ class _FriendDynamicsReportState extends State<FriendDynamicsReport> {
                 border: Border(
                     bottom: isBorder ? BorderSide(
                         color: ColorClass.borderColor,
-                        width: ScreenAdaper.width(2)
+                        width: ScreenAdaper.width(1)
                     ) : BorderSide.none
                 )
             ),

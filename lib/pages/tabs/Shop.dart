@@ -94,7 +94,7 @@ class _ShopPageState extends State<ShopPage> {
     Widget _commodityItem (Data val) {
         return Container(
             width: (ScreenAdaper.getScreenWidth() - 40 ) / 2,
-            padding: EdgeInsets.only(bottom: ScreenAdaper.height(20)),
+            padding: EdgeInsets.only(bottom: ScreenAdaper.height(10)),
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(5)
@@ -165,7 +165,7 @@ class _ShopPageState extends State<ShopPage> {
                             ],
                         )
                     ),
-                    SizedBox(height: ScreenAdaper.height(15)),
+                    SizedBox(height: ScreenAdaper.height(6)),
                     Padding(
                         padding: EdgeInsets.fromLTRB(
                             ScreenAdaper.width(20), 0, ScreenAdaper.width(20), 0
@@ -189,8 +189,8 @@ class _ShopPageState extends State<ShopPage> {
                                             height: ScreenAdaper.height(50),
                                             minWidth: ScreenAdaper.width(141),
                                             onPressed: () {
-												this._purchase(val);
-											},
+                                              this._purchase(val);
+                                            },
                                             color: Color(0xFF22b0a1),
                                             splashColor: Color.fromRGBO(0, 0, 0, 0),
                                             elevation: 0,

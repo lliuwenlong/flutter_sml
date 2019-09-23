@@ -131,8 +131,8 @@ class _MyDynamicsState extends State<MyDynamics> {
             barrierDismissible: true,
             builder: (BuildContext context) {
                 return AlertDialog(
-                    title: Text('退出'),
-                    content:Text('退出登录后将无法浏览部分信息，重新登录后即可查看！', style: TextStyle(
+                    title: Text('删除动态'),
+                    content:Text('确定删除该动态吗，删除之后无法恢复！', style: TextStyle(
                         fontSize: ScreenAdaper.fontSize(30),
                         color: ColorClass.titleColor,
                         height: 1.3
