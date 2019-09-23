@@ -45,11 +45,8 @@ class _MyPageState extends State<MyPage> {
             ),
             child: Container(
                 margin: EdgeInsets.only(top: top),
-                
                 child: Column(
-                   
                     children: <Widget>[
-
                         Container(
                             height: ScreenAdaper.height(88),
                             padding: EdgeInsets.fromLTRB(ScreenAdaper.width(30), 0, ScreenAdaper.width(30), 0),
@@ -132,13 +129,12 @@ class _MyPageState extends State<MyPage> {
                                                     alignment: Alignment.centerRight,
                                                     child: Padding(
                                                         padding: EdgeInsets.only(right: ScreenAdaper.width(30)),
-                                                        child: _codeData==null?Text('')
-														                            :QrImage(
-                                                          data: this._codeData,
-                                                          size: 60.0,
-                                                          foregroundColor:Colors.white,
-                                                          )
-                                                        
+                                                        child: _codeData==null?
+															Text(''):QrImage(
+																data: this._codeData,
+																size: 60.0,
+																foregroundColor:Colors.white,
+                                                         	)
                                                     ),
                                                 )
                                             ],
