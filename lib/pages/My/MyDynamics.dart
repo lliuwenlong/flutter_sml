@@ -125,6 +125,73 @@ class _MyDynamicsState extends State<MyDynamics> {
         }
     }
 
+    void _deleteShowDialog (int index, int messageId) {
+        showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+                return AlertDialog(
+                    title: Text('退出'),
+                    content:Text('退出登录后将无法浏览部分信息，重新登录后即可查看！', style: TextStyle(
+                        fontSize: ScreenAdaper.fontSize(30),
+                        color: ColorClass.titleColor,
+                        height: 1.3
+                    )),
+                    contentPadding: EdgeInsets.all(ScreenAdaper.width(30)),
+                    titlePadding: EdgeInsets.fromLTRB(
+                        ScreenAdaper.width(30),
+                        ScreenAdaper.width(30),
+                        ScreenAdaper.width(30),
+                        0
+                    ),
+                    actions: <Widget>[
+                        FlatButton(
+                            child: Text('取消', style: TextStyle(
+                                fontSize: ScreenAdaper.fontSize(30),
+                                color: ColorClass.titleColor
+                            )),
+                            onPressed: (){
+                                Navigator.of(context).pop();
+                            },
+                        ),
+                        FlatButton(
+                            child: Text('确定', style: TextStyle(
+                                fontSize: ScreenAdaper.fontSize(30),
+                                color: ColorClass.titleColor
+                            )),
+                            onPressed: (){
+                                this._deleteItem(index, messageId);
+                                Navigator.of(context).pop();
+                            },
+                        ),
+                    ],
+                    elevation: 20,
+                    semanticLabel:'哈哈哈哈',
+                    shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(ScreenAdaper.width(10)))
+                );
+            }
+        );
+    }
+
+    void _deleteItem (int index, int id) async {
+        Map responst = await this.http.post("/api/v1/circle/${_userModel.userId}/msg/${id}");
+        print(id); 
+        if (responst["code"] == 200) {
+            setState(() {
+                this._circleMsgList.removeAt(index);
+                this.informationApiModel.messages--;
+            });
+            Fluttertoast.showToast(
+                msg: "删除成功",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        }
+    }
+    
     Widget _buildTopBar () {
         double top = MediaQueryData.fromWindow(window).padding.top;
         return Container(
@@ -289,7 +356,7 @@ class _MyDynamicsState extends State<MyDynamics> {
         );
     }
 
-    Widget _headPortrait (String name, String time, String url) {
+    Widget _headPortrait (String name, String time, String url, int index, int messageId) {
         return Row(
             children: <Widget>[
                 GestureDetector(
@@ -331,7 +398,7 @@ class _MyDynamicsState extends State<MyDynamics> {
                             iconSize: ScreenAdaper.fontSize(22),
                             color: Color(0xffaaaaaa),
                             onPressed: () {
-                                // print(index);
+                                this._deleteShowDialog(index, messageId);
                             },
                         ),
                     )
@@ -423,6 +490,8 @@ class _MyDynamicsState extends State<MyDynamics> {
                         data.nickName != null ? data.nickName : "",
                         data.createTime,
                         data.headerImage != null ? data.headerImage: "",
+                        index,
+                        data.messageId
                     ),
                     Container(
                         margin:EdgeInsets.only(

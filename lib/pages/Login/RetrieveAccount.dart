@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sml/common/Color.dart';
 import 'package:flutter_sml/common/HttpUtil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -22,7 +23,8 @@ class _RetrieveAccountState extends State<RetrieveAccount> {
     String _codeCountdownStr = '获取验证码';
     int _countdownNum = 59;
     String code;
-    
+    bool isPassword = true;
+
     _RetrieveAccountState({Key key});
 
     @override
@@ -32,7 +34,11 @@ class _RetrieveAccountState extends State<RetrieveAccount> {
         super.dispose();
     }
 
-        Future _submitHandler () async {
+    Future _submitHandler () async {
+        setState(() {
+            this.isPassword = true;
+        });
+        
         if (_formKey.currentState.validate()) {
             final String phone = this._phoneController.text;
             final String password = this._passwordController.text;
@@ -64,10 +70,15 @@ class _RetrieveAccountState extends State<RetrieveAccount> {
 
     // 获取验证码 
     Future _getCode () async {
+        setState(() {
+            this.isPassword = false;
+        });
         if (!_formKey.currentState.validate()) {
             return null;
         }
-        Map response =  await HttpUtil().get("/api/v11/vcode");
+        Map response =  await HttpUtil().get("/api/v11/vcode", data: {
+            "phone": this._phoneController.text
+        });
         setState(() {
             this.code = response["data"];
             this._verificationCodeController.text = response["data"];
@@ -85,6 +96,9 @@ class _RetrieveAccountState extends State<RetrieveAccount> {
     }
 
     String _passwordValidate (val) {
+        if (!isPassword) {
+            return null;
+        }
         if(val == null || val == "") {
             return "密码不可以为空";
         } else if (val.length < 6 || val.length > 16) {
@@ -94,6 +108,9 @@ class _RetrieveAccountState extends State<RetrieveAccount> {
     }
 
     String _passwordIIValidate (val) {
+        if (!isPassword) {
+            return null;
+        }
         if (val != _passwordIIController.text) {
             return "两次密码不一致";
         }
@@ -109,6 +126,12 @@ class _RetrieveAccountState extends State<RetrieveAccount> {
 
     // 倒计时
     void reGetCountdown() {
+        setState(() {
+            this.isPassword = false;
+        });
+        if (!_formKey.currentState.validate()) {
+            return null;
+        }
         setState(() {
             if (_countdownTimer != null) {
                 return;
@@ -198,6 +221,7 @@ class _RetrieveAccountState extends State<RetrieveAccount> {
                                                             isShowSuffixIcon: true,
                                                             controller: this._phoneController,
                                                             validate: this._phoneValidate,
+                                                            type: TextInputType.phone,
                                                         ),
                                                         Container(
                                                             decoration: BoxDecoration(
@@ -214,7 +238,8 @@ class _RetrieveAccountState extends State<RetrieveAccount> {
                                                                             "请输入验证码",
                                                                             isShowSuffixIcon: true,
                                                                             showBorder: false,
-                                                                            controller: this._verificationCodeController
+                                                                            controller: this._verificationCodeController,
+                                                                            type: TextInputType.number,
                                                                         )
                                                                     ),
                                                                     GestureDetector(

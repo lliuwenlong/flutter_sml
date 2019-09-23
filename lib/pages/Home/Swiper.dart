@@ -51,6 +51,9 @@ class _SwiperComponentState extends State<SwiperComponent> {
                         String url = this.bannerList[index]["url"];
                         return Container(
                             height: ScreenAdaper.height(276),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
+                            ),
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
                                 child: Image.network(
@@ -69,8 +72,8 @@ class _SwiperComponentState extends State<SwiperComponent> {
                             color: Color.fromRGBO(255, 255, 255, 0.8),
                             activeColor: Colors.white,
                             space: 5,
-                            size: 8,
-                            activeSize: 12
+                            size: 6,
+                            activeSize: 8
                         )
                     )
                 ),

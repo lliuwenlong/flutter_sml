@@ -188,6 +188,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_color_plugin:
+    dependency: "direct main"
+    description:
+      name: flutter_color_plugin
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.2"
   flutter_custom_calendar:
     dependency: "direct main"
     description:
@@ -256,13 +263,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_webview_plugin:
-    dependency: "direct main"
-    description:
-      name: flutter_webview_plugin
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.3.8"
   fluttertoast:
     dependency: "direct main"
     description:

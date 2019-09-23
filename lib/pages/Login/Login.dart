@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sml/common/Color.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -78,7 +79,8 @@ class _LoginPageState extends State<LoginPage> {
     @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
-        return Container(
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle.dark,
             child: Scaffold(
                 resizeToAvoidBottomPadding: false,
                 body: Container(
@@ -185,7 +187,6 @@ class _LoginPageState extends State<LoginPage> {
                                                                     fontSize: ScreenAdaper.fontSize(24)
                                                                 )),
                                                             ),
-                                                            
                                                         ]
                                                     )
                                                 ]

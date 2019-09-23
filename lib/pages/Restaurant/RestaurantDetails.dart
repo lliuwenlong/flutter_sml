@@ -6,12 +6,11 @@ import '../../common/Color.dart';
 import '../../model/api/restaurant/FoodModel.dart';
 import '../../model/api/restaurant/AppraiseList.dart';
 import '../../common/HttpUtil.dart';
-
+import '../../components/calendarPage/calendar_page.dart';
 class RestaurantDetails extends StatefulWidget {
     final ListModel params;
     RestaurantDetails({Key key, this.params}) : super(key: key);
     _RestaurantDetailsState createState() => _RestaurantDetailsState(params: this.params);
-
 }
 
 class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTickerProviderStateMixin{
@@ -48,6 +47,18 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
         super.dispose();
         _scrollViewController.dispose();
         _tabController.dispose();
+    }
+
+    void _calendarPage () {
+        showModalBottomSheet(
+            context: context,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(ScreenAdaper.width(10))
+            ),
+            builder: (context) => Container(
+                child: CalendarPage(),
+            )
+        );
     }
 
     // 优惠券
@@ -348,72 +359,77 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
     }
 
     Widget _dateWidget () {
-        return Container(
-            margin: EdgeInsets.only(
-                top: ScreenAdaper.height(20)
-            ),
-            color: Colors.white,
-            padding: EdgeInsets.fromLTRB(
-                ScreenAdaper.width(30),
-                ScreenAdaper.height(40),
-                ScreenAdaper.width(30),
-                ScreenAdaper.height(40)
-            ),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                    Row(
-                        children: <Widget>[
-                            Text("8月3日", style: TextStyle(
-                                color: ColorClass.date,
-                                fontSize: ScreenAdaper.fontSize(34, allowFontScaling: true)
-                            )),
-                            SizedBox(width: ScreenAdaper.width(20)),
-                            Text("今日入住", style: TextStyle(
-                                color: ColorClass.fontColor,
-                                fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true)
-                            )),
-                            SizedBox(width: ScreenAdaper.width(30)),
-                            Container(
-                                width: ScreenAdaper.width(40),
-                                decoration: BoxDecoration(
-                                    border: Border(bottom: BorderSide(
-                                        color: Color(0XFFd9d9d9),
-                                        width: 1
-                                    ))
+        return GestureDetector(
+            onTap: () {
+                this._calendarPage();
+            },
+            child: Container(
+                margin: EdgeInsets.only(
+                    top: ScreenAdaper.height(20)
+                ),
+                color: Colors.white,
+                padding: EdgeInsets.fromLTRB(
+                    ScreenAdaper.width(30),
+                    ScreenAdaper.height(40),
+                    ScreenAdaper.width(30),
+                    ScreenAdaper.height(40)
+                ),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                        Row(
+                            children: <Widget>[
+                                Text("8月3日", style: TextStyle(
+                                    color: ColorClass.date,
+                                    fontSize: ScreenAdaper.fontSize(34, allowFontScaling: true)
+                                )),
+                                SizedBox(width: ScreenAdaper.width(20)),
+                                Text("今日入住", style: TextStyle(
+                                    color: ColorClass.fontColor,
+                                    fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true)
+                                )),
+                                SizedBox(width: ScreenAdaper.width(30)),
+                                Container(
+                                    width: ScreenAdaper.width(40),
+                                    decoration: BoxDecoration(
+                                        border: Border(bottom: BorderSide(
+                                            color: Color(0XFFd9d9d9),
+                                            width: 1
+                                        ))
+                                    ),
                                 ),
-                            ),
-                            SizedBox(width: ScreenAdaper.width(30)),
-                            Text("8月3日", style: TextStyle(
-                                color: ColorClass.date,
-                                fontSize: ScreenAdaper.fontSize(34, allowFontScaling: true)
-                            )),
-                            SizedBox(width: ScreenAdaper.width(20)),
-                            Text("周五离店", style: TextStyle(
-                                color: ColorClass.fontColor,
-                                fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true)
-                            ))
-                        ]
-                    ),
-                    Row(
-                        children: <Widget>[
-                            Text("共1晚", style: TextStyle(
-                                color: ColorClass.fontColor,
-                                fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true)
-                            )),
-                            SizedBox(
-                                width: ScreenAdaper.width(20),
-                            ),
-                            Icon(
-                                IconData(0Xe61e, fontFamily: "iconfont"),
-                                color: Color(0XFFaaaaaa),
-                                size: ScreenAdaper.fontSize(24,  allowFontScaling: true)
-                            )
-                        ]
-                    )
-                ]
-            )
-        ); 
+                                SizedBox(width: ScreenAdaper.width(30)),
+                                Text("8月3日", style: TextStyle(
+                                    color: ColorClass.date,
+                                    fontSize: ScreenAdaper.fontSize(34, allowFontScaling: true)
+                                )),
+                                SizedBox(width: ScreenAdaper.width(20)),
+                                Text("周五离店", style: TextStyle(
+                                    color: ColorClass.fontColor,
+                                    fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true)
+                                ))
+                            ]
+                        ),
+                        Row(
+                            children: <Widget>[
+                                Text("共1晚", style: TextStyle(
+                                    color: ColorClass.fontColor,
+                                    fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true)
+                                )),
+                                SizedBox(
+                                    width: ScreenAdaper.width(20),
+                                ),
+                                Icon(
+                                    IconData(0Xe61e, fontFamily: "iconfont"),
+                                    color: Color(0XFFaaaaaa),
+                                    size: ScreenAdaper.fontSize(24,  allowFontScaling: true)
+                                )
+                            ]
+                        )
+                    ]
+                )
+            ),
+        );
     }
 
     Widget _rowItem () {

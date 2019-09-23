@@ -26,6 +26,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
     List notUseList = [];
     List beOverdueList = [];
 
+    @override
     void didChangeDependencies() {
         super.didChangeDependencies();
         userModel = Provider.of<User>(context);

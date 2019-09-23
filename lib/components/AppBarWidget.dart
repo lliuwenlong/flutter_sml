@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/ScreenAdaper.dart';
 class AppBarWidget  {
-    Widget buildAppBar(String text,{double elevation=1.0}) {
+    Widget buildAppBar(String text,{double elevation=0}) {
         return AppBar(
             title: Text(text, style: TextStyle(
                 color: Colors.black,

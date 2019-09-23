@@ -69,7 +69,7 @@ class _BaseState extends State<Base> {
 
     Widget _cardItem(String name, int id) {
         return Container(
-            margin: EdgeInsets.only(top: ScreenAdaper.height(30)),
+            margin: EdgeInsets.only(top: ScreenAdaper.height(20)),
             padding: EdgeInsets.fromLTRB(
                 ScreenAdaper.width(30),
                 0,
@@ -101,9 +101,9 @@ class _BaseState extends State<Base> {
                         Padding(
                             padding: EdgeInsets.fromLTRB(
                                 ScreenAdaper.width(20),
-                                ScreenAdaper.height(30),
+                                ScreenAdaper.height(15),
                                 ScreenAdaper.width(20),
-                                ScreenAdaper.height(30)
+                                ScreenAdaper.height(15)
                             ),
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

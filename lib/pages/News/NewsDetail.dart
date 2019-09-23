@@ -3,7 +3,7 @@ import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
 import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
 import '../../model/api/news/NoticeApiModel.dart';
-
+import '../../common/Config.dart';
 class NewsDetail extends StatefulWidget {
     final  Map arguments;
     NewsDetail({Key key,this.arguments}) : super(key: key);
@@ -25,7 +25,7 @@ class _NewsDetailState extends State<NewsDetail> {
                 appBar: AppBarWidget().buildAppBar('${arguments["appTabName"]}'),
                 body: Container(
                     child: InAppWebView(
-                        initialUrl: "http://192.168.2.103:8080/app#/?id=${this.data.noticeId}",
+                        initialUrl: "${Config.WEB_URL}/app#/?id=${this.data.noticeId}",
                     ),
                 )
             ),

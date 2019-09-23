@@ -39,8 +39,8 @@ dependencies:
   multi_image_picker: ^4.5.4
   sy_flutter_qiniu_storage: ^0.1.4
   keyboard_visibility: ^0.5.6
-  flutter_webview_plugin: ^0.3.8
   flutter_inappbrowser: ^1.2.1
+  flutter_color_plugin: ^0.0.2
   flutter_localizations:
     sdk: flutter
   flutter_custom_calendar: 

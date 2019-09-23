@@ -78,6 +78,7 @@ class _InputState extends State<Input> {
                 obscureText: widget.isPwd,
                 controller: input,
                 keyboardType: widget.type,
+                keyboardAppearance: Brightness.light,
                 style: TextStyle(
                     color: ColorClass.titleColor,
                     fontSize: ScreenAdaper.fontSize(30)

@@ -20,7 +20,7 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
     RefreshController _circleMsgController = RefreshController(initialRefresh: false);
     RefreshController _friendDynamicsController = RefreshController(initialRefresh: false);
     User _userModel;
-
+    bool _isLoading;
     // 最新动态
     int _circleMsgPage = 1;
     bool _circleMsgLoading = true;
@@ -48,6 +48,9 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
         _circleMsgController.loadComplete();
         _friendDynamicsController.loadComplete();
         this._getData(isInit: true);
+        _tabController.addListener(() {
+            this._getData(isInit: true);
+        });
     }
 
     _thumbsUp (int id, int isThumbup, int index) async {
@@ -100,7 +103,6 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
                 "userId": this._userModel.userId
             });
         }
-
         if (response["code"] == 200) {
             CircleMsgApiModel res = new CircleMsgApiModel.fromJson(response);
             if (isInit) {
@@ -368,7 +370,6 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
                             childAspectRatio: 1.0
                         ),
                         itemBuilder: (BuildContext context, int index) {
-                            print(data.imageUrls[index]);
                             return ClipRRect(
                                 borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
                                 child: GestureDetector(

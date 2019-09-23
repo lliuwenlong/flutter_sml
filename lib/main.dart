@@ -9,6 +9,8 @@ import './routers/routers.dart';
 import 'model/store/shop/Shop.dart';
 import 'model/store/user/User.dart';
 import 'dart:ui';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 void main() {
     // 强制竖屏
     SystemChrome.setPreferredOrientations([
@@ -50,7 +52,14 @@ class MyApp extends StatelessWidget {
                 showPerformanceOverlay: false,
                 theme: ThemeData(
                     splashColor: Color.fromARGB(0, 0, 0, 0)
-                )
+                ),
+                localizationsDelegates: [
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                ],
+                supportedLocales: [
+                    const Locale('zh', 'CH'),
+                ],
             )
         );
     }

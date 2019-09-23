@@ -25,6 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
     TextEditingController _passwordController = TextEditingController();
     TextEditingController _verificationCodeController = TextEditingController();
     String code;
+    bool isPassword = true;
 
     @override
     void dispose() {
@@ -36,9 +37,16 @@ class _RegisterPageState extends State<RegisterPage> {
     // 倒计时
     void reGetCountdown() {
         setState(() {
+            this.isPassword = false;
+        });
+        if (!_formKey.currentState.validate()) {
+            return null;
+        }
+        setState(() {
             if (_countdownTimer != null) {
                 return;
             }
+
             this._getCode();
             // Timer的第一秒倒计时是有一点延迟的，为了立刻显示效果可以添加下一行。
             _codeCountdownStr = '${_countdownNum--}';
@@ -60,6 +68,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
     // 提交数据
     Future _submitHandler () async {
+        setState(() {
+            this.isPassword = true;
+        });
         // return null;
         if (_formKey.currentState.validate()) {
             final String phone = this._phoneController.text;
@@ -92,10 +103,15 @@ class _RegisterPageState extends State<RegisterPage> {
 
     // 获取验证码 
     Future _getCode () async {
+        setState(() {
+            this.isPassword = false;
+        });
         if (!_formKey.currentState.validate()) {
             return null;
         }
-        Map response =  await HttpUtil().get("/api/v11/vcode");
+        Map response =  await HttpUtil().get("/api/v11/vcode", data: {
+            "phone": this._phoneController.text
+        });
         setState(() {
             this.code = response["data"];
             this._verificationCodeController.text = response["data"];
@@ -113,6 +129,9 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     String _passwordValidate (val) {
+        if (!isPassword) {
+            return null;
+        }
         if(val == null || val == "") {
             return "密码不可以为空";
         } else if (val.length < 6 || val.length > 16) {
@@ -184,7 +203,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                                     "请输入手机号",
                                                     isShowSuffixIcon: true,
                                                     validate: _phoneValidate,
-                                                    controller: _phoneController
+                                                    controller: _phoneController,
+                                                    type: TextInputType.phone,
                                                 ),
                                                 Input(
                                                     "请输入密码",
@@ -209,6 +229,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                                                     isShowSuffixIcon: true,
                                                                     showBorder: false,
                                                                     controller: _verificationCodeController,
+                                                                    type: TextInputType.number,
                                                                 ),
                                                                 
                                                             ),
