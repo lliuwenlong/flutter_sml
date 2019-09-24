@@ -156,7 +156,10 @@ class Reserve extends StatelessWidget {
                             top: ScreenAdaper.height(65)
                         ),
                         decoration: BoxDecoration(
-                            color: Colors.white
+                            color: Colors.white,
+                            boxShadow: [
+                                BoxShadow(color: Colors.black12, blurRadius: 1)
+                            ]
                         ),
                         child: Row(
                             children: <Widget>[

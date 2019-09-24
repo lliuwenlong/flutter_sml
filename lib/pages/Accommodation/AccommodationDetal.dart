@@ -1,10 +1,15 @@
-import 'package:flutter/material.dart';
+import 'dart:ui';
+import 'package:flutter/material.dart' hide NestedScrollView;
+import 'package:flutter/material.dart' as prefix0;
+import 'package:flutter_sml/components/oldNestedScrollView/nested_scroll_view_inner_scroll_position_key_widget.dart';
 import '../Restaurant/Evaluate.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/SliverAppBarDelegate.dart';
 import '../../common/Color.dart';
 import './bottomSheet/Reserve.dart';
 import 'package:flutter_custom_calendar/flutter_custom_calendar.dart';
+import '../../components/oldNestedScrollView/old_extended_nested_scroll_view.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AccommodationDetal extends StatefulWidget {
     AccommodationDetal({Key key}) : super(key: key);
@@ -39,6 +44,7 @@ Widget defaultCustomDayWidget(DateModel dateModel) {
 class _AccommodationDetalState extends State<AccommodationDetal> with SingleTickerProviderStateMixin{
     ScrollController _scrollViewController;
     TabController _tabController;
+    RefreshController _refreshController = RefreshController(initialRefresh: false);
 
     @override
     void initState() {
@@ -176,7 +182,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                             )
                         ]
                     ),
-                    SizedBox(height: ScreenAdaper.height(35)),
+                    SizedBox(height: ScreenAdaper.height(20)),
                     Wrap(
                         spacing: ScreenAdaper.width(10),
                         runSpacing: ScreenAdaper.height(10),
@@ -198,9 +204,9 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
             color: Colors.white,
             padding: EdgeInsets.fromLTRB(
                 ScreenAdaper.width(30),
-                ScreenAdaper.height(40),
+                ScreenAdaper.height(30),
                 ScreenAdaper.width(30),
-                ScreenAdaper.height(40)
+                ScreenAdaper.height(30)
             ),
             child: GestureDetector(
                 onTap: () {
@@ -303,7 +309,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                     children: <Widget>[
                         Container(
                             width: ScreenAdaper.width(150),
-                            height: ScreenAdaper.height(187),
+                            height: ScreenAdaper.height(177),
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
                                 child: Image.network(
@@ -316,7 +322,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                             flex: 1,
                             child: Container(
                                 margin: EdgeInsets.only(left: ScreenAdaper.width(20)),
-                                height: ScreenAdaper.height(187),
+                                height: ScreenAdaper.height(177),
                                 child: Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
@@ -328,7 +334,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                                     color: ColorClass.fontColor
                                                 )),
                                                 Text("¥179", style: TextStyle(
-                                                    fontSize: ScreenAdaper.fontSize(22, allowFontScaling: true),
+                                                    fontSize: ScreenAdaper.fontSize(26, allowFontScaling: true),
                                                     color: ColorClass.fontRed
                                                 ))
                                             ],
@@ -385,6 +391,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
             title: Text("标题", style: TextStyle(
                 color: Colors.black,
             )),
+            centerTitle: true,
             iconTheme: IconThemeData(color: Colors.black),
             backgroundColor: Colors.white,
             expandedHeight: ScreenAdaper.height(300),
@@ -411,10 +418,10 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                     width: ScreenAdaper.width(460),
                     height: ScreenAdaper.width(75),
                     decoration: BoxDecoration(
-                        border: Border.all(
-                            color: ColorClass.common,
-                            width: 1
-                        ),
+                        // border: Border.all(
+                        //     // color: ColorClass.common,
+                        //     // width: 1
+                        // ),
                         borderRadius: BorderRadius.circular(ScreenAdaper.width(10))
                     ),
                     child: Row(
@@ -428,6 +435,10 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                         borderRadius: BorderRadius.only(
                                             topLeft: Radius.circular(ScreenAdaper.width(10)),
                                             bottomLeft: Radius.circular(ScreenAdaper.width(10))
+                                        ),
+                                        side: BorderSide(
+                                            color: ColorClass.common,
+                                            width: 1
                                         )
                                     ),
                                     onPressed: () {},
@@ -447,7 +458,10 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                             topRight: Radius.circular(ScreenAdaper.width(10)),
                                             bottomRight: Radius.circular(ScreenAdaper.width(10))
                                         ),
-                                        
+                                        side: BorderSide(
+                                            color: ColorClass.common,
+                                            width: 1
+                                        )
                                     ),
                                     onPressed: () {},
                                     child: Text("有图", style: TextStyle(
@@ -498,9 +512,11 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
     // 商家
     Widget _business (String name, {bool isBorder = true, bool isIcon = false, String subTitle = '', Icon icon, }) {
         return Container(
+            color: Colors.white,
             padding: EdgeInsets.only(
                 left: ScreenAdaper.width(30),
                 right: ScreenAdaper.width(30)
+                
             ),
             child: Container(
                 padding: EdgeInsets.only(
@@ -508,7 +524,6 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                     bottom: ScreenAdaper.height(30)
                 ),
                 decoration: BoxDecoration(
-                    color: Colors.white,
                     border: Border(
                         bottom: isBorder ? BorderSide(
                             color: Color(0XFFd9d9d9),
@@ -564,134 +579,382 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                             Evaluate(),
                             Evaluate(),
                             Evaluate()
-                        ],
+                        ]
                     )
                 ]
             )
         );
     }
     
+
+    @override
     Widget build(BuildContext context) {
+        final double statusBarHeight = MediaQuery.of(context).padding.top;
+        var primaryTabBar =TabBar(
+            indicatorSize: TabBarIndicatorSize.label,
+            indicatorWeight: ScreenAdaper.height(6),
+            indicatorColor: Color(0XFF22b0a1),
+            controller: this._tabController,
+            labelColor: ColorClass.titleColor,
+            unselectedLabelColor: ColorClass.fontColor,
+            labelStyle: TextStyle(
+                fontWeight: FontWeight.w600
+            ),
+            unselectedLabelStyle: TextStyle(
+                fontWeight: FontWeight.normal
+            ),
+            tabs: <Widget>[
+                Tab(child: Text("服务", style: TextStyle(
+                    fontSize: ScreenAdaper.fontSize(34),
+                    // fontWeight: FontWeight.normal
+                ))),
+                Tab(child: Text("评价", style: TextStyle(
+                    fontSize: ScreenAdaper.fontSize(34),
+                    // fontWeight: FontWeight.normal
+                ))),
+                Tab(child: Text("商家", style: TextStyle(
+                    fontSize: ScreenAdaper.fontSize(34),
+                    // fontWeight: FontWeight.normal
+                )))
+            ]
+        );
+
+        var pinnedHeaderHeight = statusBarHeight + kToolbarHeight;
         return Scaffold(
-            body: CustomScrollView(
-                slivers: <Widget>[
-                    this._sliverBuilder(),
-                    SliverToBoxAdapter(
-                        child: Column(
-                            children: <Widget>[
-                                this._information(),
-                                this._dateWidget(),
-                            ]
-                        ),
-                    ),
-                    SliverToBoxAdapter(
-                        child: SizedBox(
-                            height: ScreenAdaper.height(20),
-                        ),
-                    ),
-                    SliverPersistentHeader(
-                        pinned: true,
-                        delegate: SliverAppBarDelegate(
-                            maxHeight: 60,
-                            minHeight: 60,
-                            child: Container(
-                                height: ScreenAdaper.height(90),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border(
-                                        bottom: BorderSide(
-                                            color: Color(0XFFd9d9d9),
-                                            width: 1
-                                        )
-                                    )
-                                ),
-                                child: TabBar(
-                                    indicatorSize: TabBarIndicatorSize.label,
-                                    indicatorWeight: ScreenAdaper.height(6),
-                                    indicatorColor: Color(0XFF22b0a1),
-                                    controller: this._tabController,
-                                    tabs: <Widget>[
-                                        Tab(child: Text("服务", style: TextStyle(
-                                            color: Colors.black, fontSize: ScreenAdaper.fontSize(34)
-                                        ))),
-                                        Tab(child: Text("评价", style: TextStyle(
-                                            color: Color(0XFF666666),
-                                            fontSize: ScreenAdaper.fontSize(34)
-                                        ))),
-                                        Tab(child: Text("商家", style: TextStyle(
-                                            color: Color(0XFF666666),
-                                            fontSize: ScreenAdaper.fontSize(34)
-                                        )))
-                                    ]
-                                ),
-                            )
+            body: NestedScrollView(
+                headerSliverBuilder: (c, f) {
+                    return [
+                        this._sliverBuilder(),
+                        SliverToBoxAdapter(
+                            child: Column(
+                                children: <Widget>[
+                                    this._information(),
+                                    this._dateWidget(),
+                                    SizedBox(height: ScreenAdaper.height(20))
+                                ]
+                            ),
                         )
-                    ),
-                    SliverFillRemaining(
-                        child: TabBarView(
-                            controller: _tabController,
-                            children: <Widget>[
-                                Wrap(
-                                    children: <Widget>[
-                                        GestureDetector(
-                                            onTap: () {
-                                                showModalBottomSheetHandler();
-                                            },
-                                            child: _service(),
-                                        ),
-                                        GestureDetector(
-                                            onTap: () {
-                                                showModalBottomSheetHandler();
-                                            },
-                                            child: _service(),
-                                        ),
-                                        GestureDetector(
-                                            onTap: () {
-                                                showModalBottomSheetHandler();
-                                            },
-                                            child: _service(),
-                                        ),
-                                        GestureDetector(
-                                            onTap: () {
-                                                showModalBottomSheetHandler();
-                                            },
-                                            child: _service(isShowBorder: false)
-                                        )
-                                    ]
-                                ),
-                                Wrap(
-                                    children: <Widget>[
-                                        this._evaluate()
-                                    ]
-                                ),
-                                Wrap(
-                                    children: <Widget>[
-                                        this._business("商家名称", subTitle: "人间有味"),
-                                        this._business("商家分类", subTitle: "贵州省黔西南布依族苗族自治州兴义市湖南街30附近123123123"),
-                                        this._business("商家地址", subTitle: "人间有味"),
-                                        this._business("商家资质", subTitle: "人间有味", isBorder: false),
-                                        Container(
-                                            margin: EdgeInsets.only(
-                                                top: ScreenAdaper.height(20)
+                    ];
+                },
+                pinnedHeaderSliverHeightBuilder: () {
+                    return pinnedHeaderHeight;
+                },
+                innerScrollPositionKeyBuilder: () {
+                    var index = "Tab";
+                    index += _tabController.index.toString();
+                    return Key(index);
+                },
+                body: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                        Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Color(0XFFd9d9d9),
+                                        width: 1
+                                    )
+                                )
+                            ),
+                            child: primaryTabBar,
+                        ),
+                        Container(
+                            margin: EdgeInsets.only(
+                                top: ScreenAdaper.height(20)
+                            ),
+                            padding: EdgeInsets.only(
+                                left: ScreenAdaper.width(30),
+                                right: ScreenAdaper.width(30),
+                            ),
+                            child: this.__evaluateButton(),
+                        ),
+                        Expanded(
+                            child: TabBarView(
+                                controller: _tabController,
+                                children: <Widget>[
+                                    NestedScrollViewInnerScrollPositionKeyWidget(
+                                        Key("Tab0"),
+                                        new MediaQuery.removePadding(
+                                            removeTop: true,
+                                            context: context,
+                                            child: SmartRefresher(
+                                                controller: _refreshController,
+                                                enablePullDown: false,
+                                                enablePullUp: true,
+                                                header: WaterDropHeader(),
+                                                footer: ClassicFooter(
+                                                    loadStyle: LoadStyle.ShowWhenLoading,
+                                                    idleText: "上拉加载",
+                                                    failedText: "加载失败！点击重试！",
+                                                    canLoadingText: "加载更多",
+                                                    noDataText: "没有更多数据",
+                                                    loadingText: "加载中"
+                                                ),
+                                                child: ListView.builder(
+                                                    key: PageStorageKey("Tab0"),
+                                                    itemBuilder: (BuildContext context, int index) {
+                                                        return GestureDetector(
+                                                            onTap: () {
+                                                                showModalBottomSheetHandler();
+                                                            },
+                                                            child: _service(),
+                                                        );
+                                                    },
+                                                    itemCount: 10,
+                                                )
                                             ),
-                                            child: this._business(
-                                                "商家资质",
-                                                subTitle: "人间有味",
-                                                isBorder: false,
-                                                isIcon: true,
-                                                icon: Icon(IconData(
-                                                    0xe61e,
-                                                    fontFamily: "iconfont"
-                                                ), color: Color(0xFFaaaaaa), size: ScreenAdaper.fontSize(30),)
+                                        )
+                                        
+                                    ),
+                                    NestedScrollViewInnerScrollPositionKeyWidget(
+                                        Key("Tab1"),
+                                        new MediaQuery.removePadding(
+                                            removeTop: true,
+                                            context: context,
+                                            child: ListView.builder(
+                                            key: PageStorageKey("Tab1"),
+                                                itemBuilder: (BuildContext context, int index) {
+                                                    return Evaluate();
+                                                },
+                                                itemCount: 10,
                                             )
                                         )
-                                    ]
-                                )
-                            ],
-                        ),
-                    )
-                ]
-            ),
+                                    ),
+                                    NestedScrollViewInnerScrollPositionKeyWidget(
+                                        Key("Tab2"),
+                                        Wrap(
+                                            key: PageStorageKey("Tab2"),
+                                            children: <Widget>[
+                                                this._business("商家名称", subTitle: "人间有味"),
+                                                this._business("商家分类", subTitle: "贵州省黔西南布依族苗族自治州兴义市湖南街30附近123123123"),
+                                                this._business("商家地址", subTitle: "人间有味"),
+                                                this._business("商家资质", subTitle: "人间有味", isBorder: false),
+                                                Container(
+                                                    margin: EdgeInsets.only(
+                                                        top: ScreenAdaper.height(20)
+                                                    ),
+                                                    child: this._business(
+                                                        "商家电话",
+                                                        subTitle: "人间有味",
+                                                        isBorder: false,
+                                                        isIcon: true,
+                                                        icon: Icon(IconData(
+                                                            0xe61e,
+                                                            fontFamily: "iconfont"
+                                                        ), color: Color(0xFFaaaaaa), size: ScreenAdaper.fontSize(30),)
+                                                    )
+                                                )
+                                            ]
+                                        )
+                                    )
+                                ]
+                            ),
+                        )
+                    ],
+                ),
+            )
         );
     }
+    // @override
+    // Widget build(BuildContext context) {
+    //     return Scaffold(
+    //         body: NestedScrollView(
+    //             headerSliverBuilder: (context, innerScrolled) => <Widget>[
+    //                 SliverOverlapAbsorber(
+    //                     handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+    //                     child: this._sliverBuilder(),
+
+    //                 ),
+    //                 SliverToBoxAdapter(
+    //                     child: Column(
+    //                         children: <Widget>[
+    //                             SizedBox(height: 56.0 + MediaQueryData.fromWindow(window).padding.top),
+    //                             this._information(),
+    //                             this._dateWidget(),
+    //                         ]
+    //                     ),
+    //                 ),
+    //                 SliverPersistentHeader(
+    //                     pinned: true,
+    //                     delegate: SliverAppBarDelegate(
+    //                         maxHeight: 60,
+    //                         minHeight: 60,
+    //                         child: Container(
+    //                             decoration: BoxDecoration(
+    //                                 color: Colors.white,
+    //                                 border: Border(
+    //                                     bottom: BorderSide(
+    //                                         color: Color(0XFFd9d9d9),
+    //                                         width: 1
+    //                                     )
+    //                                 )
+    //                             ),
+    //                             child: TabBar(
+    //                                 indicatorSize: TabBarIndicatorSize.label,
+    //                                 indicatorWeight: ScreenAdaper.height(6),
+    //                                 indicatorColor: Color(0XFF22b0a1),
+    //                                 controller: this._tabController,
+    //                                 labelColor: ColorClass.titleColor,
+    //                                 unselectedLabelColor: ColorClass.fontColor,
+    //                                 labelStyle: TextStyle(
+    //                                     fontWeight: FontWeight.w600
+    //                                 ),
+    //                                 unselectedLabelStyle: TextStyle(
+    //                                     fontWeight: FontWeight.normal
+    //                                 ),
+    //                                 tabs: <Widget>[
+    //                                     Tab(child: Text("服务", style: TextStyle(
+    //                                         fontSize: ScreenAdaper.fontSize(34),
+    //                                         // fontWeight: FontWeight.normal
+    //                                     ))),
+    //                                     Tab(child: Text("评价", style: TextStyle(
+    //                                         fontSize: ScreenAdaper.fontSize(34),
+    //                                         // fontWeight: FontWeight.normal
+    //                                     ))),
+    //                                     Tab(child: Text("商家", style: TextStyle(
+    //                                         fontSize: ScreenAdaper.fontSize(34),
+    //                                         // fontWeight: FontWeight.normal
+    //                                     )))
+    //                                 ]
+    //                             ),
+    //                         )
+    //                     )
+    //                 )
+    //             ],
+    //             body: Text("234234"),
+    //         ),
+    //     );
+    // }
+    // Widget build(BuildContext context) {
+    //     return Scaffold(
+    //         body: CustomScrollView(
+    //             slivers: <Widget>[
+    //                 this._sliverBuilder(),
+    //                 SliverToBoxAdapter(
+    //                     child: Column(
+    //                         children: <Widget>[
+    //                             this._information(),
+    //                             this._dateWidget(),
+    //                         ]
+    //                     ),
+    //                 ),
+    //                 SliverToBoxAdapter(
+    //                     child: SizedBox(
+    //                         height: ScreenAdaper.height(10),
+    //                     ),
+    //                 ),
+    //                 SliverPersistentHeader(
+    //                     pinned: true,
+    //                     delegate: SliverAppBarDelegate(
+    //                         maxHeight: 60,
+    //                         minHeight: 60,
+    //                         child: Container(
+    //                             decoration: BoxDecoration(
+    //                                 color: Colors.white,
+    //                                 border: Border(
+    //                                     bottom: BorderSide(
+    //                                         color: Color(0XFFd9d9d9),
+    //                                         width: 1
+    //                                     )
+    //                                 )
+    //                             ),
+    //                             child: TabBar(
+    //                                 indicatorSize: TabBarIndicatorSize.label,
+    //                                 indicatorWeight: ScreenAdaper.height(6),
+    //                                 indicatorColor: Color(0XFF22b0a1),
+    //                                 controller: this._tabController,
+    //                                 labelColor: ColorClass.titleColor,
+    //                                 unselectedLabelColor: ColorClass.fontColor,
+    //                                 labelStyle: TextStyle(
+    //                                     fontWeight: FontWeight.w600
+    //                                 ),
+    //                                 unselectedLabelStyle: TextStyle(
+    //                                     fontWeight: FontWeight.normal
+    //                                 ),
+    //                                 tabs: <Widget>[
+    //                                     Tab(child: Text("服务", style: TextStyle(
+    //                                         fontSize: ScreenAdaper.fontSize(34),
+    //                                         // fontWeight: FontWeight.normal
+    //                                     ))),
+    //                                     Tab(child: Text("评价", style: TextStyle(
+    //                                         fontSize: ScreenAdaper.fontSize(34),
+    //                                         // fontWeight: FontWeight.normal
+    //                                     ))),
+    //                                     Tab(child: Text("商家", style: TextStyle(
+    //                                         fontSize: ScreenAdaper.fontSize(34),
+    //                                         // fontWeight: FontWeight.normal
+    //                                     )))
+    //                                 ]
+    //                             ),
+    //                         )
+    //                     )
+    //                 ),
+    //                 SliverFillRemaining(
+    //                     child: TabBarView(
+    //                         controller: _tabController,
+    //                         children: <Widget>[
+    //                             Wrap(
+    //                                 children: <Widget>[
+    //                                     GestureDetector(
+    //                                         onTap: () {
+    //                                             showModalBottomSheetHandler();
+    //                                         },
+    //                                         child: _service(),
+    //                                     ),
+    //                                     GestureDetector(
+    //                                         onTap: () {
+    //                                             showModalBottomSheetHandler();
+    //                                         },
+    //                                         child: _service(),
+    //                                     ),
+    //                                     GestureDetector(
+    //                                         onTap: () {
+    //                                             showModalBottomSheetHandler();
+    //                                         },
+    //                                         child: _service(),
+    //                                     ),
+    //                                     GestureDetector(
+    //                                         onTap: () {
+    //                                             showModalBottomSheetHandler();
+    //                                         },
+    //                                         child: _service(isShowBorder: false)
+    //                                     )
+    //                                 ]
+    //                             ),
+    //                             Wrap(
+    //                                 children: <Widget>[
+    //                                     this._evaluate()
+    //                                 ]
+    //                             ),
+    //                             Wrap(
+    //                                 children: <Widget>[
+    //                                     this._business("商家名称", subTitle: "人间有味"),
+    //                                     this._business("商家分类", subTitle: "贵州省黔西南布依族苗族自治州兴义市湖南街30附近123123123"),
+    //                                     this._business("商家地址", subTitle: "人间有味"),
+    //                                     this._business("商家资质", subTitle: "人间有味", isBorder: false),
+    //                                     Container(
+    //                                         margin: EdgeInsets.only(
+    //                                             top: ScreenAdaper.height(20)
+    //                                         ),
+    //                                         child: this._business(
+    //                                             "商家电话",
+    //                                             subTitle: "人间有味",
+    //                                             isBorder: false,
+    //                                             isIcon: true,
+    //                                             icon: Icon(IconData(
+    //                                                 0xe61e,
+    //                                                 fontFamily: "iconfont"
+    //                                             ), color: Color(0xFFaaaaaa), size: ScreenAdaper.fontSize(30),)
+    //                                         )
+    //                                     )
+    //                                 ]
+    //                             )
+    //                         ],
+    //                     ),
+    //                 )
+    //             ]
+    //         ),
+    //     );
+    // }
 }

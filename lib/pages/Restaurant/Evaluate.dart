@@ -59,7 +59,7 @@ class Evaluate extends StatelessWidget {
                                     color: ColorClass.titleColor,
                                     fontSize: ScreenAdaper.fontSize(28)
                                 )),
-                                SizedBox(height: ScreenAdaper.height(30)),
+                                SizedBox(height: ScreenAdaper.height(20)),
                                 Wrap(
                                     spacing: ScreenAdaper.width(10),
                                     runSpacing: ScreenAdaper.height(10),

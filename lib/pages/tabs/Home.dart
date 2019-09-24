@@ -300,60 +300,69 @@ class _HomePageState extends State<HomePage> {
     }
 
     Widget _getNivoList () {
-        List<Widget> widgetList = [];
         var list = this.articleList.map((value) {
-            int lastId = this._nivoListData[this._nivoListData.length - 1]["id"];
-            return Container(
-                padding : EdgeInsets.fromLTRB(
-                    0, ScreenAdaper.height(30), 0, ScreenAdaper.height(30)
-                ),
-                decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(
-                        color: lastId == value.articleId ? Colors.white :  Color(0XFFd9d9d9),
-                        width: ScreenAdaper.width(lastId == value.articleId ? 0 : 1)
-                    ))
-                ),
-                child: Row(
-                    children: <Widget>[
-                        Container(
-                            height: ScreenAdaper.width(150),
-                            width: ScreenAdaper.width(150),
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(3),
-                                child: Image.network(
-                                    "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
-                                    fit: BoxFit.cover
-                                )
-                            ),
-                        ),
-                        Expanded(
-                            flex: 1,
-                            child: Container(
+            int lastId = this.articleList[this.articleList.length - 1].articleId;
+            return GestureDetector(
+                onTap: () {
+                    Navigator.pushNamed(context, "/newsDetail",
+                        arguments: {
+                            "appTabName": "新闻详情",
+                            "id": value.articleId,
+                            "type": "article"
+                        });
+                },
+                child: Container(
+                    padding : EdgeInsets.fromLTRB(
+                        0, ScreenAdaper.height(30), 0, ScreenAdaper.height(30)
+                    ),
+                    decoration: BoxDecoration(
+                        border: Border(bottom: BorderSide(
+                            color: lastId == value.articleId ? Colors.white :  Color(0XFFd9d9d9),
+                            width: ScreenAdaper.width(lastId == value.articleId ? 0 : 1)
+                        ))
+                    ),
+                    child: Row(
+                        children: <Widget>[
+                            Container(
                                 height: ScreenAdaper.width(150),
-                                margin: EdgeInsets.only(left: ScreenAdaper.width(30)),
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                        Text(value.articleTitle, style: TextStyle(
-                                            fontSize: ScreenAdaper.fontSize(28),
-                                            color: Color(0xFF333333)
-                                        )),
-                                        SizedBox(height: ScreenAdaper.height(15)),
-                                        Text(
-                                            value.articleSummary,
-                                            style: TextStyle(
-                                                fontSize: ScreenAdaper.fontSize(24),
-                                                color: Color(0xFF666666),
-                                                height: 1.3
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                        )
-                                    ]
+                                width: ScreenAdaper.width(150),
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(3),
+                                    child: Image.network(
+                                        "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
+                                        fit: BoxFit.cover
+                                    )
+                                ),
+                            ),
+                            Expanded(
+                                flex: 1,
+                                child: Container(
+                                    height: ScreenAdaper.width(150),
+                                    margin: EdgeInsets.only(left: ScreenAdaper.width(30)),
+                                    child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                            Text(value.articleTitle, style: TextStyle(
+                                                fontSize: ScreenAdaper.fontSize(28),
+                                                color: Color(0xFF333333)
+                                            )),
+                                            SizedBox(height: ScreenAdaper.height(15)),
+                                            Text(
+                                                value.articleSummary,
+                                                style: TextStyle(
+                                                    fontSize: ScreenAdaper.fontSize(24),
+                                                    color: Color(0xFF666666),
+                                                    height: 1.3
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 2,
+                                            )
+                                        ]
+                                    )
                                 )
                             )
-                        )
-                    ]
+                        ]
+                    )
                 )
             );
         });

@@ -138,11 +138,11 @@ class _AccommodationState extends State<Accommodation> {
             ),
             child: Text("10元优惠券", style: TextStyle(
                 color: ColorClass.fontRed,
-                fontSize: ScreenAdaper.fontSize(24)
+                fontSize: ScreenAdaper.fontSize(20)
             )),
         );
     }
-    Widget _listItem (String name, String type, double price, String city) {
+    Widget _listItem (String name, String type, int price, String city) {
         return Container(
             margin: EdgeInsets.only(top: ScreenAdaper.height(20)),
             decoration: BoxDecoration(
@@ -199,29 +199,31 @@ class _AccommodationState extends State<Accommodation> {
                                                 ))
                                             ]
                                         ),
-                                        SizedBox(height: ScreenAdaper.height(30)),
+                                        SizedBox(height: ScreenAdaper.height(20)),
                                         Text(city, style: TextStyle(
                                             color: ColorClass.fontColor,
                                             fontSize: ScreenAdaper.fontSize(24)
                                         ), overflow: TextOverflow.ellipsis),
-                                        SizedBox(height: ScreenAdaper.height(20)),
-                                        Row(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            children: <Widget>[
-                                                Text("¥", style: TextStyle(
+                                        SizedBox(height: ScreenAdaper.height(15)),
+                                        Text.rich(new TextSpan(
+                                            style: TextStyle(
+                                                color: Color(0xFFfb4135),
+                                            ),
+                                            children: <TextSpan>[
+                                                TextSpan(text: "¥", style: TextStyle(
                                                     color: ColorClass.fontRed,
                                                     fontSize: ScreenAdaper.fontSize(26)
                                                 )),
-                                                Text(price.toString(), style: TextStyle(
+                                                TextSpan(text: price.toString(), style: TextStyle(
                                                     color: ColorClass.fontRed,
                                                     fontSize: ScreenAdaper.fontSize(44)
                                                 )),
-                                                Text("起", style: TextStyle(
+                                                TextSpan(text: "起", style: TextStyle(
                                                     color: ColorClass.subTitleColor,
                                                     fontSize: ScreenAdaper.fontSize(24)
                                                 ))
                                             ]
-                                        ),
+                                        )),
                                         SizedBox(height: ScreenAdaper.height(25)),
                                         Wrap(
                                             spacing: ScreenAdaper.width(10),

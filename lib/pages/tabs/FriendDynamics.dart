@@ -20,12 +20,12 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
     RefreshController _circleMsgController = RefreshController(initialRefresh: false);
     RefreshController _friendDynamicsController = RefreshController(initialRefresh: false);
     User _userModel;
-    bool _isLoading;
+    bool _isLoading = true;
     // 最新动态
     int _circleMsgPage = 1;
     bool _circleMsgLoading = true;
     List<Data> _circleMsgList = [];
-
+    
     // 好友动态
     int _friendDynamicsPage = 1;
     bool _friendDynamicsLoading = true;
@@ -43,14 +43,16 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
     void didChangeDependencies() {
         super.didChangeDependencies();
         _userModel = Provider.of<User>(context);
-        this._circleMsgPage = 1;
-        this._friendDynamicsPage = 1;
-        _circleMsgController.loadComplete();
-        _friendDynamicsController.loadComplete();
-        this._getData(isInit: true);
-        _tabController.addListener(() {
+        // this._circleMsgPage = 1;
+        // this._friendDynamicsPage = 1;
+        // _circleMsgController.loadComplete();
+        // _friendDynamicsController.loadComplete();
+        if (this._isLoading) {
             this._getData(isInit: true);
-        });
+            _tabController.addListener(() {
+                this._getData(isInit: true);
+            });
+        }
     }
 
     _thumbsUp (int id, int isThumbup, int index) async {
@@ -110,6 +112,7 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
                     if (_tabController.index == 0) {
                         _circleMsgList = res.data;
                         _circleMsgLoading = false;
+                        _isLoading = true;
                     } else {
                         _friendDynamicsMsgList = res.data;
                         _friendDynamicsLoading = false;

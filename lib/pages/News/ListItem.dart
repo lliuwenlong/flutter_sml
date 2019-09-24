@@ -22,7 +22,7 @@ class ListItem extends StatelessWidget {
                 Navigator.pushNamed(context, routerName,
                     arguments: {
                         "appTabName": appTabName,
-                        "data": data
+                        "id": data.noticeId
                     });
             }
         },

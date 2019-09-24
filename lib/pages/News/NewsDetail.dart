@@ -12,10 +12,8 @@ class NewsDetail extends StatefulWidget {
 
 class _NewsDetailState extends State<NewsDetail> {
     Map arguments;
-    NoticeDataApiModel data;
     _NewsDetailState({arguments}) {
         this.arguments = arguments;
-        this.data = arguments["data"];
     }
 
     @override
@@ -25,8 +23,8 @@ class _NewsDetailState extends State<NewsDetail> {
                 appBar: AppBarWidget().buildAppBar('${arguments["appTabName"]}'),
                 body: Container(
                     child: InAppWebView(
-                        initialUrl: "${Config.WEB_URL}/app#/?id=${this.data.noticeId}",
-                    ),
+                        initialUrl: "${Config.WEB_URL}/app#/?id=${arguments["id"]}&type=${arguments["type"]}",
+                    )
                 )
             ),
         );
