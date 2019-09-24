@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_sml/common/HttpUtil.dart';
-import 'package:flutter_sml/model/api/user/UserModel.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import '../../components/AppBarWidget.dart';
@@ -154,77 +153,73 @@ class _AuthenticationState extends State<Authentication>{
   void _checkPopMenu(bool isBordor) async {
     if (isBordor) {
        // 身份证正面
-      final result = await showMenu(
-        context: context,
-        position: RelativeRect.fromLTRB(100.0, 230.0, 0.0, 0.0),
-        items: <PopupMenuItem<String>>[
-          new PopupMenuItem<String>( 
-            value: 'value01', child: new Text('相机')
-          ),
-          new PopupMenuItem<String>(
-            value: 'value02', child: new Text('图库')
-          ),
-        ] 
+      showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context){
+            return new Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_camera),
+                      title: new Text("相机"),
+                      onTap: () async {
+                        var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+                        setState(() {
+                            this._positiveImage = imageFile;
+                        });
+                        print(this._positiveImage);
+                        Navigator.pop(context);
+                      },
+                  ),
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library),
+                      title: new Text("相册"),
+                      onTap: () async {
+                        var  imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+                        setState(() {
+                          this._positiveImage = imageFile;
+                        });
+                          Navigator.pop(context);
+                      },
+                  ),
+              ],
+            );
+          }
       );
-      if(result == null){
-        return;  
-      }
-      if(result.isNotEmpty){
-        if(result.trim() == "value01"){
-          _getCameraImage(isBordor);
-        }else{
-          _getGallery(isBordor);
-        }
-      }
     } else {
-      // 身份证反面
-      final result = await showMenu(
-        context: context,
-        position: RelativeRect.fromLTRB(100.0, 280.0, 0.0, 0.0),
-        items: <PopupMenuItem<String>>[
-          new PopupMenuItem<String>( value: 'value01', child: new Text('相机')),
-          new PopupMenuItem<String>( value: 'value02', child: new Text('图库')),
-        ] 
-      );
-      if(result == null){
-        return;  
-      }
-      if(result.isNotEmpty){
-        if(result.trim() == "value01"){
-          _getCameraImage(isBordor);
-        }else{
-          _getGallery(isBordor);
-        }
-      }
+      showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context){
+            return new Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_camera),
+                      title: new Text("相机"),
+                      onTap: () async {
+                        var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+                        setState(() {
+                            this._negativeImage = imageFile;
+                        });
+                        Navigator.pop(context);
+                      },
+                  ),
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library),
+                      title: new Text("相册"),
+                      onTap: () async {
+                        var  imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+                        setState(() {
+                          this._negativeImage = imageFile;
+                        });
+                        Navigator.pop(context);
+                      },
+                  ),
+              ],
+            );
+          }
+        );
     }
-  }
-
-  // 使用相机拍照
-  void _getCameraImage(bool isBordor) async{
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
-    setState(() {
-      if (isBordor) {
-        // 正面
-         _positiveImage = image;
-      } else {
-        // 反面
-         _negativeImage = image;
-      }
-    });
-  }
-
-  // 使用本地照片
-  void _getGallery(bool isBordor) async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      if (isBordor) {
-        // 正面
-         _positiveImage = image;
-      } else {
-        // 反面
-         _negativeImage = image;
-      }
-    });
   }
 
   // 保存实名认证数据
@@ -254,7 +249,7 @@ class _AuthenticationState extends State<Authentication>{
             });
 
 
-			print(response);
+			      print(response);
             if (response["code"] == 200 ) {
                 // UserModel userModel = new UserModel.fromJson(response);
                 // Data data = userModel.data;
@@ -333,9 +328,9 @@ class _AuthenticationState extends State<Authentication>{
   }
 
   // 显示吐司
-  void showOnClickSaveToast(String s) {
+  void showOnClickSaveToast(String msg) {
     Fluttertoast.showToast(
-      msg: s,
+      msg: msg,
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.CENTER,
       timeInSecForIos: 1,

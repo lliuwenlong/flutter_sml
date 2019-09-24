@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sml/pages/My/Invoice.dart';
+import 'package:flutter_sml/routers/routers.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import '../../components/AppBarWidget.dart';
@@ -16,7 +17,7 @@ class InvoiceInformation extends StatefulWidget {
 
 class _InvoiceInformationState extends State<InvoiceInformation> {
     int status = 0;
-    Widget _input (String hintText,TextEditingController controller) {
+    Widget _input (String hintText,TextEditingController controller,Function onChange) {
         return TextField(
             controller: controller,
             decoration: InputDecoration(
@@ -27,8 +28,9 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                     color: ColorClass.iconColor,
                     fontSize: ScreenAdaper.fontSize(24)
                 ),
-                
             ),
+            onChanged: onChange,
+
         );
     }
     Widget _choiceChip (String name, {int status = 0}) {
@@ -74,24 +76,27 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
     void didChangeDependencies() {
       super.didChangeDependencies();
       _userModel = Provider.of<User>(context);
-	  _invoiceModel = Provider.of<InvoiceInfo>(context);
+	    _invoiceModel = Provider.of<InvoiceInfo>(context);
+
+      this._invoiceRiseController.text = this._invoiceModel.receiptHeader!=null?this._invoiceModel.receiptHeader:null;
+      this._dutyParagraphController.text = this._invoiceModel.receiptCode!=null?this._invoiceModel.receiptCode:null;
     }
 
     _submitData () async {
       	Map response = await this.http.post('/receipt/0/data',params:{
-			"address":this._invoiceModel.address,
-			"city": this._invoiceModel.city,
-			"county": this._invoiceModel.county,
-			"orderSns": [
-				this._invoiceModel.orderSn
-			],
-			"phone": this._invoiceModel.phone,
-			"province": this._invoiceModel.province,
-			"receiptCode": this._dutyParagraphController.text,
-			"receiptHeader": this._invoiceRiseController.text,
-			"receiverUser": this._invoiceModel.receiverUser,
-			"remark": this._invoiceModel.remarks,
-			"userId": this._userModel.userId
+          "address":this._invoiceModel.address,
+          "city": this._invoiceModel.city,
+          "county": this._invoiceModel.county,
+          "orderSns": [
+            this._invoiceModel.orderSn
+          ],
+          "phone": this._invoiceModel.phone,
+          "province": this._invoiceModel.province,
+          "receiptCode": this._invoiceModel.receiptCode,
+          "receiptHeader": this._invoiceModel.receiptHeader,
+          "receiverUser": this._invoiceModel.receiverUser,
+          "remark": this._invoiceModel.remarks,
+          "userId": this._userModel.userId
       	});
       	print(response);
       	if(response['code'] == 200){
@@ -206,7 +211,24 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                                         child: Container(
                                             child: this._input(
                                               "请填写发票抬头",
-                                              _invoiceRiseController
+                                              _invoiceRiseController,
+                                              (val){
+                                                setState(() {
+                                                    this._invoiceModel.initInvoiceInfo(
+                                                      province: this._invoiceModel.province,
+                                                      city: this._invoiceModel.city,
+                                                      county: this._invoiceModel.county,
+                                                      address: this._invoiceModel.address,
+                                                      phone: this._invoiceModel.phone,
+                                                      receiverUser: this._invoiceModel.receiverUser,
+                                                      amount: this._invoiceModel.amount,
+                                                      orderSn: this._invoiceModel.orderSn,
+                                                      remarks: this._invoiceModel.remarks,
+                                                      receiptCode: this._invoiceModel.receiptCode,
+                                                      receiptHeader: this._invoiceRiseController.text
+                                                    );
+                                                });
+                                              },
                                             )
                                         )
                                     )
@@ -252,7 +274,24 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                                             child: Container(
                                                 child: this._input(
                                                   "请填写纳税人识别号",
-                                                  _dutyParagraphController
+                                                  _dutyParagraphController,
+                                                  (val){
+                                                    setState(() {
+                                                        this._invoiceModel.initInvoiceInfo(
+                                                          province: this._invoiceModel.province,
+                                                          city: this._invoiceModel.city,
+                                                          county: this._invoiceModel.county,
+                                                          address: this._invoiceModel.address,
+                                                          phone: this._invoiceModel.phone,
+                                                          receiverUser: this._invoiceModel.receiverUser,
+                                                          amount: this._invoiceModel.amount,
+                                                          orderSn: this._invoiceModel.orderSn,
+                                                          remarks: this._invoiceModel.remarks,
+                                                          receiptCode: this._dutyParagraphController.text,
+                                                          receiptHeader: this._invoiceModel.receiptHeader
+                                                        );
+                                                    });
+                                                  },
                                                 )
                                             )
                                         )
@@ -298,12 +337,12 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                                                         color: ColorClass.iconColor,
                                                         fontSize: ScreenAdaper.fontSize(24)
                                                     )):Text(
-														this._invoiceModel.remarks,
-														style: TextStyle(
-															color: ColorClass.fontColor,
-															fontSize: ScreenAdaper.fontSize(30)
-														),
-													)
+                                                    this._invoiceModel.remarks,
+                                                    style: TextStyle(
+                                                      color: Color(0xff333333),
+                                                      fontSize: ScreenAdaper.fontSize(30)
+                                                    ),
+                                                  )
 													
                                                 	]
                                            		),
@@ -372,7 +411,9 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                     ),
                     GestureDetector(
                         onTap: () {
-                            Navigator.pushNamed(context, "/invoiceDetails");
+                            Navigator.pushNamed(context, "/invoiceDetails",arguments: {
+                              'amount':this._invoiceModel.amount
+                            });
                         },
                         child: Container(
                             margin: EdgeInsets.only(

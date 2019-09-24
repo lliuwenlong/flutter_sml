@@ -9,17 +9,20 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../components/LoadingSm.dart';
 import '../../components/NullContent.dart';
 class ValueAddedServices extends StatefulWidget {
-  ValueAddedServices({Key key}) : super(key: key);
+  final arguments;
+  ValueAddedServices({Key key,this.arguments}) : super(key: key);
 
-  _ValueAddedServicesState createState() => _ValueAddedServicesState();
+  _ValueAddedServicesState createState() => _ValueAddedServicesState(arguments:this.arguments);
 }
 
 class _ValueAddedServicesState extends State<ValueAddedServices> {
+  final arguments;
   final HttpUtil http = HttpUtil();
   int valueAddPage = 1;
   bool isValueLoading = true;
   List valueAddList = [];
   RefreshController _valueAddRefresController = new RefreshController(initialRefresh: false);
+  _ValueAddedServicesState({this.arguments});
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -84,7 +87,8 @@ class _ValueAddedServicesState extends State<ValueAddedServices> {
         return GestureDetector(
           onTap: (){
             Navigator.pushNamed(context, '/valueDetail',arguments: {
-              "sid":id
+              "sid":id,
+              'woodSn': arguments['woodSn']
             });
           },
           child: Stack(

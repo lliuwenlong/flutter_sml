@@ -42,8 +42,7 @@ class _InvoiceHistoryState extends State<InvoiceHistory> {
         data: {"pageNO": this._invoicePage, "pageSize": 10, "userId": this._userModel.userId});
 
     if (response['code'] == 200) {
-      InvoiceHistoryDataModel res =
-          new InvoiceHistoryDataModel.fromJson(response);
+      InvoiceHistoryDataModel res = new InvoiceHistoryDataModel.fromJson(response);
       if (isInit) {
         setState(() {
           this.invoiceList = res.data.list;

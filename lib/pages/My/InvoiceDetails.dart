@@ -59,7 +59,7 @@ class InvoiceDetails extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: <Widget>[
-                                Text(arguments['data']['amount'], style: TextStyle(
+                                Text(arguments['amount'], style: TextStyle(
                                     color: ColorClass.fontRed,
                                     fontSize: ScreenAdaper.fontSize(40),
                                     fontWeight: FontWeight.w500
@@ -86,15 +86,15 @@ class InvoiceDetails extends StatelessWidget {
                             top: ScreenAdaper.height(30),
                             left: ScreenAdaper.width(30)
                         ),
-                        child: Text("发票总数${arguments['data']['num']}张", style: TextStyle(
+                        child: Text("发票总数1张", style: TextStyle(
                             color: ColorClass.titleColor,
                             fontSize: ScreenAdaper.fontSize(28)
                         ))
                     ),
                     SizedBox(height: ScreenAdaper.height(30)),
-                    this._rowItem("发票内容", arguments['data']['content']),
-                    this._rowItem("开票方", arguments['data']['header']),
-                    this._rowItem("发票总额", "${arguments['data']['amount']}元", isBorder: false)
+                    this._rowItem("发票内容", '购树服务费'),
+                    this._rowItem("开票方", '贵州绿建实业有限公司'),
+                    this._rowItem("发票总额", "${arguments['amount']}元", isBorder: false)
                 ]
             )
         );

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import '../Shop/Purchase.dart';
 import '../../common/HttpUtil.dart';
 import '../../components/LoadingSm.dart';
+import '../../pages/My/ValueProductBuy.dart';
 class ValueDetail extends StatefulWidget {
   final Map arguments;
   ValueDetail({Key key, this.arguments}) : super(key: key);
@@ -29,7 +29,6 @@ class _ValueDetailState extends State<ValueDetail> {
 
   _getData () async {
     Map response = await this.http.get('/api/v1/vp/${arguments['sid']}');
-    print(response);
     if ( response['code'] == 200 ) {
       setState(() {
         this.detailData = response['data'];
@@ -120,18 +119,22 @@ class _ValueDetailState extends State<ValueDetail> {
   
   BuildContext _selfContext;
     _purchase () {
-		showModalBottomSheet(
-			context: this._selfContext,
-			shape:  RoundedRectangleBorder(
-				borderRadius: BorderRadius.only(
-					topLeft: Radius.circular(ScreenAdaper.width(10)),
-					topRight: Radius.circular(ScreenAdaper.width(10)),
-				)
-			),
-			builder: (BuildContext context) {
-				return Purchase();
-			}
-		);
+      showModalBottomSheet(
+        context: this._selfContext,
+        shape:  RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(ScreenAdaper.width(10)),
+            topRight: Radius.circular(ScreenAdaper.width(10)),
+          )
+        ),
+        builder: (BuildContext context) {
+            return Purchase(
+              prodId:arguments['sid'], 
+              price: double.parse(detailData['price']),
+              woodSn: arguments['woodSn']
+            );
+        }
+      );
 	}
   
   

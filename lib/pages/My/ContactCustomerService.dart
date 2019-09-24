@@ -27,7 +27,7 @@ class _ContactCustomerServiceState extends State<ContactCustomerService> {
 			final  res = new ContactCustomerServiceDataModel.fromJson(response);
 			setState(() {
 			    concatData = res.data;
-				isConcatLoading = false;
+				  isConcatLoading = false;
 			});
 		}
 	}

@@ -11,6 +11,8 @@ class InvoiceInfo  with ChangeNotifier{
     String _remarks;//备注
     String _orderSn;//订单号
     String _amount;//订单金额
+    String _receiptCode;//纳税人识别号
+    String _receiptHeader;//发票抬头
 
 
     String get province => _province;
@@ -22,7 +24,8 @@ class InvoiceInfo  with ChangeNotifier{
     String get remarks => _remarks;
     String get orderSn => _orderSn;
     String get amount => _amount;
-
+    String get receiptCode => _receiptCode;
+    String get receiptHeader => _receiptHeader;
     initInvoiceInfo(
         {String province,
         String city,
@@ -33,6 +36,8 @@ class InvoiceInfo  with ChangeNotifier{
         String remarks,
         String orderSn,
         String amount,
+        String receiptCode,
+        String receiptHeader,
         }) {
         this._province = province;
         this._city = city;
@@ -43,6 +48,8 @@ class InvoiceInfo  with ChangeNotifier{
         this._remarks = remarks;
         this._orderSn = orderSn;
         this._amount = amount;
+        this._receiptCode = receiptCode;
+        this._receiptHeader = receiptHeader;
     }
 
 }

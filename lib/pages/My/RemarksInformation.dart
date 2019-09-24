@@ -13,12 +13,19 @@ class RemarksInformation extends StatefulWidget {
 }
 
 class _RemarksInformationState extends State<RemarksInformation> {
-    TextEditingController _remarksInformationController = new TextEditingController();
+    static String _inputText = '';
+    TextEditingController _remarksInformationController = new TextEditingController
+    .fromValue(
+      TextEditingValue(
+                text: _inputText
+            )
+    );
     InvoiceInfo _invoiceModel;
     @override
     void didChangeDependencies() {
       super.didChangeDependencies();
       _invoiceModel = Provider.of<InvoiceInfo>(context);
+      // this._remarksInformationController.text = _invoiceModel.remarks!=null?_invoiceModel.remarks:'';
     }
     @override
     Widget build(BuildContext context) {
@@ -63,8 +70,6 @@ class _RemarksInformationState extends State<RemarksInformation> {
                                     borderRadius: BorderRadius.circular(ScreenAdaper.width(10))
                                 ),
                                 onPressed: () {
-                                  print(this._remarksInformationController.text);
-                                  Navigator.pushReplacementNamed(context, '/invoiceInformation');
                                   this._invoiceModel.initInvoiceInfo(
                                     province: this._invoiceModel.province,
                                     city: this._invoiceModel.city,
@@ -74,8 +79,12 @@ class _RemarksInformationState extends State<RemarksInformation> {
                                     receiverUser: this._invoiceModel.receiverUser,
                                     amount: this._invoiceModel.amount,
                                     orderSn: this._invoiceModel.orderSn,
-                                    remarks: this._remarksInformationController.text
+                                    remarks: this._remarksInformationController.text,
+                                    receiptCode: this._invoiceModel.receiptCode,
+                                    receiptHeader: this._invoiceModel.receiptHeader
                                   );
+
+                                  Navigator.pushReplacementNamed(context, '/invoiceInformation');
                                 },
                                 child: Text("提交", style: TextStyle(
                                     color: Colors.white,
