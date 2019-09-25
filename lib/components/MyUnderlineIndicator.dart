@@ -4,6 +4,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import '../services/ScreenAdaper.dart';
+
 
 /// Used with [TabBar.indicator] to draw a horizontal line below the
 /// selected tab.
@@ -78,7 +80,7 @@ class _MyUnderlinePainter extends BoxPainter {
     final Rect indicator = insets.resolve(textDirection).deflateRect(rect);
 
     //希望的宽度
-    double wantWidth = 20;
+    double wantWidth = ScreenAdaper.width(50);
     //取中间坐标
     double cw = (indicator.left + indicator.right) / 2;
     return Rect.fromLTWH(cw - wantWidth / 2,

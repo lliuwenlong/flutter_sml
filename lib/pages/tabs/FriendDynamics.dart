@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/components/MyUnderlineIndicator.dart';
 import 'package:flutter_sml/components/NullContent.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -197,6 +198,14 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
             bottom: TabBar(
                 indicatorSize: TabBarIndicatorSize.label,
                 indicatorWeight: ScreenAdaper.height(6),
+                unselectedLabelColor: Color(0XFF666666),
+                labelColor: Color(0XFF333333),
+                indicator: MyUnderlineTabIndicator(
+                    borderSide: BorderSide(
+                        width: ScreenAdaper.height(6),
+                        color: ColorClass.common
+                    )
+                ),
                 indicatorColor: Color(0XFF22b0a1),
                 controller: this._tabController,
                 onTap: (int index) {
@@ -204,11 +213,9 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
                 },
                 tabs: <Widget>[
                     Tab(child: Text("最新动态", style: TextStyle(
-                        color: Color(0XFF666666),
                         fontSize: ScreenAdaper.fontSize(34)
                     ))),
                     Tab(child: Text("好友动态", style: TextStyle(
-                        color: Color(0XFF666666),
                         fontSize: ScreenAdaper.fontSize(34)
                     )))
                 ]
