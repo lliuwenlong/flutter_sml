@@ -129,7 +129,8 @@ void _onRefresh() async{
               return;
             }
             Navigator.pushNamed(context, '/productDetail',arguments: {
-              "woodSn":data.woodSn
+              "woodSn": data.woodSn,
+              'woodId': data.woodId
             });
           },
           child: Stack(

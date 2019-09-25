@@ -10,6 +10,7 @@ import '../../model/api/my/GrowthRecordData.dart';
 import '../../model/api/my/TransferRecordData.dart';
 import '../../model/api/my/ValueData.dart';
 import '../../model/store/user/User.dart';
+import '../../model/api/my/BannerData.dart';
 class ProductDetail extends StatefulWidget {
   final Map arguments;
   ProductDetail({Key key, this.arguments}) : super(key: key);
@@ -30,26 +31,16 @@ class _ProductDetailState extends State<ProductDetail> {
     setState(() {
       this.woodSn = arguments['woodSn'];
     });
-    _getDetail();
-    _getOutPutRecord();
-    _getGrowthRecord();
-    _getTransferRecord();
-	_getValueRecored();
+      _getDetail();
+      _getOutPutRecord();
+      _getGrowthRecord();
+      _getTransferRecord();
+      _getValueRecored();
+      _getBanner();
 
   }
 
-  List<Map> bannerList = [
-    {
-      "url":
-          'http://img.pconline.com.cn/images/upload/upc/tx/photoblog/1411/14/c2/40920783_40920783_1415949861822_mthumb.jpg'
-    },
-    {"url": 'http://img.juimg.com/tuku/yulantu/110126/292-11012613321981.jpg'},
-    {
-      "url":
-          'http://img.pconline.com.cn/images/upload/upc/tx/photoblog/1411/14/c2/40920783_40920783_1415949861822_mthumb.jpg'
-    },
-    {"url": 'http://img.juimg.com/tuku/yulantu/110126/292-11012613321981.jpg'}
-  ];
+  
 
   //树木信息
   Widget _treeInfo(String infoName, String infoData) {
@@ -285,6 +276,7 @@ class _ProductDetailState extends State<ProductDetail> {
   List transferList = []; //转让记录
   List valueList = [];
   var detailData;
+  List bannerList = [];
   _getOutPutRecord() async {
     Map resOutPut = await this.http.get('/api/v1/user/wood/prod',
         data: {'pageNO': 1, 'pageSize': 1, 'woodSn': arguments['woodSn']});
@@ -296,7 +288,6 @@ class _ProductDetailState extends State<ProductDetail> {
       });
     }
   }
-
   _getGrowthRecord() async {
     Map resGrowth = await this.http.get('/api/v1/user/wood/grow',
         data: {'pageNO': 1, 'pageSize': 1, 'woodSn': arguments['woodSn']});
@@ -307,7 +298,6 @@ class _ProductDetailState extends State<ProductDetail> {
       });
     }
   }
-
   _getTransferRecord() async {
     Map resTransfer = await this.http.get('/api/v1/user/wood/transfer',
         data: {'pageNO': 1, 'pageSize': 1, 'woodSn': arguments['woodSn']});
@@ -319,7 +309,6 @@ class _ProductDetailState extends State<ProductDetail> {
       });
     }
   }
-
   _getValueRecored () async {
 		Map resValue = await this.http.get('/api/v1/user/wood/vp',
         data: {'woodSn': arguments['woodSn']});
@@ -330,8 +319,7 @@ class _ProductDetailState extends State<ProductDetail> {
 			});
 		}
 	}
- 
- _getDetail () async {
+  _getDetail () async {
      Map resDetail = await this.http.get('/api/v1/user/wood/one',data: {
          'woodSn':arguments['woodSn']
      });
@@ -340,11 +328,19 @@ class _ProductDetailState extends State<ProductDetail> {
            this.detailData = resDetail['data'];
          });
      }
-
-     print(this.detailData);
  }
+  _getBanner () async {
+    Map resBanner = await this.http.get('/api/v1/banner/tree',data: {
+      'vpId':arguments['woodId']
+    });
+    if (resBanner['code'] == 200) {
+        setState(() {
+          this.bannerList = resBanner['data'];
+        });
+    }
+  }
   BuildContext _selfContext;
-  _purchase() {
+  _productBuy() {
     showModalBottomSheet(
         context: this._selfContext,
         shape: RoundedRectangleBorder(
@@ -353,11 +349,10 @@ class _ProductDetailState extends State<ProductDetail> {
           topRight: Radius.circular(ScreenAdaper.width(10)),
         )),
         builder: (BuildContext context) {
-          return Purchase(
+          return ProductBuy(
               userId:this._userModel.userId,
               price: double.parse(detailData['price']),
               woodSn:arguments['woodSn'],
-             
           );
         });
   }
@@ -385,15 +380,17 @@ class _ProductDetailState extends State<ProductDetail> {
                         aspectRatio: 5 / 2,
                         child: Swiper(
                           itemBuilder: (BuildContext context, int index) {
+                            print(this.bannerList[index]['imageUrl']);
                             return Container(
                                 height: ScreenAdaper.height(300),
                                 decoration: BoxDecoration(
                                     image: DecorationImage(
                                         image: NetworkImage(
-                                            detailData['image']),
+                                           this.bannerList[index]['imageUrl']
+                                        ),
                                         fit: BoxFit.cover)));
                           },
-                          itemCount: 1,
+                          itemCount:this.bannerList.length,
                           control: new SwiperPagination(
                             builder: FractionPaginationBuilder(
                               color: Colors.white,
@@ -639,7 +636,7 @@ class _ProductDetailState extends State<ProductDetail> {
                             ),
                             onTap: () {
                               // print('续费');
-                              this._purchase();
+                              this._productBuy();
                             },
                           ),
                         )

@@ -57,6 +57,7 @@ class _PurchaseState extends State<Purchase>  {
 				timeInSecForIos: 1,
 				fontSize: ScreenAdaper.fontSize(30)
 			);
+      Navigator.pop(context);
 		}
     }
     _onPay () {

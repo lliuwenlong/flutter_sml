@@ -177,7 +177,7 @@ class _InvoiceState extends State<Invoice> {
                     color: Colors.black,
                     fontSize: ScreenAdaper.fontSize(32)
                 )),
-                elevation: 1,
+                elevation: 0,
                 iconTheme: IconThemeData(color: Colors.black),
                 backgroundColor: Colors.white,
                 centerTitle: true,

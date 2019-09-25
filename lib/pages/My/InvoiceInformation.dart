@@ -98,9 +98,16 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
           "remark": this._invoiceModel.remarks,
           "userId": this._userModel.userId
       	});
-      	print(response);
       	if(response['code'] == 200){
-          	print(response);
+			Fluttertoast.showToast(
+				msg: '信息提交成功',
+				toastLength: Toast.LENGTH_SHORT,
+				timeInSecForIos: 1,
+				textColor: Colors.white,
+				backgroundColor: Colors.black87,
+				fontSize: ScreenAdaper.fontSize(30),
+				gravity: ToastGravity.CENTER
+			);
       	}else{
 			Fluttertoast.showToast(
 				msg: response['msg'],

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -32,18 +31,16 @@ class _UserInfoState extends State<UserInfo> {
     String path = image.path;
     var name = path.substring(path.lastIndexOf("/") + 1, path.length);
     FormData formData = new FormData.from({
-      "image": new UploadFileInfo(image, name)
+      "image": new UploadFileInfo(new File(path), name)
     });
 
-    
-
-    print(formData);
+    // print(formData);
 
  
     Dio dio = new Dio();
-    var respone = await dio.post("${Config.apiUrl}/oss/img", data: formData);
+    var respone = await dio.post<String>("${Config.apiUrl}/oss/img", data: formData);
     print(respone);
-     
+     return;
     if (respone.statusCode == 200) {
       Map res = await this.http.post('/api/v11/user/reheader',data: {
           "image": 'https://pic2.zhimg.com/v2-639b49f2f6578eabddc458b84eb3c6a1.jpg',

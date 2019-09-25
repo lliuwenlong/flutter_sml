@@ -11,7 +11,7 @@ class _AiCustomerServiceState extends State<AiCustomerService> {
   	final HttpUtil http = HttpUtil();
 	List<dynamic> _chatList = [];
 //发送消息
- 	_sendMessage (String question) async {
+ 	_sendMessage (String question,BuildContext context) async {
 	    Map response = await this.http.post('/api/v1/faq', data:{
 		   'question':question
 	    });
@@ -21,16 +21,23 @@ class _AiCustomerServiceState extends State<AiCustomerService> {
 					"text": response['data'],
 					"customer": false
 				});
+        int len = this._chatList.length;
+        this._scrollController.animateTo(
+            context.size.height*len,
+            duration: Duration(milliseconds: 1000),
+            curve: Curves.ease
+        );
+        
 			});
 		}
   	}
-
+ ScrollController _scrollController = new ScrollController();
 @override
 void didChangeDependencies() {
 	super.didChangeDependencies();
-	this._controller.text = '';
+  
 }
-
+ 
   //聊天
   Widget chatContent(BuildContext context, int index) {
     var value = this._chatList[index];
@@ -76,13 +83,8 @@ void didChangeDependencies() {
     );
   }
 
-	static String _inputText = '';
-    TextEditingController _controller = new TextEditingController.fromValue(
-        TextEditingValue(
-            text: _inputText,
-            selection: TextSelection.fromPosition(TextPosition(
-                affinity: TextAffinity.downstream,
-                offset: _inputText.length))));
+	// static String _inputText = '';
+    TextEditingController _controller = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     ScreenAdaper.init(context);
@@ -100,8 +102,7 @@ void didChangeDependencies() {
                   child: ListView.builder(
                     itemCount: this._chatList.length,
                     itemBuilder: chatContent,
-                    physics: ScrollPhysics(), // scrollDirection: Axis.vertical,
-                    controller: ScrollController(),
+                    controller:_scrollController,
                   ),
                 ),
                 Positioned(
@@ -139,17 +140,20 @@ void didChangeDependencies() {
                             fillColor: Color(0xfff5f5f5),
                           ),
                           controller: _controller,
-                          onChanged: (value) {
-                            setState(() {
-                              _controller.text = value;
-                            });
-                          },
                           onSubmitted: (value) {
                             setState(() {
                               	this._chatList.add({"text": value, "customer": true});
-								_controller.text = '';
+                                _controller.text = '';
+                                int len = this._chatList.length;
+                                this._sendMessage(value,context);
+                                this._scrollController.animateTo(
+                                  context.size.height*len,
+                                  duration: Duration(milliseconds: 1000),
+                                  curve: Curves.ease
+                                );
                             });
-							this._sendMessage(value);
+                           
+                            
                           },
                         ),
                       ),

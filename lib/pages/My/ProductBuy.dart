@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
 import '../../common/HttpUtil.dart';
 import 'dart:ui';
 
-class Purchase extends StatefulWidget {
+class ProductBuy extends StatefulWidget {
   int userId;
     double price;
     String woodSn;
-    Purchase({Key key,this.userId, this.price,this.woodSn});
-    _PurchaseState createState() => _PurchaseState(userId:this.userId,price: this.price,woodSn:this.woodSn);
+    ProductBuy({Key key,this.userId, this.price,this.woodSn});
+    _ProductBuyState createState() => _ProductBuyState(userId:this.userId,price: this.price,woodSn:this.woodSn);
 }
 
-class _PurchaseState extends State<Purchase>  {
+class _ProductBuyState extends State<ProductBuy>  {
     BuildContext _selfContext;
     int userId;
     double price;
     String woodSn;
-    _PurchaseState({Key key,this.userId, this.price, this.woodSn});
+    _ProductBuyState({Key key,this.userId, this.price, this.woodSn});
     bool isPay = true;
-    String payType = "wx";
+    String payType = "Wechat";
+    final HttpUtil http = HttpUtil();
     @override
     void didChangeDependencies() {
         super.didChangeDependencies();
@@ -30,9 +31,39 @@ class _PurchaseState extends State<Purchase>  {
     initState () {
         super.initState();
     }
+    _payment () async {
+        Map  response =  await this.http.post('/api/v1/wood/renew',data: {
+          'userId': this.userId,
+          'woodSn': this.woodSn,
+        });
+        if(response['code'] == 200){
+            Fluttertoast.showToast(
+              msg: '支付成功',
+              toastLength: Toast.LENGTH_SHORT,
+              backgroundColor: Colors.black87,
+              textColor: Colors.white,
+              timeInSecForIos: 1,
+              gravity: ToastGravity.CENTER,
+              fontSize: ScreenAdaper.fontSize(30)
+            );
+             Navigator.pop(context);
+        }else{
+           Fluttertoast.showToast(
+              msg: response['msg'],
+              toastLength: Toast.LENGTH_SHORT,
+              backgroundColor: Colors.black87,
+              textColor: Colors.white,
+              timeInSecForIos: 1,
+              gravity: ToastGravity.CENTER,
+              fontSize: ScreenAdaper.fontSize(30)
+            );
+        }
 
+    }
     _onPay () {
         print(this.payType);
+      this._payment();
+
     }
     Widget _header (String name) {
         return Container(
@@ -71,12 +102,12 @@ class _PurchaseState extends State<Purchase>  {
 
     Widget _rowItem (String type) {
         Map<String, Map> icon = {
-            "wx": {
+            "Wechat": {
                 "icon": 0xe622,
                 "color": 0xFF00c803,
                 "text": "微信支付"
             },
-            "zf": {
+            "Alipay": {
                 "icon": 0xe623,
                 "color": 0xFF00a9e9,
                 "text": "支付宝支付"
@@ -165,14 +196,14 @@ class _PurchaseState extends State<Purchase>  {
                                 )
                             )
                         ),
-                        child: _rowItem("wx")
+                        child: _rowItem("Wechat")
                     ),
                     Container(
                         padding: EdgeInsets.only(
                             top: ScreenAdaper.height(30),
                             bottom: ScreenAdaper.height(30)
                         ),
-                        child: _rowItem("zf")
+                        child: _rowItem("Alipay")
                     ),
                     Container(
                         margin:  EdgeInsets.only(

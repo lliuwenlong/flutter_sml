@@ -22,7 +22,6 @@ class ProductDataModel {
   }
 }
 
-
 class Data {
   int currPage;
   List<ListItem> list;
@@ -71,6 +70,7 @@ class ListItem {
   int hasDays;
   String image;
   String name;
+  String woodId;
   String woodSn;
 
   ListItem(
@@ -81,6 +81,7 @@ class ListItem {
       this.hasDays,
       this.image,
       this.name,
+      this.woodId,
       this.woodSn});
 
   ListItem.fromJson(Map<String, dynamic> json) {
@@ -91,6 +92,7 @@ class ListItem {
     hasDays = json['hasDays'];
     image = json['image'];
     name = json['name'];
+    woodId = json['woodId'];
     woodSn = json['woodSn'];
   }
 
@@ -103,6 +105,7 @@ class ListItem {
     data['hasDays'] = this.hasDays;
     data['image'] = this.image;
     data['name'] = this.name;
+    data['woodId'] = this.woodId;
     data['woodSn'] = this.woodSn;
     return data;
   }

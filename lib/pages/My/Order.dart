@@ -44,8 +44,9 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
     bool toBeUsedLoading = true;
     bool toBeEvaluatedLoading = true;
     bool refundLoading = true;
-	bool finishedLoading = true;
-	bool loading = true;
+	  bool finishedLoading = true;
+  	bool loading = true;
+
     int allPage = 1;
     int paymentPage = 1;
     int toBeUsedPage = 1;
@@ -179,13 +180,15 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
 			"pageNO": this.page,
 			"pageSize": 10,
 			"status": _tabController.index == 5? 9 : _tabController.index,
-			"userId": this._userModel.userId
+			"userId": 1
 		});
-
+    print(response);
 		if (response['code'] == 200) {
 			OrderDataModel res = OrderDataModel.fromJson(response);
-			if (isInit) {
-                setState(() {
+		
+    	if (isInit) {
+          setState(() {
+            print(    _tabController.index);
                     switch (_tabController.index) {
                       case 0 : {
                         allList = res.data.list;
@@ -219,8 +222,8 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                       } break;
                     }
                 });
-            } else {
-                setState(() {
+      } else {
+          setState(() {
                      if (_tabController.index == 0) {
                         allList.addAll(res.data.list);
                     } else if (_tabController.index == 1) {
@@ -235,22 +238,26 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
 						finishedList.addAll(res.data.list);
 					}
                 });
-            }
+      }
 		}
 		return response;
 	}
     Widget _itemWidget ({var data}) {
-		String status;
-		switch (data.status) {
-			case '1':  status = '去付款'; break;
-			case '2':  status = '去使用'; break;
-			case '3':  status = '去评价'; break;
-			case '9':  status = '去评价'; break;
-		}
-        	return GestureDetector(
+
+      String status;
+      if(data.status!=null){
+        switch (data.status) {
+            case '1': status = '去付款';break;
+            case '2': status = '去使用';break;
+            case '3': status = '去评价';break;
+            case '9': status = '取消订单';break;
+            default: status = '';
+        }
+      }
+      
+      return GestureDetector(
 				onTap: (){
-					print(data.status);
-					if(data.status == '9'){
+					if(data.status == 9){
 						print('object');
 						Navigator.pushNamed(context, '/cancellationOrder', arguments: {
 							'orderSn': data.orderSn
@@ -267,19 +274,27 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                 	children: <Widget>[
                     Row(
                         children: <Widget>[
-                            Icon(
-                                IconData(0xe659, fontFamily: "iconfont"),
-                                color: Colors.red,
+                           data.type=='tree'? Icon(//神木
+                                IconData(0xe661, fontFamily: "iconfont"),
+                                color: Color(0xff22b0a1),
                                 size: ScreenAdaper.fontSize(30),
-                            ),
+                            ):data.type=='house'?Icon(//住宿
+                                IconData(0xe662, fontFamily: "iconfont"),
+                                color: Color(0xffc1a786),
+                                size: ScreenAdaper.fontSize(30),
+                            ):data.type == 'havefun'?Icon(//娱乐
+                                IconData(0xe665, fontFamily: "iconfont"),
+                                color: Color(0xffe99470),
+                                size: ScreenAdaper.fontSize(30),
+                            ):Text(''),
                             SizedBox(width: ScreenAdaper.width(20)),
-                            Text(data.name, style: TextStyle(
+                            Text(data.name!=null?data.name:'', style: TextStyle(
                                 color: ColorClass.titleColor,
                                 fontSize: ScreenAdaper.fontSize(30)
                             )),
                             Expanded(
                                 flex: 1,
-                                child: Text(data.statusName,  style: TextStyle(
+                                child: Text(data.statusName!=null?data.statusName:'',  style: TextStyle(
                                     color: ColorClass.fontColor,
                                     fontSize: ScreenAdaper.fontSize(24)
                                 ), textAlign: TextAlign.end),
@@ -295,7 +310,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                                 child: ClipRRect(
                                     borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
                                     child: Image.network(
-										data.logo,
+										                    data.logo!=null?data.logo:'',
                                         fit: BoxFit.cover,
                                     )
                                 ),
@@ -306,12 +321,12 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                             Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                    Text("下单时间：${data.createTime}", style: TextStyle(
+                                    Text("下单时间：${data.createTime!=null?data.createTime:''}", style: TextStyle(
                                         color: ColorClass.titleColor,
                                         fontSize: ScreenAdaper.fontSize(24)
                                     )),
                                     SizedBox(height: ScreenAdaper.height(5)),
-                                    Text("总价：¥${data.amount}", style: TextStyle(
+                                    Text("总价：${data.amount!=null?data.amount:''}", style: TextStyle(
                                         color: ColorClass.titleColor,
                                         fontSize: ScreenAdaper.fontSize(24)
                                     ))
@@ -319,9 +334,10 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                             )
                         ]
                     ),
-                    status!=null?Container(
+                    Container(
                         alignment: Alignment.centerRight,
-                        child: Container(
+                        child: 
+                        status != ''?Container(
                             width: ScreenAdaper.width(160),
                             height: ScreenAdaper.width(60),
                             child: OutlineButton(
@@ -341,8 +357,8 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                                     fontSize: ScreenAdaper.fontSize(24)
                                 )),
                             )
-                        )
-                    ):Text('')
+                        ):Text('')
+                    )
                 ]
             	),
 				),
@@ -384,7 +400,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                             val['name']
                         ));
                     }).toList(),
-					onTap: (int index) {
+					          onTap: (int index) {
                         this._getData(isInit: true);
                     }
                 ),
@@ -482,7 +498,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                                 }
                             )
                     ),
-					SmartRefresher(
+					          SmartRefresher(
                         controller: toBeEvaluatedController,
                         enablePullDown: true,
                         enablePullUp: true,
