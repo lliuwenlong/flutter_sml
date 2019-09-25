@@ -128,9 +128,9 @@ class _ShopPageState extends State<ShopPage> {
                                 left: ScreenAdaper.width(20),
                                 child: Container(
                                     padding: EdgeInsets.fromLTRB(
-                                        ScreenAdaper.width(36),
+                                        ScreenAdaper.width(24),
                                         ScreenAdaper.height(16),
-                                        ScreenAdaper.width(36),
+                                        ScreenAdaper.width(24),
                                         ScreenAdaper.height(16)
                                     ),
                                     decoration: BoxDecoration(
@@ -146,7 +146,7 @@ class _ShopPageState extends State<ShopPage> {
                         ],
                     ),
                     SizedBox(height: ScreenAdaper.height(20)),
-                    Padding(
+                    Container(
                         padding: EdgeInsets.fromLTRB(
                             ScreenAdaper.width(20), 0, ScreenAdaper.width(20), 0
                         ),
@@ -165,8 +165,8 @@ class _ShopPageState extends State<ShopPage> {
                             ],
                         )
                     ),
-                    SizedBox(height: ScreenAdaper.height(6)),
-                    Padding(
+                    SizedBox(height: ScreenAdaper.height(0)),
+                    Container(
                         padding: EdgeInsets.fromLTRB(
                             ScreenAdaper.width(20), 0, ScreenAdaper.width(20), 0
                         ),

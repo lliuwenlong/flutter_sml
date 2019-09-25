@@ -128,9 +128,9 @@ class _AccommodationState extends State<Accommodation> {
         return Container(
             padding: EdgeInsets.fromLTRB(
                 ScreenAdaper.width(10),
-                ScreenAdaper.height(5),
+                ScreenAdaper.height(3),
                 ScreenAdaper.width(10),
-                ScreenAdaper.height(5)
+                ScreenAdaper.height(3)
             ),
             decoration: BoxDecoration(
                 border: Border.all(color: Color(0XFFdac4a3), width: 1.0),
@@ -158,12 +158,12 @@ class _AccommodationState extends State<Accommodation> {
                             height: ScreenAdaper.height(238),
                             decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(3)
+                                borderRadius: BorderRadius.circular(5)
                             ),
                             child: ClipRRect(
-                                borderRadius: BorderRadius.circular(3),
+                                borderRadius: BorderRadius.circular(5),
                                 child: Image.network(
-                                    "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
+                                  'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1569412123913&di=6240caea6556062c5c3126e78ffef025&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fhousephotolib%2F1405%2F11%2Fc0%2F34093522_1399768387778.jpg',
                                     fit: BoxFit.cover,
                                 ),
                             ),
@@ -284,7 +284,7 @@ class _AccommodationState extends State<Accommodation> {
                                     "边屯酒家",
                                     "豪华型",
                                     188,
-                                    "贵州省黔西南布依族苗族自治州兴义市鲁"
+                                    "贵州省黔西南布依族苗族自治州兴义市鲁贵州省黔西南布依族苗族自治州兴义市鲁"
                                 )
                             );
                         },

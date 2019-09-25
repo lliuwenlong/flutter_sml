@@ -358,7 +358,10 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
                                     "isThumbup": data.isThumbup == 0
                                 });
                             },
-                            child: Text(data.content, maxLines: 3, overflow: TextOverflow.ellipsis),
+                            child: Container(
+                              width: double.infinity,
+                              child: Text(data.content, maxLines: 3, overflow: TextOverflow.ellipsis),
+                            )
                         )
                         
                     ),

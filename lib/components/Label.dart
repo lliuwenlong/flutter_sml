@@ -10,9 +10,9 @@ class Label extends StatelessWidget {
         ScreenAdaper.init(context);
         return Container(
             padding: EdgeInsets.fromLTRB(
-                ScreenAdaper.width(36),
+                ScreenAdaper.width(24),
                 ScreenAdaper.height(16),
-                ScreenAdaper.width(36),
+                ScreenAdaper.width(24),
                 ScreenAdaper.height(16)
             ),
             decoration: BoxDecoration(

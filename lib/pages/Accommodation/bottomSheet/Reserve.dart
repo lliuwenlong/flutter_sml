@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import '../../../services/ScreenAdaper.dart';
 import '../../../common/Color.dart';
 import 'dart:ui';
@@ -51,6 +52,7 @@ class Reserve extends StatelessWidget {
                 SizedBox(width: ScreenAdaper.width(20)),
                 Text(value, style: TextStyle(
                     color: ColorClass.titleColor,
+                    fontWeight: FontWeight.w600,
                     fontSize: ScreenAdaper.fontSize(28, allowFontScaling: true)
                 ))
             ]
@@ -60,14 +62,37 @@ class Reserve extends StatelessWidget {
     Widget _banner () {
         return Column(
             children: <Widget>[
-                Stack(
+              Stack(
                     children: <Widget>[
+                      
                         AspectRatio(
                             aspectRatio: 750 / 300,
-                            child: Image.network(
-                                "http://qcloud.dpfile.com/pc/pYPuondR-PaQO3rhSjRl7x1PBMlPubyBLeDC8IcaPQGC0AsVXyL223YOP11TLXmuTZlMcKwJPXLIRuRlkFr_8g.jpg",
-                                fit: BoxFit.cover,
+                            child: Swiper(
+                          itemBuilder: (BuildContext context, int index) {
+                            return Container(
+                                height: ScreenAdaper.height(300),
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: NetworkImage(
+                                           'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1569412123913&di=6240caea6556062c5c3126e78ffef025&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fhousephotolib%2F1405%2F11%2Fc0%2F34093522_1399768387778.jpg',
+                                        ),
+                                        fit: BoxFit.cover)));
+                          },
+                          itemCount:1,
+                          control: new SwiperPagination(
+                            builder: FractionPaginationBuilder(
+                              color: Colors.white,
+                              activeColor: Colors.white,
+                              fontSize: ScreenAdaper.fontSize(30),
+                              activeFontSize: ScreenAdaper.fontSize(40),
                             ),
+                            margin: EdgeInsets.only(
+                                bottom: ScreenAdaper.height(30),
+                                right: ScreenAdaper.width(30)),
+                            alignment: Alignment.bottomRight,
+                          ),
+                        )
+                            
                         ),
                         Positioned(
                             bottom: ScreenAdaper.width(30),
@@ -83,7 +108,7 @@ class Reserve extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
                                     color: Color.fromRGBO(0, 0, 0, 0.7)
                                 ),
-                                child: Text("1/4", style: TextStyle(
+                                child: Text("1/1", style: TextStyle(
                                     color: Colors.white,
                                     fontSize: ScreenAdaper.fontSize(30)
                                 )),

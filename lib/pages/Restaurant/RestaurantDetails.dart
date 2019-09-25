@@ -814,22 +814,27 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                 Wrap(
                                     children: <Widget>[
                                         this._business("商家名称", subTitle: "人间有味"),
-                                        this._business("商家分类", subTitle: "贵州省黔西南布依族苗族自治州兴义市湖南街30附近123123123"),
-                                        this._business("商家地址", subTitle: "人间有味"),
-                                        this._business("商家资质", subTitle: "人间有味", isBorder: false),
+                                        this._business("商家分类", subTitle: '餐饮'),
+                                        this._business("商家地址", subTitle: "贵州省黔西南布依族苗族自治州兴义市湖南街30附近123123123"),
+                                        this._business("商家电话", subTitle: "0859-3567373", isBorder: false),
                                         Container(
                                             margin: EdgeInsets.only(
                                                 top: ScreenAdaper.height(20)
                                             ),
-                                            child: this._business(
+                                            child: GestureDetector(
+                                              onTap: (){
+                                                print('object');
+                                              },
+                                              child: this._business(
                                                 "商家资质",
-                                                subTitle: "人间有味",
+                                                subTitle: "",
                                                 isBorder: false,
                                                 isIcon: true,
                                                 icon: Icon(IconData(
                                                     0xe61e,
                                                     fontFamily: "iconfont"
                                                 ), color: Color(0xFFaaaaaa), size: ScreenAdaper.fontSize(30),)
+                                            ),
                                             )
                                         )
                                     ]

@@ -118,7 +118,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
             ),
             child: Text("10元优惠券", style: TextStyle(
                 color: ColorClass.fontRed,
-                fontSize: ScreenAdaper.fontSize(24)
+                fontSize: ScreenAdaper.fontSize(20)
             )),
         );
     }
@@ -144,7 +144,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                             ))
                         ]
                     ),
-                    SizedBox(height: ScreenAdaper.height(40)),
+                    SizedBox(height: ScreenAdaper.height(34)),
                     Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -182,7 +182,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                             )
                         ]
                     ),
-                    SizedBox(height: ScreenAdaper.height(20)),
+                    SizedBox(height: ScreenAdaper.height(18)),
                     Wrap(
                         spacing: ScreenAdaper.width(10),
                         runSpacing: ScreenAdaper.height(10),
@@ -309,7 +309,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                     children: <Widget>[
                         Container(
                             width: ScreenAdaper.width(150),
-                            height: ScreenAdaper.height(177),
+                            height: ScreenAdaper.height(176),
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
                                 child: Image.network(
@@ -334,7 +334,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                                     color: ColorClass.fontColor
                                                 )),
                                                 Text("¥179", style: TextStyle(
-                                                    fontSize: ScreenAdaper.fontSize(26, allowFontScaling: true),
+                                                    fontSize: ScreenAdaper.fontSize(30, allowFontScaling: true),
                                                     color: ColorClass.fontRed
                                                 ))
                                             ],
@@ -388,7 +388,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
     // appBar
     Widget _sliverBuilder () {
         return SliverAppBar(
-            title: Text("标题", style: TextStyle(
+            title: Text("", style: TextStyle(
                 color: Colors.black,
             )),
             centerTitle: true,
@@ -516,7 +516,6 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
             padding: EdgeInsets.only(
                 left: ScreenAdaper.width(30),
                 right: ScreenAdaper.width(30)
-                
             ),
             child: Container(
                 padding: EdgeInsets.only(
@@ -530,6 +529,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                             width: 1
                         ) : BorderSide.none
                     )
+                    
                 ),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -550,7 +550,6 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                 ), textAlign: TextAlign.end) : icon,
                             ),
                         )
-
                     ],
                 )
             ),
@@ -727,22 +726,27 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                             key: PageStorageKey("Tab2"),
                                             children: <Widget>[
                                                 this._business("商家名称", subTitle: "人间有味"),
-                                                this._business("商家分类", subTitle: "贵州省黔西南布依族苗族自治州兴义市湖南街30附近123123123"),
-                                                this._business("商家地址", subTitle: "人间有味"),
-                                                this._business("商家资质", subTitle: "人间有味", isBorder: false),
+                                                this._business("商家分类", subTitle: "住宿"),
+                                                this._business("商家地址", subTitle: "贵州省黔西南布依族苗族自治州兴义市湖南街30附近"),
+                                                this._business("商家电话", subTitle: "0859-3567373", isBorder: false),
                                                 Container(
                                                     margin: EdgeInsets.only(
                                                         top: ScreenAdaper.height(20)
                                                     ),
-                                                    child: this._business(
-                                                        "商家电话",
-                                                        subTitle: "人间有味",
+                                                    child: GestureDetector(
+                                                      onTap: (){
+                                                        print('object');
+                                                      },
+                                                      child: this._business(
+                                                        "商家资质",
+                                                        subTitle: "",
                                                         isBorder: false,
                                                         isIcon: true,
                                                         icon: Icon(IconData(
                                                             0xe61e,
                                                             fontFamily: "iconfont"
                                                         ), color: Color(0xFFaaaaaa), size: ScreenAdaper.fontSize(30),)
+                                                    ),
                                                     )
                                                 )
                                             ]
