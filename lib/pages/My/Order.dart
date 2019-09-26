@@ -248,17 +248,15 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
       if(data.status!=null){
         switch (data.status) {
             case '1': status = '去付款';break;
-            case '2': status = '去使用';break;
+            case '2': status = '取消订单';break;
             case '3': status = '去评价';break;
-            case '9': status = '取消订单';break;
             default: status = '';
         }
       }
       
       return GestureDetector(
 				onTap: (){
-					if(data.status == 9){
-						print('object');
+					if(data.status == 2 && (data.type=='house' || data.type == 'havefun')){
 						Navigator.pushNamed(context, '/cancellationOrder', arguments: {
 							'orderSn': data.orderSn
 						});
@@ -285,6 +283,19 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                             ):data.type == 'havefun'?Icon(//娱乐
                                 IconData(0xe665, fontFamily: "iconfont"),
                                 color: Color(0xffe99470),
+                                size: ScreenAdaper.fontSize(30),
+                            ):data.type == 'food'?Icon(//餐饮
+                                IconData(0xe664, fontFamily: "iconfont"),
+                                color: Color(0xfff6cf70),
+                                size: ScreenAdaper.fontSize(30),
+                            ):data.type == 'shopping'?
+                            Icon(//购物
+                                IconData(0xe660, fontFamily: "iconfont"),
+                                color: Color(0xffd4746c),
+                                size: ScreenAdaper.fontSize(30),
+                            ):data.type=='nearplay'?Icon(//周边游
+                                IconData(0xe663, fontFamily: "iconfont"),
+                                color: Color(0xff91c2a2),
                                 size: ScreenAdaper.fontSize(30),
                             ):Text(''),
                             SizedBox(width: ScreenAdaper.width(20)),

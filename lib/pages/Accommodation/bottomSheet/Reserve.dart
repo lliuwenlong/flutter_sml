@@ -94,26 +94,26 @@ class Reserve extends StatelessWidget {
                         )
                             
                         ),
-                        Positioned(
-                            bottom: ScreenAdaper.width(30),
-                            right: ScreenAdaper.width(30),
-                            child: Container(
-                                padding: EdgeInsets.fromLTRB(
-                                    ScreenAdaper.width(25),
-                                    ScreenAdaper.height(5),
-                                    ScreenAdaper.width(25),
-                                    ScreenAdaper.height(5)
-                                ),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
-                                    color: Color.fromRGBO(0, 0, 0, 0.7)
-                                ),
-                                child: Text("1/1", style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: ScreenAdaper.fontSize(30)
-                                )),
-                            ),
-                        )
+                        // Positioned(
+                        //     bottom: ScreenAdaper.width(30),
+                        //     right: ScreenAdaper.width(30),
+                        //     child: Container(
+                        //         padding: EdgeInsets.fromLTRB(
+                        //             ScreenAdaper.width(25),
+                        //             ScreenAdaper.height(5),
+                        //             ScreenAdaper.width(25),
+                        //             ScreenAdaper.height(5)
+                        //         ),
+                        //         decoration: BoxDecoration(
+                        //             borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
+                        //             color: Color.fromRGBO(0, 0, 0, 0.7)
+                        //         ),
+                        //         child: Text("1/1", style: TextStyle(
+                        //             color: Colors.white,
+                        //             fontSize: ScreenAdaper.fontSize(30)
+                        //         )),
+                        //     ),
+                        // )
                     ],
                 ),
                 Container(
