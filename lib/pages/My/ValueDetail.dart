@@ -24,6 +24,7 @@ class _ValueDetailState extends State<ValueDetail> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _getData();
+    
   } 
   Map detailData;
   bool _isLoading = true;

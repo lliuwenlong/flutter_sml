@@ -3,12 +3,15 @@ import '../../components/AppBarWidget.dart';
 import '../../services/ScreenAdaper.dart';
 
 class Payment extends StatefulWidget {
-  Payment({Key key}) : super(key: key);
+  final arguments;
+  Payment({Key key,this.arguments}) : super(key: key);
 
-  _PaymentState createState() => _PaymentState();
+  _PaymentState createState() => _PaymentState(arguments:this.arguments);
 }
 
 class _PaymentState extends State<Payment> {
+  final arguments;
+  _PaymentState({this.arguments});
   String _payType = '';
   @override
   Widget build(BuildContext context) {
@@ -39,7 +42,7 @@ class _PaymentState extends State<Payment> {
                                 bottom: BorderSide(
                                     color: Color(0xffd9d9d9), width: 1))),
                         child: Text(
-                          '¥ 168',
+                          '¥ ${arguments['amount']}',
                           style: TextStyle(
                               color: Color(0xff333333),
                               fontSize: ScreenAdaper.fontSize(60)),
@@ -175,7 +178,7 @@ class _PaymentState extends State<Payment> {
                       child: GestureDetector(
                         onTap: () {
                           setState(() {
-                            this._payType = 'wx';
+                            this._payType = 'Wechat';
                           });
                         },
                         child: Row(
@@ -199,7 +202,7 @@ class _PaymentState extends State<Payment> {
                                 )
                               ],
                             ),
-                            _payType == 'wx'
+                            _payType == 'Wechat'
                                 ? CircleAvatar(
                                     backgroundColor: Color(0xffd4746c),
                                     radius: ScreenAdaper.width(20),
@@ -211,6 +214,7 @@ class _PaymentState extends State<Payment> {
                                   )
                                 : CircleAvatar(
                                     radius: ScreenAdaper.width(20),
+                                     backgroundColor:Colors.white,
                                     child: Container(
                                         width: ScreenAdaper.width(40),
                                         height: ScreenAdaper.height(40),
@@ -236,7 +240,7 @@ class _PaymentState extends State<Payment> {
                       child: GestureDetector(
                         onTap: () {
                           setState(() {
-                            this._payType = 'zfb';
+                            this._payType = 'Alipay';
                           });
                         },
                         child: Row(
@@ -260,7 +264,7 @@ class _PaymentState extends State<Payment> {
                                 )
                               ],
                             ),
-                            _payType == 'zfb'
+                            _payType == 'Alipay'
                                 ? CircleAvatar(
                                     backgroundColor: Color(0xffd4746c),
                                     radius: ScreenAdaper.width(20),
@@ -272,6 +276,7 @@ class _PaymentState extends State<Payment> {
                                   )
                                 : CircleAvatar(
                                     radius: ScreenAdaper.width(20),
+                                    backgroundColor:Colors.white,
                                     child: Container(
                                         width: ScreenAdaper.width(40),
                                         height: ScreenAdaper.height(40),

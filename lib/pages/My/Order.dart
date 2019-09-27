@@ -243,24 +243,21 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
 		return response;
 	}
     Widget _itemWidget ({var data}) {
-
-      String status;
-      if(data.status!=null){
-        switch (data.status) {
-            case '1': status = '去付款';break;
-            case '2': status = '取消订单';break;
-            case '3': status = '去评价';break;
-            default: status = '';
-        }
-      }
       
       return GestureDetector(
 				onTap: (){
-					if(data.status == 2 && (data.type=='house' || data.type == 'havefun')){
-						Navigator.pushNamed(context, '/cancellationOrder', arguments: {
-							'orderSn': data.orderSn
-						});
-					}
+          if(data.status == '1'){//去付款
+              Navigator.pushNamed(context, '/acknowledgement',arguments: {
+                'orderSn':data.orderSn,
+              });
+          }else{
+              Navigator.pushNamed(context, '/cancellationOrder',arguments: {//取消订单
+                  'orderSn':data.orderSn,
+                  'status':data.status,
+                  'type':data.type
+              });
+          }
+          
 				},
 				child:Container(
 					margin: EdgeInsets.only(
@@ -348,7 +345,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                     Container(
                         alignment: Alignment.centerRight,
                         child: 
-                        status != ''?Container(
+                        data.status!='4'&&data.status!='5'&&data.status!='6'&&data.status!='9'?Container(
                             width: ScreenAdaper.width(160),
                             height: ScreenAdaper.width(60),
                             child: OutlineButton(
@@ -361,12 +358,37 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                                 ),
                                 highlightedBorderColor: Color(0XFF999999),
                                 onPressed: () {
-                                    Navigator.pushNamed(context, "/acknowledgement");
+                                  if((data.type=='house'||data.type == 'havefun')&&data.status=='1'){//去付款
+                                     Navigator.pushNamed(context, "/acknowledgement",arguments: {
+                                       'orderSn':data.orderSn,
+                                     });
+                                  }else if ((data.type=='house'||data.type=='havefun')&&data.status == '2'){//取消订单
+                                      Navigator.pushNamed(context, "/cancellationOrder",arguments: {
+                                        'orderSn':data.orderSn,
+                                        'type':data.type,
+                                        'status':data.status
+                                      });
+                                  }else if (data.status == '3') {//去评价
+                                      print('去评价');
+                                  }
                                 },
-                                child:Text(status, style: TextStyle(
+                                child:
+                                (data.type=='house'||data.type=='havefun')&&data.status == '1'?
+                                Text('去付款', style: TextStyle(
                                     color: ColorClass.titleColor,
                                     fontSize: ScreenAdaper.fontSize(24)
-                                )),
+                                )):
+                                ((data.type=='house'||data.type=='havefun')&&data.status == '2')||(data.type=='tree'&&data.status=='8')?
+                                 Text('取消订单', style: TextStyle(
+                                    color: ColorClass.titleColor,
+                                    fontSize: ScreenAdaper.fontSize(24)
+                                )):
+                                data.status == '3'?
+                                 Text('去评价', style: TextStyle(
+                                    color: ColorClass.titleColor,
+                                    fontSize: ScreenAdaper.fontSize(24)
+                                )):
+                                Text(''),
                             )
                         ):Text('')
                     )

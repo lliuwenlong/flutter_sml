@@ -50,6 +50,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   shared_preferences: ^0.4.1
+  url_launcher: ^3.0.3
 
 dev_dependencies:
   flutter_test:
@@ -173,6 +174,9 @@ flutter:
    - images/beoverdue.png
    - images/2.0x/beoverdue.png
    - images/3.0x/beoverdue.png
+   - images/code.png
+   - images/2.0x/code.png
+   - images/3.0x/code.png
    - videos/video.mp4
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -3,14 +3,54 @@ import 'dart:ui';
 import 'package:flutter_sml/common/Color.dart';
 import '../../../components/AppBarWidget.dart';
 import '../../../services/ScreenAdaper.dart';
-class Acknowledgement extends StatelessWidget {
-    final arguments;
-    Acknowledgement({Key key, this.arguments}) : super(key: key);
+import '../../../common/HttpUtil.dart';
+import '../../../components/LoadingSm.dart';
+class Acknowledgement extends StatefulWidget {
+  final arguments;
+  Acknowledgement({Key key,this.arguments}) : super(key: key);
 
+  _AcknowledgementState createState() => _AcknowledgementState(arguments:this.arguments);
+}
+
+class _AcknowledgementState extends State<Acknowledgement> {
+  final arguments;
+  _AcknowledgementState({this.arguments});
+  final HttpUtil http = HttpUtil();
+  var data;
+  bool _isLoading = true;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print(arguments['orderSn']);
+    _getData();
+  }
+  _getData() async {
+    Map response = await this
+        .http
+        .get('/api/v1/order/one', data: {'orderSn': arguments['orderSn']});
+
+    print(response);
+    if (response['code'] == 200) {
+      setState(() {
+        this.data = response['data'];
+        this._isLoading = false;
+      });
+    }
+  }
     @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
-        return Scaffold(
+        return _isLoading?
+        Scaffold(
+            appBar: AppBarWidget().buildAppBar("我的订单"),
+            body: Container(
+              margin: EdgeInsets.only(top: ScreenAdaper.height(200)),
+              child: Loading(),
+            ),
+          )
+        : 
+        
+         Scaffold(
             appBar: AppBarWidget().buildAppBar("订单确认"),
             bottomSheet: Container(
                 width: double.infinity,
@@ -47,7 +87,7 @@ class Acknowledgement extends StatelessWidget {
                                                 )
                                             ),
                                             new TextSpan(
-                                                text: '188',
+                                                text: data['amount'],
                                                 style: TextStyle(
                                                     fontSize: ScreenAdaper.fontSize(46)
                                                 )
@@ -63,7 +103,11 @@ class Acknowledgement extends StatelessWidget {
                             child: RaisedButton(
                                 elevation: 0,
                                 color: ColorClass.common,
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/payment',arguments: {
+                                    'amount':data['amount']
+                                  });
+                                },
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(0)
                                 ),
@@ -92,7 +136,7 @@ class Acknowledgement extends StatelessWidget {
                                     fontWeight: FontWeight.w500
                                 )),
                                 SizedBox(height: ScreenAdaper.height(30)),
-                                Text("7月21日 入驻 —— 7月22日 离店", style: TextStyle(
+                                Text("${data['createTime'].substring(0,11)} 入驻  —— ${data['houseDetail']['quiteTime'].substring(0,11)} 离店" , style: TextStyle(
                                     color: ColorClass.fontColor,
                                     fontSize: ScreenAdaper.fontSize(28)
                                 ))
@@ -115,7 +159,7 @@ class Acknowledgement extends StatelessWidget {
                                                 fontSize: ScreenAdaper.fontSize(28)
                                             ))
                                         ),
-                                        Text("张三", style: TextStyle(
+                                        Text(data['houseDetail']['realName'], style: TextStyle(
                                             color: ColorClass.fontColor,
                                             fontSize: ScreenAdaper.fontSize(28)
                                         ))
@@ -131,7 +175,7 @@ class Acknowledgement extends StatelessWidget {
                                             )),
                                         ),
                                         SizedBox(height: ScreenAdaper.height(30)),
-                                        Text("13933198888", style: TextStyle(
+                                        Text(data['houseDetail']['phone'], style: TextStyle(
                                             color: ColorClass.fontColor,
                                             fontSize: ScreenAdaper.fontSize(28)
                                         ))

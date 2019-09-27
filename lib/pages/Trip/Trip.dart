@@ -1,13 +1,122 @@
-import 'package:flutter/material.dart';
-import '../../components/AppBarWidget.dart';
-class Trip extends StatelessWidget {
-    const Trip({Key key}) : super(key: key);
+import 'dart:io';
 
-    @override
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import '../../components/AppBarWidget.dart';
+import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
+import '../../common/Config.dart';
+import '../../common/HttpUtil.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../services/ScreenAdaper.dart';
+
+class Trip extends StatefulWidget {
+  @override
+  _TripState createState() => _TripState();
+}
+
+class _TripState extends State<Trip> {
+
+  final HttpUtil http = HttpUtil();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _getData();
+   
+  }
+  String phone;
+  String title;
+  _getData () async {
+    var response = await this.http.get('/api/v1/trip');
+    print(response);
+    if (response['code'] == 200) {
+        setState(() {
+          this.phone = response['data']['showPhone'];
+          this.title = response['data']['showTitle'];
+        });
+    }
+  }
+
+    _launchMap() async {
+        if (Platform.isAndroid) {
+            final url = 'androidamap://myLocation?sourceApplication=softname';
+            if (await canLaunch(url)) {
+                await launch(url);
+            } else {
+                throw 'Could not launch $url';
+            }
+        } else {
+            final url = '//myLocation?sourceApplication=applicationName';
+            if (await canLaunch(url)) {
+                await launch(url);
+            } else {
+                throw 'Could not launch $url';
+            }
+        }
+        
+    }
+
+  @override
     Widget build(BuildContext context) {
-        return Scaffold(
-            appBar: AppBarWidget().buildAppBar("神木出行"),
-            body: Text("html等待数据渲染")
+        return Container(
+            child: Scaffold(
+                appBar: AppBarWidget().buildAppBar('神木出行'),
+                bottomSheet:Container(
+                  width: double.infinity,
+                  height: ScreenAdaper.height(88),
+                  padding: EdgeInsets.only(
+                      bottom: ScreenAdaper.height(10),
+                      top: ScreenAdaper.height(10),
+                      left: ScreenAdaper.width(30),
+                      right: ScreenAdaper.width(30)
+                  ),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                          BoxShadow(color: Colors.black12, blurRadius: 1)
+                      ] 
+                  ),
+                child: RaisedButton(
+                elevation: 0,
+                onPressed: () async {
+                      final url = 'tel:${this.phone}';
+                      if (await canLaunch(url)) {
+                       await launch(url);
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: 'Could not launch $url',
+                          toastLength: Toast.LENGTH_SHORT,
+                          backgroundColor: Colors.black87,
+                          textColor: Colors.white,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIos: 1,
+                          fontSize: ScreenAdaper.fontSize(30)
+                       );
+                      }
+                },
+                color: Color(0XFF22b0a1),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(ScreenAdaper.width(10))
+                ),
+                child: Text('${this.title} ： ${this.phone}', style: TextStyle(
+                    color: Colors.white,
+                    fontSize: ScreenAdaper.fontSize(40)
+                ))
+            ),
+                ),
+                body: Container(
+                    child: InAppWebView(
+                        initialUrl: "http://192.168.2.104:8080/app/#/trip",
+                        onWebViewCreated: (InAppWebViewController controller) {
+                            InAppWebViewController webView = controller;
+                            webView.addJavaScriptHandler('openMap', (args) {
+                                this._launchMap();
+                            });
+                        }
+                    )
+                )
+            ),
         );
     }
-}
+  }
+

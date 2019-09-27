@@ -61,7 +61,7 @@ import '../pages/My/MyDynamics.dart';//我的动态
 import '../pages/Restaurant/Payment.dart';//餐饮 付款
 import '../pages/Accommodation/AccommodationDetal.dart'; // 住宿页面
 import '../pages/Accommodation/PlaceOrder.dart'; // 订单确认
-
+import '../pages/My/MyCode.dart';//我的二维码
 
 final Map routes = {
     '/': (context) => TabBars(),
@@ -123,9 +123,10 @@ final Map routes = {
     '/shenmuDetails': (context, {arguments}) => ShenmuDetails(arguments: arguments),
     '/valueDetail': (context,{arguments}) => ValueDetail(arguments:arguments),
     '/myDynamics': (context) => MyDynamics(),
-    '/payment': (context) => Payment(),
+    '/payment': (context,{arguments}) => Payment(arguments:arguments),
     '/accommodationDetal': (context) => AccommodationDetal(),
-    '/placeOrder': (context) => PlaceOrder()
+    '/placeOrder': (context) => PlaceOrder(),
+    '/myCode': (context,{arguments}) => MyCode(arguments:arguments)
 };
 
 var onGenerateRoute = (RouteSettings settings) {

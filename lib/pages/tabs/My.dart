@@ -130,11 +130,20 @@ class _MyPageState extends State<MyPage> {
                                                     child: Padding(
                                                         padding: EdgeInsets.only(right: ScreenAdaper.width(30)),
                                                         child: _codeData==null?
-															Text(''):QrImage(
-																data: this._codeData,
-																size: 60.0,
-																foregroundColor:Colors.white,
-                                                         	)
+                                                          Text(''):Container(
+                                                            child: GestureDetector(
+                                                              onTap: (){
+                                                                Navigator.pushNamed(context, '/myCode',arguments: {
+                                                                  'codeData':this._codeData
+                                                                });
+                                                              },
+                                                              child: QrImage(
+                                                                data: this._codeData,
+                                                                size: 60.0,
+                                                                foregroundColor:Colors.white,
+                                                                ),
+                                                            ),
+                                                          )
                                                     ),
                                                 )
                                             ],

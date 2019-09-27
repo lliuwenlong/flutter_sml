@@ -9,8 +9,6 @@ PODS:
   - Flutter (1.0.0)
   - flutter_inappbrowser (0.0.1):
     - Flutter
-  - flutter_webview_plugin (0.0.1):
-    - Flutter
   - fluttertoast (0.0.2):
     - Flutter
   - HappyDNS (0.3.15)
@@ -27,6 +25,8 @@ PODS:
   - Reachability (3.2)
   - screen (0.0.1):
     - Flutter
+  - shared_preferences (0.0.1):
+    - Flutter
   - sy_flutter_qiniu_storage (0.0.1):
     - Flutter
     - Qiniu
@@ -35,14 +35,14 @@ PODS:
 
 DEPENDENCIES:
   - city_pickers (from `.symlinks/plugins/city_pickers/ios`)
-  - Flutter (from `.symlinks/flutter/ios-release`)
+  - Flutter (from `.symlinks/flutter/ios`)
   - flutter_inappbrowser (from `.symlinks/plugins/flutter_inappbrowser/ios`)
-  - flutter_webview_plugin (from `.symlinks/plugins/flutter_webview_plugin/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - keyboard_visibility (from `.symlinks/plugins/keyboard_visibility/ios`)
   - multi_image_picker (from `.symlinks/plugins/multi_image_picker/ios`)
   - screen (from `.symlinks/plugins/screen/ios`)
+  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sy_flutter_qiniu_storage (from `.symlinks/plugins/sy_flutter_qiniu_storage/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
 
@@ -59,11 +59,9 @@ EXTERNAL SOURCES:
   city_pickers:
     :path: ".symlinks/plugins/city_pickers/ios"
   Flutter:
-    :path: ".symlinks/flutter/ios-release"
+    :path: ".symlinks/flutter/ios"
   flutter_inappbrowser:
     :path: ".symlinks/plugins/flutter_inappbrowser/ios"
-  flutter_webview_plugin:
-    :path: ".symlinks/plugins/flutter_webview_plugin/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   image_picker:
@@ -74,6 +72,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/multi_image_picker/ios"
   screen:
     :path: ".symlinks/plugins/screen/ios"
+  shared_preferences:
+    :path: ".symlinks/plugins/shared_preferences/ios"
   sy_flutter_qiniu_storage:
     :path: ".symlinks/plugins/sy_flutter_qiniu_storage/ios"
   video_player:
@@ -86,7 +86,6 @@ SPEC CHECKSUMS:
   city_pickers: b0370f4c35c201723b5b7fcce10ec29b59d5bc35
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
   flutter_inappbrowser: 93214ba3c0bc9db42e879f808d993b6d3be32379
-  flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
   HappyDNS: 00c15e651a347206e58a20503a32a5564589b56a
   image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
@@ -95,6 +94,7 @@ SPEC CHECKSUMS:
   Qiniu: 909b408ee489ea54827e9717be90b94bc9dfbc48
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
+  shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
   sy_flutter_qiniu_storage: 3a33fb552bb77f4777d261469111f52ad35307fb
   video_player: 3964090a33353060ed7f58aa6427c7b4b208ec21
 

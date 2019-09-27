@@ -56,7 +56,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
         final Map<String, dynamic> response = await this.http.get("/api/v1/coupon/data", data: {
             "pageNO": _tabController.index == 0 ? this.notUsePage : this.beOverduePage,
             "pageSize": 10,
-            "userId": this.userModel.userId,
+            "userId": 1,
             "type": _tabController.index + 1
         });
         if (response["code"] == 200) {

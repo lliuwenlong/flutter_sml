@@ -7,7 +7,7 @@ import '../../common/Color.dart';
 import '../../model/api/shop/DistsModel.dart';
 import '../../common/HttpUtil.dart';
 import 'dart:ui';
-
+import 'dart:io';
 class Purchase extends StatefulWidget {
     int prodId;
     double price;
@@ -35,14 +35,15 @@ class _PurchaseState extends State<Purchase>  {
     @override
     initState () {
         super.initState();
+       
     }
-
     _payment () async {
+   
        Map response = await this.http.post('/api/v1/vp/buy',params: {
             "amount": this.price*this.treeNum,
             "channel": this.payType,
             "num": this.treeNum,
-            "platform": "Android",
+            "platform": Platform.isAndroid?'Android':Platform.isIOS?'IOS':'Other',
             "prodId": this.prodId,
             "woodSn": this.woodSn
         });

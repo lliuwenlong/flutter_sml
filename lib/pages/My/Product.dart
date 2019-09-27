@@ -57,7 +57,7 @@ void didChangeDependencies() {
     final Map<String, dynamic> response = await this.http.post("/api/v1/user/wood", data: {
         "pageNO": this._tabController.index == 0 ? subscriePage : transferPage,
         "pageSize": 10,
-        "userId": 1,
+        "userId": this._userModel.userId,
         "type": this._tabController.index == 0? 1 : 0
     });
     if (response["code"] == 200) {
