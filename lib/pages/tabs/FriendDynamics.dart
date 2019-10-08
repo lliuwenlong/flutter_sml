@@ -44,10 +44,6 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
     void didChangeDependencies() {
         super.didChangeDependencies();
         _userModel = Provider.of<User>(context);
-        // this._circleMsgPage = 1;
-        // this._friendDynamicsPage = 1;
-        // _circleMsgController.loadComplete();
-        // _friendDynamicsController.loadComplete();
         if (this._isLoading) {
             this._getData(isInit: true);
             _tabController.addListener(() {

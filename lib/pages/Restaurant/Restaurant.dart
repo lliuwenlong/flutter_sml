@@ -31,60 +31,9 @@ class _RestaurantState extends State<Restaurant> {
             "pageNO": _page,
             "pageSize": 10
         });
-        Map<String, dynamic> resItem = {
-            "account": "string",
-            "accountBank": "string",
-            "accountName": "string",
-            "accountPhone": "string",
-            "address": "string",
-            "applyStatus": "string",
-            "cardNo": "string",
-            "city": "string",
-            "closeTime": "string",
-            "county": "string",
-            "createTime": "2019-09-09T01:56:47.415Z",
-            "firmId": 0,
-            "idcardBack": "string",
-            "idcardFront": "string",
-            "idcardHuman": "string",
-            "logo": "string",
-            "mainGoods": "string",
-            "name": "string",
-            "officerName": "string",
-            "officerPhone": "string",
-            "openTime": "string",
-            "perPrice": "string",
-            "province": "string",
-            "status": "string",
-            "telphone": "string",
-            "type": "string"
-        };
 
-        Map<String, dynamic> resData = {
-            "code": 200,
-            "data": {
-                "currPage": 10,
-                "list": [
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem
-                ],
-                "pageSize": 0,
-                "totalCount": 0,
-                "totalPage": 0
-            },
-            "msg": "string"
-        };
         if (response["code"] == 200) {
-            // final res = new FoodModel.fromJson(response);
-            final res = new FoodModel.fromJson(resData);
+            final res = new FoodModel.fromJson(response);
             if (isInit) {
                 setState(() {
                     list = res.data.list;
@@ -135,11 +84,8 @@ class _RestaurantState extends State<Restaurant> {
                 preferredSize: Size.fromHeight(ScreenAdaper.height(110))
             ),
             body: isLoading
-                ? Container(
-                    margin: EdgeInsets.only(
-                        top: ScreenAdaper.height(200)
-                    ),
-                    child: Loading(),
+                ? Center(
+                    child: Loading(isCenter: true),
                 )
                 : SmartRefresher(
                     controller: _refreshController,
@@ -160,21 +106,19 @@ class _RestaurantState extends State<Restaurant> {
                         physics: ClampingScrollPhysics(),
                         itemCount: list.length,
                         itemBuilder: (BuildContext context, int index) {
+                            ListModel data = this.list[index];
                             return GestureDetector(
                                 onTap: () {
-                                    // Navigator.pushNamed(context, '/restaurantDetails', arguments: {
-                                    //     "id": "123"
-                                    // });
                                     Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
-                                        return new RestaurantDetails(params: this.list[index]);
+                                        return new RestaurantDetails(id: data.firmId);
                                     }));
                                 },
                                 child: CommonListItem(
-                                    "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
-                                    "边屯酒家",
-                                    "海鲜自助餐",
-                                    "贵州省黔西南布依族苗族自治州兴义市鲁",
-                                    76,
+                                    data.logo,
+                                    data.name,
+                                    data.type != null ? data.type : "",
+                                    "${data.city}${data.county}${data.address}",
+                                    double.parse(data.perPrice),
                                     "<500"
                                 )
                             );

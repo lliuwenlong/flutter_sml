@@ -191,7 +191,7 @@ class Reserve extends StatelessWidget {
                                 Expanded(
                                     flex: 1,
                                     child:Container(
-                                        height: ScreenAdaper.height(110),
+                                        // height: ScreenAdaper.height(110),
                                         alignment: Alignment.center,
                                         child: Text.rich(new TextSpan(
                                             style: TextStyle(
@@ -216,8 +216,13 @@ class Reserve extends StatelessWidget {
                                     ),
                                 ),
                                 Container(
-                                    height: ScreenAdaper.height(110),
+                                    width: ScreenAdaper.width(480),
+                                    color: ColorClass.common,
                                     child: RaisedButton(
+                                        padding: EdgeInsets.only(
+                                            top: ScreenAdaper.height(30),
+                                            bottom: ScreenAdaper.height(30)
+                                        ),
                                         elevation: 0,
                                         shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.zero

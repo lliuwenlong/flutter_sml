@@ -150,7 +150,10 @@ class _RegisterPageState extends State<RegisterPage> {
     @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
-        return Container(
+        return GestureDetector(
+            onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode()); 
+            },
             child: Scaffold(
                 appBar: AppBar(
                     title: Text("注册", style: TextStyle(
@@ -163,131 +166,133 @@ class _RegisterPageState extends State<RegisterPage> {
                     brightness: Brightness.light,
                     backgroundColor: Colors.white
                 ),
-                resizeToAvoidBottomPadding: false,
-                body: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage(
-                                "images/register.png",
-                            ),
-                            fit: BoxFit.cover,
-                        )
-                    ),
-                    child: SafeArea(
-                        child: Column(
-                            children: <Widget>[
-                                Container(  
-                                    margin: EdgeInsets.only(
-                                        top: ScreenAdaper.height(80)
-                                    ),
-                                    width: ScreenAdaper.width(246),
-                                    height: ScreenAdaper.height(302),
-                                    child: Image.asset(
-                                        "images/logo.png",
-                                        fit: BoxFit.contain,
-                                    ),
+                // resizeToAvoidBottomPadding: false,
+                body: SingleChildScrollView(
+                    child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(
+                                    "images/register.png",
                                 ),
-                                Padding(
-                                    padding: EdgeInsets.fromLTRB(
-                                        ScreenAdaper.width(85),
-                                        ScreenAdaper.height(78),
-                                        ScreenAdaper.width(85),
-                                        0
-                                    ),
-                                    child: new Form(
-                                        key: _formKey,
-                                        child: Column(
-                                            children: <Widget>[
-                                                Input(
-                                                    "请输入手机号",
-                                                    isShowSuffixIcon: true,
-                                                    validate: _phoneValidate,
-                                                    controller: _phoneController,
-                                                    type: TextInputType.phone,
-                                                ),
-                                                Input(
-                                                    "请输入密码",
-                                                    isPwd: true,
-                                                    isShowSuffixIcon: true,
-                                                    validate: _passwordValidate,
-                                                    controller: _passwordController
-                                                ),
-                                                Container(
-                                                    decoration: BoxDecoration(
-                                                        border: Border(bottom: BorderSide(
-                                                            width: 1,
-                                                            color: Color(0XFFd9d9d9)
-                                                        ))
-                                                    ),
-                                                    child: Row(
-                                                        children: <Widget>[
-                                                            Expanded(
-                                                                flex: 1,
-                                                                child: Input(
-                                                                    "请输入验证码",
-                                                                    isShowSuffixIcon: true,
-                                                                    showBorder: false,
-                                                                    controller: _verificationCodeController,
-                                                                    type: TextInputType.number,
-                                                                ),
-                                                                
-                                                            ),
-                                                            GestureDetector(
-                                                                onTap: () {
-                                                                    this.reGetCountdown();
-                                                                },
-                                                                child: Container(
-                                                                    width: ScreenAdaper.width(171),
-                                                                    height: ScreenAdaper.width(50),
-                                                                    alignment: _countdownTimer != null ? Alignment.center : Alignment.centerRight,
-                                                                    decoration: BoxDecoration(
-                                                                        border: Border(left: BorderSide(
-                                                                            width: 1,
-                                                                            color: Color(0XFFd9d9d9)
-                                                                        ))
-                                                                    ),
-                                                                    child: Text(this._codeCountdownStr, style: TextStyle(
-                                                                        color: ColorClass.common,
-                                                                        fontSize: ScreenAdaper.fontSize(30)
-                                                                    )),
-                                                                )
-                                                            )
-                                                        ],
-                                                    )
-                                                ),
-                                                Container(
-                                                    margin: EdgeInsets.only(
-                                                        top: ScreenAdaper.height(20)
-                                                    ),
-                                                    width: double.infinity,
-                                                    height: ScreenAdaper.height(88),
-                                                    decoration: BoxDecoration(
-                                                        border: Border(bottom: BorderSide(
-                                                            width: 1,
-                                                            color: Color(0XFFd9d9d9)
-                                                        ))
-                                                    ),
-                                                    child: RaisedButton(
-                                                        disabledColor: Color(0XFF86d4ca),
-                                                        onPressed: _submitHandler,
-                                                        child: Text("注册登录", style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: ScreenAdaper.fontSize(40)
-                                                        )),
-                                                        splashColor: Color.fromARGB(0, 0, 0, 0),
-                                                        color: ColorClass.common,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(5)
-                                                        ),
-                                                        elevation: 0,
-                                                    )
-                                                )
-                                            ]
+                                fit: BoxFit.cover,
+                            )
+                        ),
+                        child: SafeArea(
+                            child: Column(
+                                children: <Widget>[
+                                    Container(  
+                                        margin: EdgeInsets.only(
+                                            top: ScreenAdaper.height(80)
                                         ),
+                                        width: ScreenAdaper.width(246),
+                                        height: ScreenAdaper.height(302),
+                                        child: Image.asset(
+                                            "images/logo.png",
+                                            fit: BoxFit.contain,
+                                        ),
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.fromLTRB(
+                                            ScreenAdaper.width(85),
+                                            ScreenAdaper.height(78),
+                                            ScreenAdaper.width(85),
+                                            0
+                                        ),
+                                        child: new Form(
+                                            key: _formKey,
+                                            child: Column(
+                                                children: <Widget>[
+                                                    Input(
+                                                        "请输入手机号",
+                                                        isShowSuffixIcon: true,
+                                                        validate: _phoneValidate,
+                                                        controller: _phoneController,
+                                                        type: TextInputType.phone,
+                                                    ),
+                                                    Input(
+                                                        "请输入密码",
+                                                        isPwd: true,
+                                                        isShowSuffixIcon: true,
+                                                        validate: _passwordValidate,
+                                                        controller: _passwordController
+                                                    ),
+                                                    Container(
+                                                        decoration: BoxDecoration(
+                                                            border: Border(bottom: BorderSide(
+                                                                width: 1,
+                                                                color: Color(0XFFd9d9d9)
+                                                            ))
+                                                        ),
+                                                        child: Row(
+                                                            children: <Widget>[
+                                                                Expanded(
+                                                                    flex: 1,
+                                                                    child: Input(
+                                                                        "请输入验证码",
+                                                                        isShowSuffixIcon: true,
+                                                                        showBorder: false,
+                                                                        controller: _verificationCodeController,
+                                                                        type: TextInputType.number,
+                                                                    ),
+                                                                    
+                                                                ),
+                                                                GestureDetector(
+                                                                    onTap: () {
+                                                                        this.reGetCountdown();
+                                                                    },
+                                                                    child: Container(
+                                                                        width: ScreenAdaper.width(171),
+                                                                        height: ScreenAdaper.width(50),
+                                                                        alignment: _countdownTimer != null ? Alignment.center : Alignment.centerRight,
+                                                                        decoration: BoxDecoration(
+                                                                            border: Border(left: BorderSide(
+                                                                                width: 1,
+                                                                                color: Color(0XFFd9d9d9)
+                                                                            ))
+                                                                        ),
+                                                                        child: Text(this._codeCountdownStr, style: TextStyle(
+                                                                            color: ColorClass.common,
+                                                                            fontSize: ScreenAdaper.fontSize(30)
+                                                                        )),
+                                                                    )
+                                                                )
+                                                            ],
+                                                        )
+                                                    ),
+                                                    Container(
+                                                        margin: EdgeInsets.only(
+                                                            top: ScreenAdaper.height(20)
+                                                        ),
+                                                        width: double.infinity,
+                                                        height: ScreenAdaper.height(88),
+                                                        decoration: BoxDecoration(
+                                                            border: Border(bottom: BorderSide(
+                                                                width: 1,
+                                                                color: Color(0XFFd9d9d9)
+                                                            ))
+                                                        ),
+                                                        child: RaisedButton(
+                                                            disabledColor: Color(0XFF86d4ca),
+                                                            onPressed: _submitHandler,
+                                                            child: Text("注册登录", style: TextStyle(
+                                                                color: Colors.white,
+                                                                fontSize: ScreenAdaper.fontSize(40)
+                                                            )),
+                                                            splashColor: Color.fromARGB(0, 0, 0, 0),
+                                                            color: ColorClass.common,
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(5)
+                                                            ),
+                                                            elevation: 0,
+                                                        )
+                                                    )
+                                                ]
+                                            ),
+                                        )
                                     )
-                                )
-                            ]
+                                ]
+                            ),
                         ),
                     ),
                 ),

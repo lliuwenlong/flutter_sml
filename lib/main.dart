@@ -3,14 +3,17 @@ import 'package:flutter/physics.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_sml/model/store/invoice/InvoiceInfo.dart';
+import 'package:flutter_sml/pages/Login/Login.dart';
+import 'package:flutter_sml/pages/tabs/TabBars.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './routers/routers.dart';
 import 'model/store/shop/Shop.dart';
 import 'model/store/user/User.dart';
 import 'dart:ui';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
+import 'package:fluwx/fluwx.dart' as fluwx;
 void main() {
     // 强制竖屏
     SystemChrome.setPreferredOrientations([
@@ -35,7 +38,37 @@ void main() {
     }
 }
 
-class MyApp extends StatelessWidget {
+
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => new _MyAppState();
+}
+
+
+class _MyAppState extends State<MyApp>  {
+    var userId;
+    void initState() {
+        super.initState();
+        _initFluwx();
+    }
+
+    _initFluwx() async {
+        await fluwx.register(
+            appId: "wx44dec623dc2c028b",
+            doOnAndroid: true,
+            doOnIOS: false,
+            enableMTA: false);
+        var result = await fluwx.isWeChatInstalled();
+        await getUserId();
+        // print("is installed $result");
+    }
+    getUserId () async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        print(prefs.getInt("userId"));
+        setState(() {
+            this.userId = prefs.getInt("userId");
+        });
+    }
     @override
     Widget build(BuildContext context) {
         return RefreshConfiguration(
@@ -47,7 +80,8 @@ class MyApp extends StatelessWidget {
             springDescription: SpringDescription(stiffness: 170, damping: 20, mass: 1.9), 
             child: MaterialApp(
                 debugShowCheckedModeBanner: false,
-                initialRoute: '/login',
+                // initialRoute: '/logo',
+                home: this.userId == null ? LoginPage() : TabBars(),
                 onGenerateRoute: onGenerateRoute,
                 showPerformanceOverlay: false,
                 theme: ThemeData(
@@ -56,9 +90,11 @@ class MyApp extends StatelessWidget {
                 localizationsDelegates: [
                     GlobalMaterialLocalizations.delegate,
                     GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
                 ],
                 supportedLocales: [
                     const Locale('zh', 'CH'),
+                    const Locale('en', 'US'),
                 ],
             )
         );

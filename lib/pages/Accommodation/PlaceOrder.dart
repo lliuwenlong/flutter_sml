@@ -15,15 +15,12 @@ class PlaceOrder extends StatelessWidget {
                 width: double.infinity,
                 height: ScreenAdaper.height(110) + MediaQueryData.fromWindow(window).padding.bottom,
                 padding: EdgeInsets.only(
-                    bottom: MediaQueryData.fromWindow(window).padding.bottom + ScreenAdaper.height(10)
+                    bottom: MediaQueryData.fromWindow(window).padding.bottom
                 ),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     boxShadow: [
-                        BoxShadow(color: Colors.grey[300],offset: Offset(1, 1)),
-                        BoxShadow(color: Colors.grey[300], offset: Offset(-1, -1), blurRadius: 2),
-                        BoxShadow(color: Colors.grey[300], offset: Offset(1, -1), blurRadius: 2),
-                        BoxShadow(color: Colors.grey[300], offset: Offset(-1, 1), blurRadius: 2)
+                        BoxShadow(color: Colors.black12, blurRadius: 1)
                     ]
                 ),
                 child: Container(

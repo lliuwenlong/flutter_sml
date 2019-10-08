@@ -5,6 +5,7 @@ import '../../components/AppBarWidget.dart';
 import '../../common/HttpUtil.dart';
 import '../../model/api/restaurant/FoodModel.dart';
 import '../../components/LoadingSm.dart';
+import './AccommodationDetal.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class Accommodation extends StatefulWidget {
@@ -30,61 +31,9 @@ class _AccommodationState extends State<Accommodation> {
             "pageNO": _page,
             "pageSize": 10
         });
-        Map<String, dynamic> resItem = {
-            "account": "string",
-            "accountBank": "string",
-            "accountName": "string",
-            "accountPhone": "string",
-            "address": "string",
-            "applyStatus": "string",
-            "cardNo": "string",
-            "city": "string",
-            "closeTime": "string",
-            "county": "string",
-            "createTime": "2019-09-09T01:56:47.415Z",
-            "firmId": 0,
-            "idcardBack": "string",
-            "idcardFront": "string",
-            "idcardHuman": "string",
-            "logo": "string",
-            "mainGoods": "string",
-            "name": "string",
-            "officerName": "string",
-            "officerPhone": "string",
-            "openTime": "string",
-            "perPrice": "string",
-            "province": "string",
-            "status": "string",
-            "telphone": "string",
-            "type": "string"
-        };
-
-        Map<String, dynamic> resData = {
-            "code": 200,
-            "data": {
-                "currPage": 10,
-                "list": [
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem
-                ],
-                "pageSize": 0,
-                "totalCount": 0,
-                "totalPage": 0
-            },
-            "msg": "string"
-        };
 
         if (response["code"] == 200) {
-            // final res = new FoodModel.fromJson(response);
-            final res = new FoodModel.fromJson(resData);
+            final res = new FoodModel.fromJson(response);
             if (isInit) {
                 setState(() {
                     list = res.data.list;
@@ -142,7 +91,7 @@ class _AccommodationState extends State<Accommodation> {
             )),
         );
     }
-    Widget _listItem (String name, String type, int price, String city) {
+    Widget _listItem (String name, String type, int price, String city, String url) {
         return Container(
             margin: EdgeInsets.only(top: ScreenAdaper.height(20)),
             decoration: BoxDecoration(
@@ -163,7 +112,7 @@ class _AccommodationState extends State<Accommodation> {
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
                                 child: Image.network(
-                                  'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1569412123913&di=6240caea6556062c5c3126e78ffef025&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fhousephotolib%2F1405%2F11%2Fc0%2F34093522_1399768387778.jpg',
+                                    url,
                                     fit: BoxFit.cover,
                                 ),
                             ),
@@ -276,15 +225,19 @@ class _AccommodationState extends State<Accommodation> {
                     onLoading: _onLoading,
                     child: ListView.builder(
                         itemBuilder: (BuildContext context, int index) {
+                            ListModel data = this.list[index];
                             return GestureDetector(
                                 onTap: () {
-                                    Navigator.pushNamed(context, "/accommodationDetal");
+                                    Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
+                                        return new AccommodationDetal(id: data.firmId);
+                                    }));
                                 },
                                 child: this._listItem(
-                                    "边屯酒家",
+                                    data.name,
                                     "豪华型",
-                                    188,
-                                    "贵州省黔西南布依族苗族自治州兴义市鲁贵州省黔西南布依族苗族自治州兴义市鲁"
+                                    int.parse(data.perPrice),
+                                    "${data.city}${data.county}${data.address}",
+                                    data.logo
                                 )
                             );
                         },

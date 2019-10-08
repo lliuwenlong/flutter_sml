@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sml/components/AppBarWidget.dart';
+import 'package:flutter_sml/pages/Restaurant/RestaurantDetails.dart';
 import '../../components/CommonListItem.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/HttpUtil.dart';
@@ -31,61 +32,9 @@ class _EntertainmentState extends State<Entertainment> {
             "pageNO": _page,
             "pageSize": 10
         });
-        Map<String, dynamic> resItem = {
-            "account": "string",
-            "accountBank": "string",
-            "accountName": "string",
-            "accountPhone": "string",
-            "address": "string",
-            "applyStatus": "string",
-            "cardNo": "string",
-            "city": "string",
-            "closeTime": "string",
-            "county": "string",
-            "createTime": "2019-09-09T01:56:47.415Z",
-            "firmId": 0,
-            "idcardBack": "string",
-            "idcardFront": "string",
-            "idcardHuman": "string",
-            "logo": "string",
-            "mainGoods": "string",
-            "name": "string",
-            "officerName": "string",
-            "officerPhone": "string",
-            "openTime": "string",
-            "perPrice": "string",
-            "province": "string",
-            "status": "string",
-            "telphone": "string",
-            "type": "string"
-        };
-
-        Map<String, dynamic> resData = {
-            "code": 200,
-            "data": {
-                "currPage": 10,
-                "list": [
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem,
-                    resItem
-                ],
-                "pageSize": 0,
-                "totalCount": 0,
-                "totalPage": 0
-            },
-            "msg": "string"
-        };
 
         if (response["code"] == 200) {
-            // final res = new FoodModel.fromJson(response);
-            final res = new FoodModel.fromJson(resData);
+            final res = new FoodModel.fromJson(response);
             if (isInit) {
                 setState(() {
                     list = res.data.list;
@@ -156,13 +105,21 @@ class _EntertainmentState extends State<Entertainment> {
                     child: ListView.builder(
                         itemCount: this.list.length,
                         itemBuilder: (BuildContext context, int index) {
-                            return CommonListItem(
-                                "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
-                                "神木汗蒸",
-                                "古法养生",
-                                "贵州省黔西南布依族苗族自治州兴义市鲁",
-                                76,
-                                "<500"
+                            ListModel data = this.list[index];
+                            return GestureDetector(
+                                onTap: () {
+                                    Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
+                                        return new RestaurantDetails(id: data.firmId,);
+                                    }));
+                                },
+                                child:  CommonListItem(
+                                    data.logo,
+                                    data.name,
+                                    data.mainGoods,
+                                    "${data.city}${data.county}${data.address}",
+                                    double.parse(data.perPrice),
+                                    "<500"
+                                )
                             );
                         },
                     )

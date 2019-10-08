@@ -1,4 +1,6 @@
 import 'dart:io';
+
+import 'package:url_launcher/url_launcher.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,64 +12,62 @@ import '../../common/HttpUtil.dart';
 import '../../model/store/user/User.dart';
 import '../../common/Config.dart';
 class UserInfo extends StatefulWidget {
-  final Map arguments;
-  UserInfo({Key key,this.arguments}) : super(key: key);
-
-  _UserInfoState createState() => _UserInfoState(arguments:this.arguments);
+    final Map arguments;
+    UserInfo({Key key,this.arguments}) : super(key: key);
+    _UserInfoState createState() => _UserInfoState(arguments:this.arguments);
 }
 
 class _UserInfoState extends State<UserInfo> {
-  final HttpUtil http = HttpUtil();
-  User _userModel;
-  final Map arguments;
-  _UserInfoState({this.arguments});
+    final HttpUtil http = HttpUtil();
+    User _userModel;
+    final Map arguments;
+    _UserInfoState({this.arguments});
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _userModel = Provider.of<User>(context);
-  }
-  _changeUserImage(File image) async {
-    String path = image.path;
-    var name = path.substring(path.lastIndexOf("/") + 1, path.length);
-    FormData formData = new FormData.from({
-      "image": new UploadFileInfo(new File(path), name)
-    });
-
-    // print(formData);
-
- 
-    Dio dio = new Dio();
-    var respone = await dio.post<String>("${Config.apiUrl}/oss/img", data: formData);
-    print(respone);
-     return;
-    if (respone.statusCode == 200) {
-      Map res = await this.http.post('/api/v11/user/reheader',data: {
-          "image": 'https://pic2.zhimg.com/v2-639b49f2f6578eabddc458b84eb3c6a1.jpg',
-          "userId": this._userModel.userId
-      });
-      if(res['code'] == 200){
-          Fluttertoast.showToast(
-            msg: '修改成功',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIos: 1,
-            textColor: Colors.white,
-            backgroundColor: Colors.black87,
-            fontSize: ScreenAdaper.fontSize(30)
-          );
-          this._userModel.initUser(
-              userId: this._userModel.userId,
-              userName: this._userModel.userName,
-              phone: this._userModel.phone,
-              password: this._userModel.password,
-              headerImage:this._userModel.headerImage,
-              nickName: this._userModel.nickName,
-              createTime: this._userModel.createTime
-          );
-      }
+    @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        _userModel = Provider.of<User>(context);
     }
-  }
+
+    _changeUserImage(File image) async {
+
+        String path = image.path;
+        var name = path.substring(path.lastIndexOf("/") + 1, path.length);
+        print(await image.length());
+        FormData formData = new FormData.from({
+            "image": new UploadFileInfo(image, name)
+        });
+
+        Dio dio = new Dio();
+        var respone = await dio.post("http://api.zhongyunkj.cn/oss/img", data: formData);
+        print(respone);
+        if (respone.statusCode == 200) {
+            Map res = await this.http.post('/api/v11/user/reheader',data: {
+                "image": 'https://pic2.zhimg.com/v2-639b49f2f6578eabddc458b84eb3c6a1.jpg',
+                "userId": this._userModel.userId
+            });
+            if(res['code'] == 200){
+                Fluttertoast.showToast(
+                    msg: '修改成功',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIos: 1,
+                    textColor: Colors.white,
+                    backgroundColor: Colors.black87,
+                    fontSize: ScreenAdaper.fontSize(30)
+                );
+                this._userModel.initUser(
+                    userId: this._userModel.userId,
+                    userName: this._userModel.userName,
+                    phone: this._userModel.phone,
+                    password: this._userModel.password,
+                    headerImage:this._userModel.headerImage,
+                    nickName: this._userModel.nickName,
+                    createTime: this._userModel.createTime
+                );
+            }
+        }
+    }
 
   @override
   Widget build(BuildContext context) {

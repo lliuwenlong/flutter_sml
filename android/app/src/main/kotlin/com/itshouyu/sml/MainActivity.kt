@@ -1,4 +1,4 @@
-package com.itshouyu.flutter_sml
+package com.itshouyu.sml
 
 import android.os.Bundle
 

@@ -16,7 +16,7 @@ enum Location{left,mid,right}
 
     typedef void SelectDateOnTap(DayModel checkInTimeModel, DayModel leaveTimeModel);
 
-    class CalendarPage extends StatefulWidget {
+class CalendarPage extends StatefulWidget {
     final DayModel startTimeModel;// 外部传入的之前选中的入住日期
     final DayModel endTimeModel;// 外部传入的之前选中的离开日期
     final SelectDateOnTap selectDateOnTap;// 确定按钮的callback 给外部传值

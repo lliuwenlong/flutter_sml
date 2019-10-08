@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import '../services/ScreenAdaper.dart';
 class Loading extends StatelessWidget {
-    Loading({Key key}) : super(key: key);
+    bool isCenter;
+    Loading({Key key, this.isCenter = false}) : super(key: key);
 
     @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
         return Container(
             width: double.infinity,
+            height: double.infinity,
+            alignment: Alignment.center,
             child: Column(
+                mainAxisAlignment: isCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
                 children: <Widget>[
                     Container(
                         width: ScreenAdaper.width(104),

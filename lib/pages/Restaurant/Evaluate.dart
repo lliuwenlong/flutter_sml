@@ -5,7 +5,8 @@ import '../../model/api/restaurant/AppraiseList.dart';
 
 class Evaluate extends StatelessWidget {
     ListItem listItem;
-    Evaluate({Key key, ListItem val}) {
+    bool isBorder;
+    Evaluate({Key key, ListItem val, this.isBorder = true}) {
         this.listItem = val;
     }
 
@@ -16,10 +17,10 @@ class Evaluate extends StatelessWidget {
             padding: EdgeInsets.all(ScreenAdaper.width(30)),
             decoration: BoxDecoration(
                 border: Border(
-                    bottom: BorderSide(
+                    bottom: isBorder ? BorderSide(
                         color: Color(0XFFd9d9d9),
                         width: 1
-                    )
+                    ) : BorderSide.none
                 )
             ),
             child: Row(

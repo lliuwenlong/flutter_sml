@@ -64,8 +64,11 @@ import '../pages/Accommodation/PlaceOrder.dart'; // 订单确认
 import '../pages/My/MyCode.dart';//我的二维码
 import '../pages/Coupon/ChooseCoupon.dart';//选择优惠券
 import '../pages/Restaurant/BusinessQualification.dart';//商家资质
+import '../pages/Restaurant/MerchantAlbum.dart';
+
 final Map routes = {
     '/': (context) => TabBars(),
+    '/tabBars': (context) => TabBars(),
     '/base': (context) => Base(),
     '/shop': (context) => ShopPage(),
     '/coupon': (context) => Coupon(),
@@ -79,7 +82,7 @@ final Map routes = {
     '/baseList': (context, {arguments}) => BaseList(arguments: arguments),
     '/baseDetails': (context) => BaseDetails(),
     '/trip': (context) => Trip(),
-    '/releaseEvaluate': (context) => ReleaseEvaluate(),
+    '/releaseEvaluate': (context, {arguments}) => ReleaseEvaluate(arguments: arguments),
     '/product': (context,{arguments}) => Product(arguments:arguments),
     '/purchaseRecord':  (context) => PurchaseRecord(),
     '/order': (context) => Order(),
@@ -129,7 +132,8 @@ final Map routes = {
     '/placeOrder': (context) => PlaceOrder(),
     '/myCode': (context,{arguments}) => MyCode(arguments:arguments),
     '/chooseCoupon': (context,{arguments}) => ChooseCoupon(arguments:arguments),
-    '/businessQualification':(context,{arguments}) => BusinessQualification(arguments:arguments)
+    '/businessQualification':(context,{arguments}) => BusinessQualification(arguments:arguments),
+    '/merchantAlbum': (context) => MerchantAlbum()
 };
 
 var onGenerateRoute = (RouteSettings settings) {

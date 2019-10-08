@@ -8,6 +8,8 @@ import '../../components/Input.dart';
 import '../../common/HttpUtil.dart';
 import '../../model/api/user/UserModel.dart';
 import '../../model/store/user/User.dart';
+import 'package:fluwx/fluwx.dart' as fluwx;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
     LoginPage({Key key}) : super(key: key);
@@ -20,6 +22,14 @@ class _LoginPageState extends State<LoginPage> {
     TextEditingController _passwordController = TextEditingController();
     GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
     User userModel; 
+
+    @override
+    void initState() {
+        super.initState();
+        fluwx.responseFromAuth.listen((data) {
+            print(data);
+        });
+    }
     void didChangeDependencies() {
         super.didChangeDependencies();
         userModel = Provider.of<User>(context);
@@ -31,8 +41,10 @@ class _LoginPageState extends State<LoginPage> {
                 "phone": _phoneController.text
             });
             if (response["code"] == 200 ) {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
                 UserModel userModel = new UserModel.fromJson(response);
                 Data data = userModel.data;
+                await prefs.setInt("userId", data.userId);
                 this.userModel.initUser(
                     userId: data.userId,
                     userName: data.userName,
@@ -41,9 +53,12 @@ class _LoginPageState extends State<LoginPage> {
                     headerImage:data.headerImage,
                     nickName: data.nickName,
                     createTime: data.createTime
-                    
                 );
-                Navigator.pushReplacementNamed(context, "/");
+                await fluwx.sendAuth(scope: "snsapi_userinfo", state: "wechat_sdk_demo_test").then((data) {
+                    if (data) {
+                        Navigator.pushNamedAndRemoveUntil(context, '/tabBars', (router) => false);
+                    }
+                });
             } else {
                 Fluttertoast.showToast(
                     msg: response["msg"],
