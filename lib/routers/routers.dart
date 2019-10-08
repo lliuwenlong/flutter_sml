@@ -62,7 +62,8 @@ import '../pages/Restaurant/Payment.dart';//餐饮 付款
 import '../pages/Accommodation/AccommodationDetal.dart'; // 住宿页面
 import '../pages/Accommodation/PlaceOrder.dart'; // 订单确认
 import '../pages/My/MyCode.dart';//我的二维码
-
+import '../pages/Coupon/ChooseCoupon.dart';//选择优惠券
+import '../pages/Restaurant/BusinessQualification.dart';//商家资质
 final Map routes = {
     '/': (context) => TabBars(),
     '/base': (context) => Base(),
@@ -126,7 +127,9 @@ final Map routes = {
     '/payment': (context,{arguments}) => Payment(arguments:arguments),
     '/accommodationDetal': (context) => AccommodationDetal(),
     '/placeOrder': (context) => PlaceOrder(),
-    '/myCode': (context,{arguments}) => MyCode(arguments:arguments)
+    '/myCode': (context,{arguments}) => MyCode(arguments:arguments),
+    '/chooseCoupon': (context,{arguments}) => ChooseCoupon(arguments:arguments),
+    '/businessQualification':(context,{arguments}) => BusinessQualification(arguments:arguments)
 };
 
 var onGenerateRoute = (RouteSettings settings) {

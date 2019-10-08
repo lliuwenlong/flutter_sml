@@ -380,7 +380,6 @@ class _ProductDetailState extends State<ProductDetail> {
                         aspectRatio: 5 / 2,
                         child: Swiper(
                           itemBuilder: (BuildContext context, int index) {
-                            print(this.bannerList[index]['imageUrl']);
                             return Container(
                                 height: ScreenAdaper.height(300),
                                 decoration: BoxDecoration(

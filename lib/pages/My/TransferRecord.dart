@@ -59,7 +59,6 @@ class _TransferRecordState extends State<TransferRecord> {
     setState(() {
       this.transferPage++;
     });
-    print(this.transferPage);
     var controller = this._transferRefreshController;
     var response = await _getData();
     if (response["data"].length == 0) {

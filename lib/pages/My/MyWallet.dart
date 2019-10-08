@@ -25,7 +25,7 @@ class _MyWalletState extends State<MyWallet> {
         Map response = await this.http.get("/api/v1/user/account", data: {
             "userId": this._userModel.userId
         });
-       print(response["data"]);
+      //  print(response["data"]);
        if (response["code"] == 200) {
             setState(() {
               this._moneyNum = response["data"];

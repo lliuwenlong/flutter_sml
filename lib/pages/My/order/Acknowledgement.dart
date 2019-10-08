@@ -21,7 +21,7 @@ class _AcknowledgementState extends State<Acknowledgement> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    print(arguments['orderSn']);
+    // print(arguments['orderSn']);
     _getData();
   }
   _getData() async {
@@ -29,7 +29,7 @@ class _AcknowledgementState extends State<Acknowledgement> {
         .http
         .get('/api/v1/order/one', data: {'orderSn': arguments['orderSn']});
 
-    print(response);
+    // print(response);
     if (response['code'] == 200) {
       setState(() {
         this.data = response['data'];

@@ -90,7 +90,7 @@ class _CancellationOrderState extends State<CancellationOrder> {
         cancelWidget: Text("取消")
     );
 
-    print(result);
+    // print(result);
   }
 
   final HttpUtil http = HttpUtil();

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../services/ScreenAdaper.dart';
@@ -9,6 +11,8 @@ import '../../components/LoadingSm.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../model//api/my/ProductData.dart';
 import '../../components/NullContent.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 class Product extends StatefulWidget {
   final Map arguments;
     Product({Key key,this.arguments}) : super(key: key);
@@ -119,7 +123,24 @@ void _onRefresh() async{
         final Map res = await _getData(isInit: true);
         controller.refreshCompleted();
     }
-
+ _launchMap() async {
+        if (Platform.isAndroid) {
+            final url = 'androidamap://myLocation?sourceApplication=softname';
+            if (await canLaunch(url)) {
+                await launch(url);
+            } else {
+                throw 'Could not launch $url';
+            }
+        } else {
+            final url = '//myLocation?sourceApplication=applicationName';
+            if (await canLaunch(url)) {
+                await launch(url);
+            } else {
+                throw 'Could not launch $url';
+            }
+        }
+        
+    }
     
    
     Widget _item ({bool isTransfer = true, var data}) {
@@ -179,9 +200,16 @@ void _onRefresh() async{
                                     children: <Widget>[
                                         Row(
                                             children: <Widget>[
-                                                Icon(
-                                                    IconData(0xe61d, fontFamily: 'iconfont'), color: Color(0xFF22b0a1),
-                                                    size: ScreenAdaper.fontSize(30),
+                                                Container(
+                                                  child: GestureDetector(
+                                                    onTap: _launchMap,
+                                                    child: Icon(
+                                                        IconData(0xe61d, fontFamily: 'iconfont'), color: Color(0xFF22b0a1),
+                                                        size: ScreenAdaper.fontSize(30),
+                                                      ),
+                                                  ),
+                                                  width: ScreenAdaper.width(30),
+                                                  height: ScreenAdaper.height(30),
                                                 ),
                                                 SizedBox(width: ScreenAdaper.width(20)),
                                                 Expanded(

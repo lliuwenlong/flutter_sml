@@ -12,7 +12,7 @@ class Payment extends StatefulWidget {
 class _PaymentState extends State<Payment> {
   final arguments;
   _PaymentState({this.arguments});
-  String _payType = '';
+  String _payType = 'Wechat';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +63,7 @@ class _PaymentState extends State<Payment> {
                                     color: Color(0xffd9d9d9), width: 1))),
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, '/coupon');
+                            Navigator.pushNamed(context, '/chooseCoupon');
                           },
                           child: Column(
                             children: <Widget>[

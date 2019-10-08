@@ -209,7 +209,7 @@ class _InvoiceHarvestAddressState extends State<InvoiceHarvestAddress> {
                                   );
                                   return;
                               }
-                              Navigator.pushReplacementNamed(context, '/invoiceInformation');
+                              Navigator.pop(context, '/invoiceInformation');
                               this._invoiceModel.initInvoiceInfo(
                                 province: this.result.provinceName,
                                 city: this.result.cityName,

@@ -56,7 +56,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
         final Map<String, dynamic> response = await this.http.get("/api/v1/coupon/data", data: {
             "pageNO": _tabController.index == 0 ? this.notUsePage : this.beOverduePage,
             "pageSize": 10,
-            "userId": 1,
+            "userId": this.userModel.userId,
             "type": _tabController.index + 1
         });
         if (response["code"] == 200) {
@@ -274,7 +274,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
         ScreenAdaper.init(context);
         return Scaffold(
             appBar: AppBar(
-                title: Text("我的优惠卷", style: TextStyle(
+                title: Text("我的优惠券", style: TextStyle(
                     color: Colors.black,
                 )),
                 elevation: 1,

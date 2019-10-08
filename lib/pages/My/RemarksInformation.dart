@@ -84,7 +84,7 @@ class _RemarksInformationState extends State<RemarksInformation> {
                                     receiptHeader: this._invoiceModel.receiptHeader
                                   );
 
-                                  Navigator.pushReplacementNamed(context, '/invoiceInformation');
+                                  Navigator.pop(context, '/invoiceInformation');
                                 },
                                 child: Text("提交", style: TextStyle(
                                     color: Colors.white,

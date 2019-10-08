@@ -39,8 +39,6 @@ class _FeedBackState extends State<FeedBack> {
             "content": text,
             "userId": this._userModel.userId
         });
-
-        print(response);
         if (response["code"] == 200) {
            await Fluttertoast.showToast(
                 msg: '提交成功',

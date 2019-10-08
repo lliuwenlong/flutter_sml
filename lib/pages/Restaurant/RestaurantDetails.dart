@@ -823,7 +823,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                             ),
                                             child: GestureDetector(
                                               onTap: (){
-                                                print('object');
+                                                Navigator.pushNamed(context, '/businessQualification');
                                               },
                                               child: this._business(
                                                 "商家资质",

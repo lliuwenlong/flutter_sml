@@ -55,7 +55,7 @@ class _TripState extends State<Trip> {
         }
         
     }
-
+  String url = "http://192.168.2.104:8080/app/#/trip";
   @override
     Widget build(BuildContext context) {
         return Container(
@@ -106,14 +106,19 @@ class _TripState extends State<Trip> {
                 ),
                 body: Container(
                     child: InAppWebView(
-                        initialUrl: "http://192.168.2.104:8080/app/#/trip",
+                        initialUrl: this.url,
                         onWebViewCreated: (InAppWebViewController controller) {
                             InAppWebViewController webView = controller;
                             webView.addJavaScriptHandler('openMap', (args) {
                                 this._launchMap();
                             });
-                        }
-                    )
+                        },
+                        onLoadStart: (InAppWebViewController controller, String url) {
+                          setState(() {
+                            this.url = 'http://192.168.2.104:8080/app/#/trip';
+                          });
+                        },
+                                )
                 )
             ),
         );

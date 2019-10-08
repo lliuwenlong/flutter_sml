@@ -735,7 +735,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                                     ),
                                                     child: GestureDetector(
                                                       onTap: (){
-                                                        print('object');
+                                                         Navigator.pushNamed(context, '/businessQualification');
                                                       },
                                                       child: this._business(
                                                         "商家资质",

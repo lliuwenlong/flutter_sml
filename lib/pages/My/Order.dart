@@ -180,48 +180,47 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
 			"pageNO": this.page,
 			"pageSize": 10,
 			"status": _tabController.index == 5? 9 : _tabController.index,
-			"userId": 1
+			"userId": this._userModel.userId
 		});
-    print(response);
+    // print(response);
 		if (response['code'] == 200) {
 			OrderDataModel res = OrderDataModel.fromJson(response);
 		
     	if (isInit) {
           setState(() {
-            print(    _tabController.index);
-                    switch (_tabController.index) {
-                      case 0 : {
-                        allList = res.data.list;
-                        allLoading = false;
-                        this.loading = allLoading;
-                      } break;
-                      case 1 : {
-                        paymentList = res.data.list;
-                        paymentLoading = false;
-                        this.loading = paymentLoading;
-                      } break;
-                      case 2 : {
-                        toBeUsedList = res.data.list;
-                        toBeUsedLoading = false;
-                        this.loading = toBeUsedLoading;
-                      } break;
-                      case 3 : {
-                        toBeEvaluatedList = res.data.list;
-                        toBeEvaluatedLoading = false;
-                        this.loading = toBeEvaluatedLoading;
-                      } break;
-                      case 4 : {
-                        refundList = res.data.list;
-                        refundLoading = false;
-                        this.loading = refundLoading;
-                      } break;
-                      case 5 : {
-                        finishedList = res.data.list;
-                        finishedLoading = false;
-                        this.loading = finishedLoading;
-                      } break;
-                    }
-                });
+            switch (_tabController.index) {
+              case 0 : {
+                allList = res.data.list;
+                allLoading = false;
+                this.loading = allLoading;
+              } break;
+              case 1 : {
+                paymentList = res.data.list;
+                paymentLoading = false;
+                this.loading = paymentLoading;
+              } break;
+              case 2 : {
+                toBeUsedList = res.data.list;
+                toBeUsedLoading = false;
+                this.loading = toBeUsedLoading;
+              } break;
+              case 3 : {
+                toBeEvaluatedList = res.data.list;
+                toBeEvaluatedLoading = false;
+                this.loading = toBeEvaluatedLoading;
+              } break;
+              case 4 : {
+                refundList = res.data.list;
+                refundLoading = false;
+                this.loading = refundLoading;
+              } break;
+              case 5 : {
+                finishedList = res.data.list;
+                finishedLoading = false;
+                this.loading = finishedLoading;
+              } break;
+            }
+        });
       } else {
           setState(() {
                      if (_tabController.index == 0) {
@@ -358,7 +357,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                                 ),
                                 highlightedBorderColor: Color(0XFF999999),
                                 onPressed: () {
-                                  if((data.type=='house'||data.type == 'havefun')&&data.status=='1'){//去付款
+                                  if((data.type=='house')&&data.status=='1'){//去付款
                                      Navigator.pushNamed(context, "/acknowledgement",arguments: {
                                        'orderSn':data.orderSn,
                                      });
