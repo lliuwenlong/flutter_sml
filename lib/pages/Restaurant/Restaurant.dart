@@ -9,7 +9,8 @@ import './RestaurantDetails.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class Restaurant extends StatefulWidget {
-    Restaurant({Key key}) : super(key: key);
+    final Map arguments;
+    Restaurant({Key key, this.arguments});
     _RestaurantState createState() => _RestaurantState();
 }
 
@@ -19,7 +20,17 @@ class _RestaurantState extends State<Restaurant> {
     bool isLoading = true;
     RefreshController _refreshController = RefreshController(initialRefresh: false);
     int _page = 1;
+    Map<int, String> nameMap = {
+        1: "神木餐饮",
+        2: "神木购物",
+        3: "周边游",
+    };
 
+    Map<int, String> urlMap = {
+        1: "/api/v1/firm/food/",
+        2: "/api/v1/firm/shopping/",
+        3: "/api/v1/firm/nearplay/",
+    };
     @override
     initState () {
         super.initState();
@@ -27,7 +38,7 @@ class _RestaurantState extends State<Restaurant> {
     }
     
     _getData ({isInit: false}) async {
-        Map response = await this.http.post("/api/v1/firm/food/", data: {
+        Map response = await this.http.post(this.urlMap[widget.arguments["type"]], data: {
             "pageNO": _page,
             "pageSize": 10
         });
@@ -80,7 +91,7 @@ class _RestaurantState extends State<Restaurant> {
         final selft = context;
         return Scaffold(
             appBar: PreferredSize(
-                child: AppBarWidget().buildAppBar("神木餐饮"),
+                child: AppBarWidget().buildAppBar(this.nameMap[widget.arguments["type"]]),
                 preferredSize: Size.fromHeight(ScreenAdaper.height(110))
             ),
             body: isLoading
@@ -110,16 +121,16 @@ class _RestaurantState extends State<Restaurant> {
                             return GestureDetector(
                                 onTap: () {
                                     Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
-                                        return new RestaurantDetails(id: data.firmId);
+                                        return new RestaurantDetails(id: data.firmId, type: widget.arguments["type"]);
                                     }));
                                 },
                                 child: CommonListItem(
                                     data.logo,
                                     data.name,
-                                    data.type != null ? data.type : "",
+                                    data.mainGoods != null ? data.mainGoods : "",
                                     "${data.city}${data.county}${data.address}",
                                     double.parse(data.perPrice),
-                                    "<500"
+                                    "<500",
                                 )
                             );
                         },

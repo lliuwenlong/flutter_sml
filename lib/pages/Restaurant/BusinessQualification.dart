@@ -14,8 +14,8 @@ class _BusinessQualificationState extends State<BusinessQualification> {
 
   Widget _item () {
     return  Container(
-              width: ScreenAdaper.width(335),
-              height: ScreenAdaper.height(335),
+            //   width: ScreenAdaper.width(335),
+            //   height: ScreenAdaper.height(335),
               color: Colors.white,
               child: Container(
                 child: 
@@ -35,17 +35,17 @@ class _BusinessQualificationState extends State<BusinessQualification> {
         child: Container(
           margin: EdgeInsets.only(top: ScreenAdaper.height(30)),
           padding: EdgeInsets.only(left: ScreenAdaper.width(30),right: ScreenAdaper.width(30)),
-          child: ListView(
+          child: GridView(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1,
+                mainAxisSpacing: ScreenAdaper.width(20),
+                crossAxisSpacing: ScreenAdaper.width(20),
+            ),
             children: <Widget>[
-                Wrap(
-                  spacing:ScreenAdaper.width(20),
-                  runSpacing: ScreenAdaper.height(20),
-                  children: <Widget>[
-                    _item(),
-                    _item(),
-                    _item(),
-                  ],
-                )
+                _item(),
+                _item(),
+                _item()
             ],
           ),
         ),

@@ -16,8 +16,12 @@ class _HomePageState extends State<HomePage> {
     int _page = 1;
     List<Data> articleList = [];
     RefreshController _refreshController = RefreshController(initialRefresh: false);
-    _onTap (String router) {
-        Navigator.pushNamed(context, router);
+    _onTap (String router, int type) {
+        type == null
+            ? Navigator.pushNamed(context, router)
+            : Navigator.pushNamed(context, router, arguments: {
+                "type": type
+            });
     }
 
     @override
@@ -135,16 +139,16 @@ class _HomePageState extends State<HomePage> {
                             this._menuItem("images/shenmujidi.png", "神木基地",  80, 90, "/base"),
                             this._menuItem("images/shenmukaquan.png", "神木卡券",  77, 88, "/coupon"),
                             this._menuItem("images/shenmuchuxing.png", "神木出行", 94, 99, "/trip"),
-                            this._menuItem("images/shenmucanyin.png", "神木餐饮", 87, 93, "/restaurant")
+                            this._menuItem("images/shenmucanyin.png", "神木餐饮", 87, 93, "/restaurant", type: 1)
                         ],
                     ),
                     SizedBox(height: ScreenAdaper.height(40)),
                     Row(
                         children: <Widget>[
                             this._menuItem("images/shenmuzhusu.png", "神木住宿", 98, 83, "/accommodation"),
-                            this._menuItem("images/shenmugouwu.png", "神木购物", 65, 92,  "/shop"),
+                            this._menuItem("images/shenmugouwu.png", "神木购物", 65, 92,  "/restaurant", type: 2),
                             this._menuItem("images/shenmuyule.png", "神木娱乐", 62, 97, "/entertainment"),
-                            this._menuItem("images/zhoubianyou.png", "周边游", 100, 85, "/restaurant")
+                            this._menuItem("images/zhoubianyou.png", "周边游", 100, 85, "/restaurant", type: 3)
                         ],
                     )
                 ],
@@ -152,12 +156,12 @@ class _HomePageState extends State<HomePage> {
         );
     }
 
-    Widget _menuItem (String url, String text,  double width, double height, String router) {
+    Widget _menuItem (String url, String text,  double width, double height, String router, {int type}) {
         return Expanded(
             child: Container(
                 child: GestureDetector(
                     onTap: () {
-                        this._onTap(router);
+                        this._onTap(router, type);
                     },
                     child: Column(
                         children: <Widget>[

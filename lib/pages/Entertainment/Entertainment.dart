@@ -109,7 +109,7 @@ class _EntertainmentState extends State<Entertainment> {
                             return GestureDetector(
                                 onTap: () {
                                     Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
-                                        return new RestaurantDetails(id: data.firmId,);
+                                        return new RestaurantDetails(id: data.firmId, type: 4);
                                     }));
                                 },
                                 child:  CommonListItem(

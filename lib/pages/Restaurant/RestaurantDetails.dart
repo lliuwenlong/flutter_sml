@@ -9,7 +9,7 @@ import '../../components/oldNestedScrollView/old_extended_nested_scroll_view.dar
 import '../Restaurant/Evaluate.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/LoadingSm.dart';
-import './ServiceItem.dart';
+import './FoodServiceItem.dart';
 import './Business.dart';
 import '../../components/NullContent.dart';
 import '../../common/Color.dart';
@@ -19,10 +19,12 @@ import '../../components/SliverAppBarDelegate.dart';
 import '../../model/api/restaurant/FoodFirmApiModel.dart';
 import '../../model/api/restaurant/CouponsApiModel.dart';
 import '../../model/api/restaurant/AppraiseDataModelApi.dart';
+import './ServiceHtml.dart';
 
 class RestaurantDetails extends StatefulWidget {
     int id;
-    RestaurantDetails({Key key, this.id}) : super(key: key);
+    int type;
+    RestaurantDetails({Key key, this.id, this.type}) : super(key: key);
     _RestaurantDetailsState createState() => _RestaurantDetailsState();
 
 }
@@ -74,7 +76,6 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
         _tabController = TabController(vsync: this, length: 3);
         this._couponsData();
         this._getData();
-        this._appraiseData();
         _scrollController.addListener(() {
             setState(() {
                 this.offset = _scrollController.offset;
@@ -86,6 +87,13 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
             });
         });
     }
+
+    @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        this._appraiseData();
+    }
+
 
     @override
     void dispose() {
@@ -119,8 +127,8 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
 
     _appraiseData () async {
         Map response = await this.http.get("/api/v1/firm/${widget.id}/appraise", data: {
-            "pageNO": 1,
-            "pageSize": 10
+            "pageNO": 0,
+            "pageSize": 0
         });
         if (response["code"] == 200) {
             AppraiseDataModelApi res = AppraiseDataModelApi.fromJson(response);
@@ -701,7 +709,9 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                 child: RaisedButton(
                     elevation: 0,
                     onPressed: () {
-                        Navigator.pushNamed(context, "/payment");
+                        Navigator.pushNamed(context, "/payment", arguments: {
+                            "amount": 155
+                        });
                     },
                     color: ColorClass.common,
                     shape: RoundedRectangleBorder(
@@ -768,11 +778,20 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                                         bottom: ScreenAdaper.height(110) + MediaQueryData.fromWindow(window).padding.bottom,
                                                     ),
                                                     itemBuilder: (BuildContext context, int index) {
+                                                        Goods good = this.firm.goods[index];
                                                         return GestureDetector(
                                                             onTap: () {
-                                                                showModalBottomSheetHandler();
+                                                                Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
+                                                                    return new ServiceHtml(good.goodsId, widget.type);
+                                                                }));
                                                             },
-                                                            child: ServiceItem(isShowBorder: index == 9 ? false : true),
+                                                            child: FoodServiceItem(
+                                                                good.name,
+                                                                good.picture,
+                                                                good.title,
+                                                                good.price,
+                                                                isShowBorder: index == this.firm.goods.length - 1 ? false : true
+                                                            ),
                                                         );
                                                     },
                                                     itemCount: this.firm.goods != null ? this.firm.goods.length : 0,
@@ -803,17 +822,21 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                                             child: this.__evaluateButton(),
                                                         ),
                                                         this.appraiseList != null && this.appraiseList.isNotEmpty
-                                                            ? new Wrap(
-                                                                children: <Widget>[
-                                                                    Evaluate(),
-                                                                    Evaluate(),
-                                                                    Evaluate(),
-                                                                    Evaluate(),
-                                                                    Evaluate(),
-                                                                    Evaluate(),
-                                                                    Evaluate(),
-                                                                    Evaluate(isBorder: false)
-                                                                ]
+                                                            ? ListView.builder(
+                                                                shrinkWrap: true,
+                                                                physics: NeverScrollableScrollPhysics(),
+                                                                itemBuilder: (BuildContext context, int index) {
+                                                                    AppraiseDataModelList appraiseDataModelList = this.appraiseList[index];
+                                                                    return Evaluate(
+                                                                        appraiseDataModelList.content,
+                                                                        appraiseDataModelList.createTime,
+                                                                        appraiseDataModelList.nickName,
+                                                                        appraiseDataModelList.headerImage,
+                                                                        appraiseDataModelList.imageUrl,
+                                                                        isBorder: index == this.appraiseList.length - 1 ? false : true,
+                                                                    );
+                                                                },
+                                                                itemCount: this.appraiseList.length,
                                                             )
                                                             : Container(
                                                                 height: 300,

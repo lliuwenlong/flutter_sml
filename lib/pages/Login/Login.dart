@@ -27,7 +27,9 @@ class _LoginPageState extends State<LoginPage> {
     void initState() {
         super.initState();
         fluwx.responseFromAuth.listen((data) {
-            print(data);
+            if (data.code != null) {
+                Navigator.pushNamedAndRemoveUntil(context, '/tabBars', (router) => false);
+            }
         });
     }
     void didChangeDependencies() {
@@ -54,11 +56,11 @@ class _LoginPageState extends State<LoginPage> {
                     nickName: data.nickName,
                     createTime: data.createTime
                 );
-                await fluwx.sendAuth(scope: "snsapi_userinfo", state: "wechat_sdk_demo_test").then((data) {
-                    if (data) {
-                        Navigator.pushNamedAndRemoveUntil(context, '/tabBars', (router) => false);
-                    }
-                });
+                if (data.wxAuth == 0) {
+                    await fluwx.sendAuth(scope: "snsapi_userinfo", state: "wechat_sdk_demo_test");
+                } else {
+                    Navigator.pushNamedAndRemoveUntil(context, '/tabBars', (router) => false);
+                }
             } else {
                 Fluttertoast.showToast(
                     msg: response["msg"],

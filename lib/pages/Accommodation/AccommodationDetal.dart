@@ -92,6 +92,12 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
     }
 
     @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        this._appraiseData();
+    }
+
+    @override
     void dispose() {
         super.dispose();
         _scrollViewController.dispose();
@@ -714,12 +720,12 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                         : SizedBox(),
                     new Wrap(
                         children: <Widget>[
-                            Evaluate(),
-                            Evaluate(),
-                            Evaluate(),
-                            Evaluate(),
-                            Evaluate(),
-                            Evaluate()
+                            // Evaluate(),
+                            // Evaluate(),
+                            // Evaluate(),
+                            // Evaluate(),
+                            // Evaluate(),
+                            // Evaluate()
                         ]
                     )
                 ]
@@ -812,31 +818,17 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                             ? new MediaQuery.removePadding(
                                                 removeTop: true,
                                                 context: context,
-                                                child: SmartRefresher(
-                                                    controller: _refreshController,
-                                                    enablePullDown: false,
-                                                    enablePullUp: false,
-                                                    header: WaterDropHeader(),
-                                                    footer: ClassicFooter(
-                                                        loadStyle: LoadStyle.ShowWhenLoading,
-                                                        idleText: "上拉加载",
-                                                        failedText: "加载失败！点击重试！",
-                                                        canLoadingText: "加载更多",
-                                                        noDataText: "没有更多数据",
-                                                        loadingText: "加载中"
-                                                    ),
-                                                    child: ListView.builder(
-                                                        key: PageStorageKey("Tab0"),
-                                                        itemBuilder: (BuildContext context, int index) {
-                                                            return GestureDetector(
-                                                                onTap: () {
-                                                                    showModalBottomSheetHandler();
-                                                                },
-                                                                child: ServiceItem(),
-                                                            );
-                                                        },
-                                                        itemCount: this.firm.goods != null ? this.firm.goods.length : 0,
-                                                    )
+                                                child: ListView.builder(
+                                                    key: PageStorageKey("Tab0"),
+                                                    itemBuilder: (BuildContext context, int index) {
+                                                        return GestureDetector(
+                                                            onTap: () {
+                                                                showModalBottomSheetHandler();
+                                                            },
+                                                            child: ServiceItem(isShowBorder: this.firm.goods.length -1 == index ? false : true),
+                                                        );
+                                                    },
+                                                    itemCount: this.firm.goods != null ? this.firm.goods.length : 0,
                                                 ),
                                             )
                                             : NullContent("暂无数据")
@@ -860,16 +852,22 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                                         ),
                                                         child: this.__evaluateButton(),
                                                     ),
-                                                    this.appraiseList.isNotEmpty
-                                                        ? Wrap(
-                                                            children: <Widget>[
-                                                                Evaluate(),
-                                                                Evaluate(),
-                                                                Evaluate(),
-                                                                Evaluate(),
-                                                                Evaluate(),
-                                                                Evaluate()
-                                                            ]
+                                                    this.appraiseList != null && this.appraiseList.isNotEmpty
+                                                        ? ListView.builder(
+                                                            shrinkWrap: true,
+                                                            physics: NeverScrollableScrollPhysics(),
+                                                            itemBuilder: (BuildContext context, int index) {
+                                                                AppraiseDataModelList appraiseDataModelList = this.appraiseList[index];
+                                                                return Evaluate(
+                                                                    appraiseDataModelList.content,
+                                                                    appraiseDataModelList.createTime,
+                                                                    appraiseDataModelList.nickName,
+                                                                    appraiseDataModelList.headerImage,
+                                                                    appraiseDataModelList.imageUrl,
+                                                                    isBorder: index == this.appraiseList.length - 1 ? false : true,
+                                                                );
+                                                            },
+                                                            itemCount: this.appraiseList.length,
                                                         )
                                                         : Container(
                                                             height: 300,
