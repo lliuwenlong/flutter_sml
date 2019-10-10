@@ -44,7 +44,8 @@ class _RetrieveAccountState extends State<RetrieveAccount> {
             final String password = this._passwordController.text;
             Map response = await HttpUtil().post("/api/v11/mpwd", params: {
                 "password": password,
-                "phone": phone
+                "phone": phone,
+                "vcode": this._verificationCodeController.text
             });
             if (response["code"] == 200 ) {
                 await Fluttertoast.showToast(
@@ -81,7 +82,7 @@ class _RetrieveAccountState extends State<RetrieveAccount> {
         });
         setState(() {
             this.code = response["data"];
-            this._verificationCodeController.text = response["data"];
+            // this._verificationCodeController.text = response["data"];
         });
     }
 

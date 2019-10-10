@@ -77,7 +77,8 @@ class _RegisterPageState extends State<RegisterPage> {
             final String password = this._passwordController.text;
             Map response =  await HttpUtil().post("/api/v11/regist", params: {
                 "phone": phone,
-                "password": password
+                "password": password,
+                "vcode": this._verificationCodeController.text
             });
             if (response["code"] == 200 ) {
                 await Fluttertoast.showToast(
@@ -114,7 +115,6 @@ class _RegisterPageState extends State<RegisterPage> {
         });
         setState(() {
             this.code = response["data"];
-            this._verificationCodeController.text = response["data"];
         });
     }
 
