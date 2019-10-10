@@ -702,9 +702,9 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                                 color: ColorClass.common,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
-                                    side: BorderSide(
-                                        color: Color(0xFFc1a786)
-                                    )
+                                    // side: BorderSide(
+                                    //     color: Color(0xFFc1a786)
+                                    // )
                                 ),
                                 elevation: 0,
                                 disabledColor: Color(0xFF86d4ca),

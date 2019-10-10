@@ -19,12 +19,16 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:fluwx/fluwx.dart' as fluwx;
 import './common/HttpUtil.dart';
 import './components/AppFuncBrowse.dart';
+import 'package:amap_location/amap_location.dart';
+
 void main() {
     // 强制竖屏
     SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
         DeviceOrientation.portraitDown
     ]);
+    //高德地图
+    AMapLocationClient.setApiKey("022af4564933e753fc99559734e3edfe");
     runApp(
         MultiProvider(
             providers: [

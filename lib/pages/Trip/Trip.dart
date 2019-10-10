@@ -8,7 +8,6 @@ import '../../common/Config.dart';
 import '../../common/HttpUtil.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../services/ScreenAdaper.dart';
-
 class Trip extends StatefulWidget {
     @override
     _TripState createState() => _TripState();
@@ -55,9 +54,7 @@ class _TripState extends State<Trip> {
         }
         
     }
-    String url = "${Config.WEB_URL}/app/#/trip";
-
-    @override
+  @override
     Widget build(BuildContext context) {
         return Container(
             child: Scaffold(
@@ -105,21 +102,19 @@ class _TripState extends State<Trip> {
                         ))
                     )
                 ),
-                body: Container(
+                body: SafeArea(
+                  bottom: true,
+                  child: Container(
                     child: InAppWebView(
-                        initialUrl: this.url,
+                        initialUrl: '${Config.WEB_URL}/app/#/trip',
                         onWebViewCreated: (InAppWebViewController controller) {
                             InAppWebViewController webView = controller;
                             webView.addJavaScriptHandler('openMap', (args) {
                                 this._launchMap();
                             });
                         },
-                        onLoadStart: (InAppWebViewController controller, String url) {
-                            setState(() {
-                                this.url = '${Config.WEB_URL}/app/#/trip';
-                            });
-                        },
-                    )
+                      )
+                ),
                 )
             ),
         );

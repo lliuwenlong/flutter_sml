@@ -1,4 +1,4 @@
 class Config {
     static final String apiUrl = "http://api.zhongyunkj.cn";
-    static final String WEB_URL = "http://192.168.2.121:8080";
+    static final String WEB_URL = "http://192.168.2.102:8080";
 }

@@ -1,8 +1,9 @@
 import 'dart:io';
 
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter_luban/flutter_luban.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +11,6 @@ import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
 import '../../common/HttpUtil.dart';
 import '../../model/store/user/User.dart';
-import '../../common/Config.dart';
 class UserInfo extends StatefulWidget {
     final Map arguments;
     UserInfo({Key key,this.arguments}) : super(key: key);

@@ -149,7 +149,7 @@ class _SettingState extends State<Setting> {
                 child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                        Text('退出登陆', style: TextStyle(
+                        Text('退出登录', style: TextStyle(
                             color: Color(0XFF22b0a1),
                             fontSize: ScreenAdaper.fontSize(28, allowFontScaling: true)
                         )),
