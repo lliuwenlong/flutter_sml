@@ -3,17 +3,26 @@ import 'package:flutter_sml/common/Color.dart';
 import '../../services/ScreenAdaper.dart';
 class ServiceItem extends StatelessWidget {
     bool isShowBorder;
-    List listData = [];
-    ServiceItem({Key key, this.isShowBorder = true});
-    Widget _rowItem () {
+    String title;//标题
+    String area;//面积
+    String room;//容量
+    String window;//窗户
+    String bed;//床型
+    String intnet;//宽带
+    String bathroom;//卫浴
+    String picture;//封面图
+    String price;//价格
+
+    ServiceItem({Key key, this.isShowBorder = true,this.title,this.area,this.room,this.window,this.bed,this.intnet,this.bathroom,this.picture,this.price});
+    Widget _rowItem (String name,String desc) {
         return Row(
             children: <Widget>[
-                Text("面积", style: TextStyle(
+                Text(name, style: TextStyle(
                     color: ColorClass.fontColor,
                     fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true)
                 )),
                 SizedBox(width: ScreenAdaper.width(20)),
-                Text("25㎡", style: TextStyle(
+                Text(desc, style: TextStyle(
                     color: ColorClass.titleColor,
                     fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true)
                 ))
@@ -49,7 +58,7 @@ class ServiceItem extends StatelessWidget {
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
                                 child: Image.network(
-                                    "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
+                                    this.picture,
                                     fit: BoxFit.cover,
                                 ),
                             )
@@ -65,11 +74,11 @@ class ServiceItem extends StatelessWidget {
                                         Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
-                                                Text("高级大床房", style: TextStyle(
+                                                Text(this.title, style: TextStyle(
                                                     fontSize: ScreenAdaper.fontSize(30, allowFontScaling: true),
                                                     color: ColorClass.fontColor
                                                 )),
-                                                Text("¥179", style: TextStyle(
+                                                Text("¥${this.price}", style: TextStyle(
                                                     fontSize: ScreenAdaper.fontSize(30, allowFontScaling: true),
                                                     color: ColorClass.fontRed
                                                 ))
@@ -79,11 +88,11 @@ class ServiceItem extends StatelessWidget {
                                             children: <Widget>[
                                                 Expanded(
                                                     flex: 1,
-                                                    child: this._rowItem(),
+                                                    child: this._rowItem('面积',this.area),
                                                 ),
                                                 Expanded(
                                                     flex: 1,
-                                                    child: this._rowItem(),
+                                                    child: this._rowItem('可住',this.room),
                                                 )
                                             ],
                                         ),
@@ -91,11 +100,11 @@ class ServiceItem extends StatelessWidget {
                                             children: <Widget>[
                                                 Expanded(
                                                     flex: 1,
-                                                    child: this._rowItem(),
+                                                    child: this._rowItem('窗户',this.window),
                                                 ),
                                                 Expanded(
                                                     flex: 1,
-                                                    child: this._rowItem(),
+                                                    child: this._rowItem('床型',this.bed),
                                                 )
                                             ],
                                         ),
@@ -103,11 +112,11 @@ class ServiceItem extends StatelessWidget {
                                             children: <Widget>[
                                                 Expanded(
                                                     flex: 1,
-                                                    child: this._rowItem(),
+                                                    child: this._rowItem('宽带',this.intnet),
                                                 ),
                                                 Expanded(
                                                     flex: 1,
-                                                    child: this._rowItem(),
+                                                    child: this._rowItem('卫浴',this.bathroom),
                                                 )
                                             ],
                                         )

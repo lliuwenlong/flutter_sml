@@ -129,19 +129,21 @@ class _MyPageState extends State<MyPage> {
                                                     alignment: Alignment.centerRight,
                                                     child: Padding(
                                                         padding: EdgeInsets.only(right: ScreenAdaper.width(30)),
-                                                        child: _codeData==null?
-                                                          Text(''):Container(
+                                                        child: Container(
                                                             child: GestureDetector(
                                                               onTap: (){
-                                                                Navigator.pushNamed(context, '/myCode',arguments: {
-                                                                  'codeData':this._codeData
-                                                                });
+                                                                if (this._codeData!=null) {
+                                                                  Navigator.pushNamed(context, '/myCode',arguments: {
+                                                                      'codeData':this._codeData
+                                                                  });
+                                                                }
+                                                                
                                                               },
-                                                              child: QrImage(
-                                                                data: this._codeData,
-                                                                size: 60.0,
-                                                                foregroundColor:Colors.white,
-                                                                ),
+                                                              child:  Icon(
+                                                                IconData(0xe654, fontFamily: 'iconfont'),
+                                                                size: ScreenAdaper.fontSize(80, allowFontScaling: true),
+                                                                color: Color(0XFFffffff),
+                                                            ),
                                                             ),
                                                           )
                                                     ),

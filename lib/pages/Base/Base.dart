@@ -67,7 +67,7 @@ class _BaseState extends State<Base> {
         }
     }
 
-    Widget _cardItem(String name, int id) {
+    Widget _cardItem(String name, int id,String baseImage) {
         return Container(
             margin: EdgeInsets.only(top: ScreenAdaper.height(20)),
             padding: EdgeInsets.fromLTRB(
@@ -84,7 +84,9 @@ class _BaseState extends State<Base> {
                             aspectRatio: 690 / 276,
                             child: GestureDetector(
                                 onTap: () {
-                                    Navigator.pushNamed(context, "/baseDetails");
+                                    Navigator.pushNamed(context, "/baseDetails",arguments: {
+                                      'sid': id
+                                    });
                                 },
                                 child: ClipRRect(
                                     borderRadius: BorderRadius.only(
@@ -92,7 +94,7 @@ class _BaseState extends State<Base> {
                                         topLeft: Radius.circular(4)
                                     ),
                                     child: Image.network(
-                                        "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
+                                      baseImage,
                                         fit: BoxFit.cover,
                                     )
                                 )
@@ -173,7 +175,7 @@ class _BaseState extends State<Base> {
                 child: ListView.builder(
                     itemCount: baseList.length,
                     itemBuilder: (BuildContext context, int index) {
-                        return _cardItem(this.baseList[index].baseName, this.baseList[index].baseId);
+                        return _cardItem(this.baseList[index].baseName, this.baseList[index].baseId,this.baseList[index].baseImage);
                     },
                 )
             )

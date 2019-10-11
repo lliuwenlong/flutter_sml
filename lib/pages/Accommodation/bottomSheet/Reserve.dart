@@ -5,7 +5,16 @@ import '../../../common/Color.dart';
 import 'dart:ui';
 class Reserve extends StatelessWidget {
     BuildContext _selfContext;
-    Reserve({Key key}) : super(key: key);
+     String title;//标题
+    String area;//面积
+    String room;//容量
+    String windows;//窗户
+    String bed;//床型
+    String intnet;//宽带
+    String bathroom;//卫浴
+    String picture;//封面图
+    String price;//价格
+    Reserve({Key key,this.title,this.area,this.room,this.windows,this.bed,this.intnet,this.bathroom,this.picture,this.price});
 
     Widget _header (String name) {
         return Container(
@@ -74,7 +83,7 @@ class Reserve extends StatelessWidget {
                                 decoration: BoxDecoration(
                                     image: DecorationImage(
                                         image: NetworkImage(
-                                           'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1569412123913&di=6240caea6556062c5c3126e78ffef025&imgtype=0&src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fhousephotolib%2F1405%2F11%2Fc0%2F34093522_1399768387778.jpg',
+                                          this.picture,
                                         ),
                                         fit: BoxFit.cover)));
                           },
@@ -129,10 +138,10 @@ class Reserve extends StatelessWidget {
                             Row(
                                 children: <Widget>[
                                     Expanded(
-                                        child: this._rowItem("面积", "25㎡")
+                                        child: this._rowItem("面积", this.area)
                                     ),
                                     Expanded(
-                                        child: this._rowItem("可住", "1人")
+                                        child: this._rowItem("可住", this.room)
                                     )
                                 ],
                             ),
@@ -140,10 +149,10 @@ class Reserve extends StatelessWidget {
                             Row(
                                 children: <Widget>[
                                     Expanded(
-                                        child: this._rowItem("窗户", "有窗")
+                                        child: this._rowItem("窗户", this.windows)
                                     ),
                                     Expanded(
-                                        child: this._rowItem("床型", "大床")
+                                        child: this._rowItem("床型",this.bed)
                                     )
                                 ],
                             ),
@@ -151,10 +160,10 @@ class Reserve extends StatelessWidget {
                             Row(
                                 children: <Widget>[
                                     Expanded(
-                                        child: this._rowItem("宽带", "免费WIFI")
+                                        child: this._rowItem("宽带", this.intnet)
                                     ),
                                     Expanded(
-                                        child: this._rowItem("卫浴", "有")
+                                        child: this._rowItem("卫浴", this.bathroom)
                                     )
                                 ],
                             )
@@ -174,7 +183,7 @@ class Reserve extends StatelessWidget {
             ),
             child: Wrap(
                 children: <Widget>[
-                    _header("高级大床房"),
+                    _header(this.title),
                     _banner(),
                     Container(
                         margin: EdgeInsets.only(
@@ -206,7 +215,7 @@ class Reserve extends StatelessWidget {
                                                     )
                                                 ),
                                                 TextSpan(
-                                                    text: '188',
+                                                    text: this.price,
                                                     style: TextStyle(
                                                         fontSize: ScreenAdaper.fontSize(44)
                                                     )

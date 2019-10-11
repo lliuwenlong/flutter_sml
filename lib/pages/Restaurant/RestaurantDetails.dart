@@ -137,7 +137,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
             });
         }
     }
-    
+  //拨打电话  
     _launchPhone () async {
         String url = 'tel:${this.firm.telphone}';
         if (await canLaunch(url)) {
@@ -146,7 +146,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
             throw 'Could not launch $url';
         }
     }
-
+  //地图跳转
     _launchMap () async {
         String url = "androidamap://navi?sourceApplication=appname&poiname=fangheng&lat=36.547901&lon=104.258354&dev=1&style=2";
         if (await canLaunch(url)) {
@@ -543,11 +543,13 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
             flexibleSpace: FlexibleSpaceBar(
                 background: GestureDetector(
                     onTap: () {
-                        Navigator.pushNamed(context, "/merchantAlbum");
+                        Navigator.pushNamed(context, "/merchantAlbum",arguments: {
+                          'imgList':this.firm.goodsAttaches
+                        });
                     },
                     child: Image.network(
-                        "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
-                            fit: BoxFit.fill
+                      	this.firm.logo,
+                        fit: BoxFit.fill
                     )
                 ),
             )
@@ -851,17 +853,19 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                             Wrap(
                                                 key: PageStorageKey("Tab2"),
                                                 children: <Widget>[
-                                                    Business("商家名称", subTitle: "人间有味"),
-                                                    Business("商家分类", subTitle: "住宿"),
-                                                    Business("商家地址", subTitle: "贵州省黔西南布依族苗族自治州兴义市湖南街30附近"),
-                                                    Business("商家电话", subTitle: "0859-3567373", isBorder: false),
+                                                    Business("商家名称", subTitle: this.firm.name),
+                                                    Business("商家分类", subTitle: this.firm.tags),
+                                                    Business("商家地址", subTitle: '${this.firm.province}${this.firm.city}${this.firm.county}${this.firm.address}'),
+                                                    Business("商家电话", subTitle: this.firm.telphone, isBorder: false),
                                                     Container(
                                                         margin: EdgeInsets.only(
                                                             top: ScreenAdaper.height(20)
                                                         ),
                                                         child: GestureDetector(
                                                         onTap: (){
-                                                            Navigator.pushNamed(context, '/businessQualification');
+                                                            Navigator.pushNamed(context, '/businessQualification',arguments: {
+                                                              'imgList':this.firm.attachs
+                                                            });
                                                         },
                                                         child: Business(
                                                             "商家资质",

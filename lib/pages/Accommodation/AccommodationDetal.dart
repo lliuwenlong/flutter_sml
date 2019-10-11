@@ -104,7 +104,8 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
         _tabController.dispose();
     }
     
-    void showModalBottomSheetHandler () {
+    void showModalBottomSheetHandler (int index) {
+		Goods good = this.firm.goods[index];
         ShowBottomModelAlert.showModalBottomSheet(
             context: context,
             shape:  RoundedRectangleBorder(
@@ -116,7 +117,17 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
             builder: (BuildContext context){
                 return Container(
                     color: Colors.white,
-                    child: Reserve()
+                    child: Reserve(
+						title: good.title,
+						area:good.area,
+						room:good.room,
+						windows:good.window,
+						bed:good.bed,
+						intnet:good.intnet,
+						bathroom:good.bathroom,
+						picture:good.picture,
+						price:good.price
+					)
                 );
             }
         );
@@ -587,9 +598,16 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
             snap: false,
             elevation: 0,
             flexibleSpace: FlexibleSpaceBar(
-                background: Image.network(
-                    "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
+                background: GestureDetector(
+                    onTap: () {
+                        Navigator.pushNamed(context, "/merchantAlbum",arguments: {
+                          'imgList':this.firm.goodsAttaches
+                        });
+                    },
+                    child: Image.network(
+                      	this.firm.logo,
                         fit: BoxFit.fill
+                    )
                 ),
             )
         );
@@ -821,11 +839,24 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                                 child: ListView.builder(
                                                     key: PageStorageKey("Tab0"),
                                                     itemBuilder: (BuildContext context, int index) {
+														Goods good = this.firm.goods[index];
+														print(good);
                                                         return GestureDetector(
                                                             onTap: () {
-                                                                showModalBottomSheetHandler();
+                                                                showModalBottomSheetHandler(index);
                                                             },
-                                                            child: ServiceItem(isShowBorder: this.firm.goods.length -1 == index ? false : true),
+                                                            child: ServiceItem(
+																isShowBorder: this.firm.goods.length -1 == index ? false : true,
+																title: good.title,
+																area:good.area,
+																room:good.room,
+																window:good.window,
+																bed:good.bed,
+																intnet:good.intnet,
+																bathroom:good.bathroom,
+																picture:good.picture,
+																price:good.price
+															),
                                                         );
                                                     },
                                                     itemCount: this.firm.goods != null ? this.firm.goods.length : 0,
@@ -882,17 +913,19 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                         Wrap(
                                             key: PageStorageKey("Tab2"),
                                             children: <Widget>[
-                                                Business("商家名称", subTitle: "人间有味"),
-                                                Business("商家分类", subTitle: "住宿"),
-                                                Business("商家地址", subTitle: "贵州省黔西南布依族苗族自治州兴义市湖南街30附近"),
-                                                Business("商家电话", subTitle: "0859-3567373", isBorder: false),
+                                                Business("商家名称", subTitle: this.firm.name),
+                                                Business("商家分类", subTitle: this.firm.tags),
+                                                Business("商家地址", subTitle: '${this.firm.province}${this.firm.city}${this.firm.county}${this.firm.address}'),
+                                                Business("商家电话", subTitle: this.firm.telphone, isBorder: false),
                                                 Container(
                                                     margin: EdgeInsets.only(
                                                         top: ScreenAdaper.height(20)
                                                     ),
                                                     child: GestureDetector(
                                                         onTap: (){
-                                                            Navigator.pushNamed(context, '/businessQualification');
+                                                            Navigator.pushNamed(context, '/businessQualification',arguments:{
+																'imgList':this.firm.attachs
+															});
                                                         },
                                                         child: Business(
                                                             "商家资质",

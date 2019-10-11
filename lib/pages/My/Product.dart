@@ -62,7 +62,7 @@ void didChangeDependencies() {
         "pageNO": this._tabController.index == 0 ? subscriePage : transferPage,
         "pageSize": 10,
         "userId": this._userModel.userId,
-        "type": this._tabController.index == 0? 1 : 0
+        "type": this._tabController.index == 0 ? 1 : 0
     });
     if (response["code"] == 200) {
             final res = new ProductDataModel.fromJson(response);
@@ -103,7 +103,7 @@ void _onLoading() async{
             ? this._subscrieRefreshController
             : this._transferRefreshController;
         var response = await _getData();
-        if (response["data"].length == 0) {
+        if (response["data"]["list"].length == 0) {
             controller.loadNoData();
         } else {
             controller.loadComplete();
@@ -122,6 +122,9 @@ void _onRefresh() async{
             : this._transferRefreshController;
         final Map res = await _getData(isInit: true);
         controller.refreshCompleted();
+        if (controller.footerStatus == LoadStatus.noMore) {
+            controller.loadComplete();
+        }
     }
  _launchMap() async {
         if (Platform.isAndroid) {

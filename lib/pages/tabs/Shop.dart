@@ -116,7 +116,7 @@ class _ShopPageState extends State<ShopPage> {
                                         child: ClipRRect(
                                             borderRadius: BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5)),
                                             child: Image.network(
-                                                "http://qcloud.dpfile.com/pc/pYPuondR-PaQO3rhSjRl7x1PBMlPubyBLeDC8IcaPQGC0AsVXyL223YOP11TLXmuTZlMcKwJPXLIRuRlkFr_8g.jpg",
+                                              val.image,
                                                 fit: BoxFit.fill,
                                             )
                                         ),

@@ -17,8 +17,8 @@ class MyCode extends StatelessWidget {
           children: <Widget>[
               Container(
                 margin: EdgeInsets.only(top: ScreenAdaper.height(50),left: ScreenAdaper.width(85),right: ScreenAdaper.width(85)),
-                height: ScreenAdaper.height(668),
-                width: ScreenAdaper.width(580),
+                height: 334,
+                width: 290,
                 decoration: BoxDecoration(
                     image: DecorationImage(
                     image: AssetImage("images/code.png"),
@@ -27,11 +27,11 @@ class MyCode extends StatelessWidget {
                 ),
               ),
               Positioned(
-                top: ScreenAdaper.height(177),
-                left: ScreenAdaper.width(202),
+                top: ScreenAdaper.height(85)+41,
+                left: 94,
                 child: Container(
-                  width: ScreenAdaper.width(346),
-                  height: ScreenAdaper.width(346),
+                  width: 173,
+                  height: 173,
                   child: QrImage(
                           data: arguments['codeData'],
                           size: 346.0,

@@ -580,6 +580,7 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
         return Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
+                SizedBox(width: ScreenAdaper.width(40)),
                 Expanded(
                     child: GestureDetector(
                         onTap: () {
@@ -644,7 +645,8 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                             ),
                         ]
                     )
-                )
+                ),
+                SizedBox(width: ScreenAdaper.width(40)),
             ],
         );
     }

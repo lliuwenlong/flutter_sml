@@ -75,57 +75,6 @@ class _HomePageState extends State<HomePage> {
         }
     }
 
-    List<Map> _nivoListData = [
-        {
-            "url": "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
-            "title": "神木林至尊会员九大好处",
-            "subTitle": "大明边屯神木林农林旅一体化产品，成为至尊会员获得名贵树种的九大好处。",
-            "id": 1
-        },
-        {
-            "url": "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
-            "title": "神木林至尊会员九大好处",
-            "subTitle": "大明边屯神木林农林旅一体化产品，成为至尊会员获得名贵树种的九大好处。",
-            "id": 2
-        },
-        {
-            "url": "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
-            "title": "神木林至尊会员九大好处",
-            "subTitle": "大明边屯神木林农林旅一体化产品，成为至尊会员获得名贵树种的九大好处。",
-            "id": 3
-        },
-        {
-            "url": "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
-            "title": "神木林至尊会员九大好处",
-            "subTitle": "大明边屯神木林农林旅一体化产品，成为至尊会员获得名贵树种的九大好处。",
-            "id": 4
-        },
-        {
-            "url": "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
-            "title": "神木林至尊会员九大好处",
-            "subTitle": "大明边屯神木林农林旅一体化产品，成为至尊会员获得名贵树种的九大好处。",
-            "id": 1
-        },
-        {
-            "url": "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
-            "title": "神木林至尊会员九大好处",
-            "subTitle": "大明边屯神木林农林旅一体化产品，成为至尊会员获得名贵树种的九大好处。",
-            "id": 2
-        },
-        {
-            "url": "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
-            "title": "神木林至尊会员九大好处",
-            "subTitle": "大明边屯神木林农林旅一体化产品，成为至尊会员获得名贵树种的九大好处。",
-            "id": 3
-        },
-        {
-            "url": "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
-            "title": "神木林至尊会员九大好处",
-            "subTitle": "大明边屯神木林农林旅一体化产品，成为至尊会员获得名贵树种的九大好处。",
-            "id": 4
-        }
-    ];
-
     Widget _menuWidget () {
         return Container(
             padding: EdgeInsets.fromLTRB(0, ScreenAdaper.height(30), 0, ScreenAdaper.height(40)),

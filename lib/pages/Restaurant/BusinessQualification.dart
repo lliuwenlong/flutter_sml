@@ -11,21 +11,15 @@ class BusinessQualification extends StatefulWidget {
 class _BusinessQualificationState extends State<BusinessQualification> {
   final arguments;
   _BusinessQualificationState({this.arguments});
+  List imgList = [];
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-  Widget _item () {
-    return  Container(
-            //   width: ScreenAdaper.width(335),
-            //   height: ScreenAdaper.height(335),
-              color: Colors.white,
-              child: Container(
-                child: 
-                Image.network(
-                  'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1569668417982&di=970f2a9f69a45ac6995b54dad7a27ebf&imgtype=0&src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20190824%2Feaa3cd45c861464bb456778fb5fa0b8b.jpeg',
-                ),
-              ),
-            );
-
+    this.imgList = arguments['imgList'];
+    
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,18 +29,28 @@ class _BusinessQualificationState extends State<BusinessQualification> {
         child: Container(
           margin: EdgeInsets.only(top: ScreenAdaper.height(30)),
           padding: EdgeInsets.only(left: ScreenAdaper.width(30),right: ScreenAdaper.width(30)),
-          child: GridView(
+          child: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 1,
                 mainAxisSpacing: ScreenAdaper.width(20),
                 crossAxisSpacing: ScreenAdaper.width(20),
             ),
-            children: <Widget>[
-                _item(),
-                _item(),
-                _item()
-            ],
+            itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                color: Colors.white,
+                child: Container(
+                  width: double.infinity,
+                  height: ScreenAdaper.height(30),
+                  child: 
+                  Image.network(
+                    this.imgList[index],
+                  ),
+                ),
+            );
+                },
+                itemCount: this.imgList.length,
+           
           ),
         ),
       )

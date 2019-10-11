@@ -106,7 +106,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
 			controller = this.finishedController;
 		}
         var response = await _getData();
-        if (response["data"].length == 0) {
+        if (response["data"]['list'].length == 0) {
             controller.loadNoData();
         } else {
             controller.loadComplete();
@@ -182,7 +182,6 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
 			"status": _tabController.index == 5? 9 : _tabController.index,
 			"userId": this._userModel.userId
 		});
-    // print(response);
 		if (response['code'] == 200) {
 			OrderDataModel res = OrderDataModel.fromJson(response);
 		
@@ -241,7 +240,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
 		}
 		return response;
 	}
-    Widget _itemWidget ({var data}) {
+  Widget _itemWidget ({var data}) {
       
       return GestureDetector(
 				onTap: (){
@@ -345,7 +344,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                         alignment: Alignment.centerRight,
                         child: 
                         data.status!='4'&&data.status!='5'&&data.status!='6'&&data.status!='9'?Container(
-                            width: ScreenAdaper.width(160),
+                            width: ScreenAdaper.width(180),
                             height: ScreenAdaper.width(60),
                             child: OutlineButton(
                                 borderSide: BorderSide(
@@ -362,6 +361,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                                        'orderSn':data.orderSn,
                                      });
                                   }else if ((data.type=='house'||data.type=='havefun')&&data.status == '2'){//取消订单
+                                    
                                       Navigator.pushNamed(context, "/cancellationOrder",arguments: {
                                         'orderSn':data.orderSn,
                                         'type':data.type,
@@ -432,9 +432,12 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                             val['name']
                         ));
                     }).toList(),
-					          onTap: (int index) {
-                        this._getData(isInit: true);
-                    }
+					          onTap: (int index){
+                      setState(() {
+                        this._tabController.index = index;
+                      });
+                      this._getData(isInit: true);
+                    },
                 ),
             ),
             body: TabBarView(

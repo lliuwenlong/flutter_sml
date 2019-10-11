@@ -1,12 +1,10 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/HttpUtil.dart';
-import '../../common/Config.dart';
 import '../../model/api/home/BannerModel.dart';
+import '../../common/HttpUtil.dart';
 
 class SwiperComponent extends StatefulWidget {
     SwiperComponent({Key key}) : super(key: key);
@@ -14,15 +12,23 @@ class SwiperComponent extends StatefulWidget {
 }
 
 class _SwiperComponentState extends State<SwiperComponent> {
-    List<Map> bannerList = [
-        {"url": "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws"},
-        {"url": "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws"},
-        {"url": "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws"},
-        {"url": "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws"},
-        {"url": "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws"},
-        {"url": "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws"}
-    ];
-
+    
+final HttpUtil http = HttpUtil();
+List bannerList = [];
+@override
+void didChangeDependencies() {
+  super.didChangeDependencies();
+  _getData();
+}
+_getData () async {
+  Map response = await this.http.get('/api/v1/banner/index');  
+  
+  if (response['code'] == 200) {
+    setState(() {
+      this.bannerList = response['data'];
+    });
+  }
+}
     @override
     void initState() {
         super.initState();
@@ -48,7 +54,7 @@ class _SwiperComponentState extends State<SwiperComponent> {
                 child: Swiper(
                     autoplay: true,
                     itemBuilder: (BuildContext context,int index){
-                        String url = this.bannerList[index]["url"];
+                        String url = this.bannerList[index]["imageUrl"];
                         return Container(
                             height: ScreenAdaper.height(276),
                             decoration: BoxDecoration(

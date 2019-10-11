@@ -99,25 +99,25 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
           "userId": this._userModel.userId
       	});
       	if(response['code'] == 200){
-			Fluttertoast.showToast(
-				msg: '信息提交成功',
-				toastLength: Toast.LENGTH_SHORT,
-				timeInSecForIos: 1,
-				textColor: Colors.white,
-				backgroundColor: Colors.black87,
-				fontSize: ScreenAdaper.fontSize(30),
-				gravity: ToastGravity.CENTER
-			);
+            Fluttertoast.showToast(
+              msg: '信息提交成功',
+              toastLength: Toast.LENGTH_SHORT,
+              timeInSecForIos: 1,
+              textColor: Colors.white,
+              backgroundColor: Colors.black87,
+              fontSize: ScreenAdaper.fontSize(30),
+              gravity: ToastGravity.CENTER
+            );
       	}else{
-			Fluttertoast.showToast(
-				msg: response['msg'],
-				toastLength: Toast.LENGTH_SHORT,
-				textColor: Colors.white,
-				backgroundColor: Colors.black87,
-				fontSize: ScreenAdaper.fontSize(30),
-				timeInSecForIos: 1,
-				gravity: ToastGravity.CENTER
-			);
+          Fluttertoast.showToast(
+            msg: response['msg'],
+            toastLength: Toast.LENGTH_SHORT,
+            textColor: Colors.white,
+            backgroundColor: Colors.black87,
+            fontSize: ScreenAdaper.fontSize(30),
+            timeInSecForIos: 1,
+            gravity: ToastGravity.CENTER
+          );
       	}
     }
     @override
@@ -176,7 +176,7 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                                         ))
                                     ),
                                     this._choiceChip("企业单位", status: 0),
-                                    SizedBox(width: ScreenAdaper.width(30)),
+                                    SizedBox(width: ScreenAdaper.width(20)),
                                     this._choiceChip("个人/非企业单位", status: 1)
                                 ]
                             )

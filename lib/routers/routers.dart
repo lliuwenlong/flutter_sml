@@ -80,7 +80,7 @@ final Map routes = {
     '/register': (context) => RegisterPage(),
     '/retrieveAccount': (context) => RetrieveAccount(),
     '/baseList': (context, {arguments}) => BaseList(arguments: arguments),
-    '/baseDetails': (context) => BaseDetails(),
+    '/baseDetails': (context,{arguments}) => BaseDetails(arguments:arguments),
     '/trip': (context) => Trip(),
     '/releaseEvaluate': (context, {arguments}) => ReleaseEvaluate(arguments: arguments),
     '/product': (context,{arguments}) => Product(arguments:arguments),
@@ -133,7 +133,7 @@ final Map routes = {
     '/myCode': (context,{arguments}) => MyCode(arguments:arguments),
     '/chooseCoupon': (context,{arguments}) => ChooseCoupon(arguments:arguments),
     '/businessQualification':(context,{arguments}) => BusinessQualification(arguments:arguments),
-    '/merchantAlbum': (context) => MerchantAlbum()
+    '/merchantAlbum': (context,{arguments}) => MerchantAlbum(arguments:arguments)
 };
 
 var onGenerateRoute = (RouteSettings settings) {

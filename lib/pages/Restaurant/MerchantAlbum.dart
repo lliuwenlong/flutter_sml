@@ -2,11 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sml/components/AppBarWidget.dart';
 import 'package:flutter_sml/services/ScreenAdaper.dart';
 
+class MerchantAlbum extends StatefulWidget {
+  final arguments;
+  MerchantAlbum({Key key,this.arguments}) : super(key: key);
 
-class MerchantAlbum extends StatelessWidget {
-    MerchantAlbum({Key key}) : super(key: key);
+  _MerchantAlbumState createState() => _MerchantAlbumState(arguments:arguments);
+}
 
-    @override
+class _MerchantAlbumState extends State<MerchantAlbum> {
+  final arguments;
+  _MerchantAlbumState({this.arguments});
+  List list = [];
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    this.list = arguments['imgList'];
+  }
+  @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
         return Scaffold(
@@ -26,13 +38,16 @@ class MerchantAlbum extends StatelessWidget {
                     return ClipRRect(
                         borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
                         child: Image.network(
-                            "http://imgcps.jd.com/ling/2349751/6YeR56eL576O5aaG5oqk6IKk6IqC/5LyB6YeH5LiT5Lqr54iG5qy-55u06ZmN/p-5bd8253082acdd181d02fa3b/b6104a8d.jpg",
+                           this.list[index],
                             fit: BoxFit.fill
                         )
                     );
                 },
-                itemCount: 20,
+                itemCount: this.list.length,
             ),
         );
     }
 }
+
+
+

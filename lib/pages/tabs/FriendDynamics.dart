@@ -10,7 +10,7 @@ import '../../model/store/user/User.dart';
 import 'package:provider/provider.dart';
 import '../../common/HttpUtil.dart';
 import '../../components/LoadingSm.dart';
-
+import 'package:flutter/src/material/bottom_sheet.dart';
 class FriendDynamicsPage extends StatefulWidget {
     FriendDynamicsPage({Key key}) : super(key: key);
     _FriendDynamicsPageState createState() => _FriendDynamicsPageState();
@@ -34,6 +34,11 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
 
     final HttpUtil http = HttpUtil();
 
+  BuildContext shareHandler;
+  var selfContext;
+  int shareNum = 0;
+  int infoId;
+
     @override
     void initState() {
         super.initState();
@@ -53,7 +58,7 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
     }
 
     _thumbsUp (int id, int isThumbup, int index) async {
-        Map response = await this.http.post("/api/v1/circle/msg/${id}/thumbup?type=${isThumbup == 0 ? 1 : 0}&userId=${this._userModel.userId}");
+        Map response = await this.http.post("/api/v1/circle/msg/$id/thumbup?type=${isThumbup == 0 ? 1 : 0}&userId=${this._userModel.userId}");
         if (response["code"] == 200) {
             if (_tabController.index == 0) {
                 this._circleMsgList[index].isThumbup = isThumbup == 0 ? 1 : 0;
@@ -87,7 +92,133 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
             );
         }
     }
-
+   
+    _setShare() async {
+        Map response = await this.http.post("http://api.zhongyunkj.cn/api/v1/circle/msg/${this.infoId}/share?type=1");
+        if (response["code"] == 200) {
+            setState(() {
+                this.shareNum = response["data"];
+            });
+            Navigator.pop(this.shareHandler);
+        } else {
+            Fluttertoast.showToast(
+                msg: response["msg"],
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        }
+    }
+    _shareHandler () {
+        showModalBottomSheet(
+            context: this.selfContext,
+            builder: (BuildContext context) {
+                this.shareHandler = context;
+                return Container(
+                    height: ScreenAdaper.height(407),
+                    width: double.infinity,
+                    color: Colors.black54,
+                    child: Container(
+                        height: ScreenAdaper.height(407),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(5),
+                                topRight: Radius.circular(5)
+                            )
+                        ),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                                Padding(
+                                    padding: EdgeInsets.only(
+                                        top: ScreenAdaper.width(30),
+                                        left: ScreenAdaper.width(30)
+                                    ),
+                                    child: Text("分享到", style: TextStyle(
+                                        fontSize: ScreenAdaper.fontSize(30),
+                                        color: ColorClass.titleColor
+                                    ))
+                                ),
+                                SizedBox(height: ScreenAdaper.height(40)),
+                                Expanded(
+                                    child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                            GestureDetector(
+                                                onTap: this._setShare,
+                                                child: Column(
+                                                    children: <Widget>[
+                                                        Icon(
+                                                            IconData(0xe667, fontFamily: "iconfont"),
+                                                            size: ScreenAdaper.fontSize(100),
+                                                            color: Color(0xFF22b0a1)
+                                                        ),
+                                                        SizedBox(height: ScreenAdaper.height(20)),
+                                                        Text("微信好友", style: TextStyle(
+                                                            fontSize: ScreenAdaper.fontSize(24),
+                                                            color: ColorClass.fontColor
+                                                        ))
+                                                    ]
+                                                )
+                                            ),
+                                            SizedBox(width: ScreenAdaper.width(167)),
+                                            GestureDetector(
+                                                onTap: this._setShare,
+                                                child: Column(
+                                                    children: <Widget>[
+                                                        Icon(
+                                                            IconData(0xe668, fontFamily: "iconfont"),
+                                                            size: ScreenAdaper.fontSize(100),
+                                                            color: Color(0xFF22b0a1)
+                                                        ),
+                                                        SizedBox(height: ScreenAdaper.height(20)),
+                                                        Text("微信朋友圈", style: TextStyle(
+                                                            fontSize: ScreenAdaper.fontSize(24),
+                                                            color: ColorClass.fontColor
+                                                        ))
+                                                    ]
+                                                )
+                                            )                                            
+                                        ]
+                                    )
+                                ),
+                                GestureDetector(
+                                    onTap: () {
+                                        Navigator.pop(context);
+                                    },
+                                    child: Container(
+                                        alignment: Alignment.center,
+                                        padding: EdgeInsets.only(
+                                            top: ScreenAdaper.height(33),
+                                            bottom: ScreenAdaper.height(33),
+                                        ),
+                                        decoration: BoxDecoration(
+                                            border: Border(
+                                                top: BorderSide(
+                                                    color: ColorClass.borderColor,
+                                                    width: ScreenAdaper.width(2)
+                                                )
+                                            )
+                                        ),
+                                        width: double.infinity,
+                                        child: Text("关闭", style: TextStyle(
+                                            color: ColorClass.titleColor,
+                                            fontSize: ScreenAdaper.fontSize(34)
+                                        ))
+                                    )
+                                )
+                                
+                            ]
+                        )
+                    )
+                );
+            }
+        );
+    }
     _getData ({isInit = false}) async {
         Map response;
         if (_tabController.index == 0) {
@@ -322,10 +453,13 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
                     flex: 1,
                     child: GestureDetector(
                         onTap: () {
-                            Navigator.pushNamed(context, "/friendDynamicsComment", arguments: {
-                                "id": id,
-                                "isThumbup": isThumbup == 0
-                            });
+                          // print(id);
+                           this._shareHandler();
+                           this.infoId = id;
+                            // Navigator.pushNamed(context, "/friendDynamicsComment", arguments: {
+                            //     "id": id,
+                            //     "isThumbup": isThumbup == 0
+                            // });
                         },
                         child: this.iconFont(0xe641, (share).toString())
                     ),
@@ -390,6 +524,7 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
                                     )
                                 )
                                 
+
                             );
                         },
                         itemCount: data.imageUrls.length
@@ -401,6 +536,7 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
     }
     @override
     Widget build(BuildContext context) {
+       this.selfContext = context;
         ScreenAdaper.init(context);
         return Scaffold(
             appBar: this._appBar(),

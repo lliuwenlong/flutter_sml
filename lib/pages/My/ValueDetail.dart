@@ -90,7 +90,7 @@ class _ValueDetailState extends State<ValueDetail> {
                 ),
                 Positioned(
                   left: 0,
-                  bottom: 0,
+                  bottom: ScreenAdaper.height(20),
                   right: 0,
                   child: Container(
                     color: Colors.white,

@@ -10,6 +10,7 @@ class FoodFirmApiModel {
     String openTime;
     String closeTime;
     String logo;
+    String tags;
     List<Goods> goods;
     List<String> attachs;
     List<String> goodsAttaches;
@@ -26,6 +27,7 @@ class FoodFirmApiModel {
         this.openTime,
         this.closeTime,
         this.logo,
+        this.tags,
         this.goods,
         this.attachs,
         this.goodsAttaches});
@@ -42,6 +44,7 @@ class FoodFirmApiModel {
         openTime = json['openTime'];
         closeTime = json['closeTime'];
         logo = json['logo'];
+        tags = json['tags'];
         if (json['goods'] != null) {
             goods = new List<Goods>();
             json['goods'].forEach((v) {
@@ -65,6 +68,7 @@ class FoodFirmApiModel {
         data['openTime'] = this.openTime;
         data['closeTime'] = this.closeTime;
         data['logo'] = this.logo;
+        data['tags'] = this.tags;
         if (this.goods != null) {
             data['goods'] = this.goods.map((v) => v.toJson()).toList();
         }
@@ -78,6 +82,12 @@ class Goods {
     int goodsId;
     String name;
     String title;
+    String area;
+    String room;
+    String window;
+    String bed;
+    String intnet;
+    String bathroom;
     String summary;
     String picture;
     String price;
@@ -87,6 +97,12 @@ class Goods {
         {this.goodsId,
         this.name,
         this.title,
+        this.area,
+        this.room,
+        this.window,
+        this.bed,
+        this.intnet,
+        this.bathroom,
         this.summary,
         this.picture,
         this.price,
@@ -96,6 +112,12 @@ class Goods {
         goodsId = json['goodsId'];
         name = json['name'];
         title = json['title'];
+        area = json['area'];
+        room = json['room'];
+        window = json['window'];
+        bed = json['bed'];
+        intnet = json['intnet'];
+        bathroom = json['bathroom'];
         summary = json['summary'];
         picture = json['picture'];
         price = json['price'];
@@ -107,6 +129,12 @@ class Goods {
         data['goodsId'] = this.goodsId;
         data['name'] = this.name;
         data['title'] = this.title;
+        data['area'] = this.area;
+        data['room'] = this.room;
+        data['window'] = this.window;
+        data['bed'] = this.bed;
+        data['intnet'] = this.intnet;
+        data['bathroom'] = this.bathroom;
         data['summary'] = this.summary;
         data['picture'] = this.picture;
         data['price'] = this.price;
