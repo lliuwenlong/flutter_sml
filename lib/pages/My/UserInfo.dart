@@ -21,10 +21,12 @@ class _UserInfoState extends State<UserInfo> {
     final Map arguments;
     _UserInfoState({this.arguments});
     File compressedFile;
+    String headImage;
     @override
     void didChangeDependencies() {
         super.didChangeDependencies();
         _userModel = Provider.of<User>(context);
+        this.headImage = _userModel.headerImage;
     }
 
     _changeUserImage(File imageFile) async {
@@ -46,6 +48,9 @@ class _UserInfoState extends State<UserInfo> {
                 "userId": this._userModel.userId
             });
             if(res['code'] == 200){
+               setState(() {
+                  this.headImage = response.data['data'];
+               });
                 this._userModel.initUser(
                     userId: this._userModel.userId,
                     userName: this._userModel.userName,
@@ -135,7 +140,7 @@ class _UserInfoState extends State<UserInfo> {
                         child: CircleAvatar(
                           radius: ScreenAdaper.height(43),
                           backgroundImage: NetworkImage(
-                              this._userModel.headerImage
+                              this.headImage
                           )),
                       ),
                       SizedBox(
@@ -143,7 +148,8 @@ class _UserInfoState extends State<UserInfo> {
                       ),
                       Icon(IconData(0xe61e, fontFamily: 'iconfont'),
                           size: ScreenAdaper.fontSize(24,
-                              allowFontScaling: true)),
+                              allowFontScaling: true),
+                          color: Color(0xffaaaaaa),),
                     ],
                   )
                 ],
@@ -178,7 +184,7 @@ class _UserInfoState extends State<UserInfo> {
                         ),
                         Icon(IconData(0xe61e, fontFamily: 'iconfont'),
                             size: ScreenAdaper.fontSize(24,
-                                allowFontScaling: true)),
+                                allowFontScaling: true),color: Color(0xffaaaaaa)),
                       ],
                     )
                   ],

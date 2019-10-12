@@ -70,7 +70,7 @@ class _FeedBackState extends State<FeedBack> {
     return Scaffold(
       appBar: AppBarWidget().buildAppBar('意见反馈'),
       body:Container(
-          padding: EdgeInsets.only(top: ScreenAdaper.height(20)),
+          padding: EdgeInsets.only(top: ScreenAdaper.height(10)),
           color: Colors.white,
           child: Column(
             children: <Widget>[

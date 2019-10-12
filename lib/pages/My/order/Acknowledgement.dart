@@ -130,13 +130,13 @@ class _AcknowledgementState extends State<Acknowledgement> {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                                Text("标准大床房", style: TextStyle(
+                                Text(data['houseDetail']['goodsName'], style: TextStyle(
                                     color: ColorClass.titleColor,
                                     fontSize: ScreenAdaper.fontSize(32),
                                     fontWeight: FontWeight.w500
                                 )),
                                 SizedBox(height: ScreenAdaper.height(30)),
-                                Text("${data['createTime'].substring(0,11)} 入驻  —— ${data['houseDetail']['quiteTime'].substring(0,11)} 离店" , style: TextStyle(
+                                Text("${data['houseDetail']['incomeTime'].substring(0,11)} 入驻  —— ${data['houseDetail']['quiteTime'].substring(0,11)} 离店" , style: TextStyle(
                                     color: ColorClass.fontColor,
                                     fontSize: ScreenAdaper.fontSize(28)
                                 ))
