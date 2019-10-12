@@ -585,7 +585,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
     Widget _sliverBuilder () {
 
         return SliverAppBar(
-            title: Text(this.offset > 20 ? "标题" : "", style: TextStyle(
+            title: Text(this.offset > 20 ? this.firm.name : "", style: TextStyle(
                 color: Colors.black,
             )),
             centerTitle: true,
@@ -839,24 +839,23 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                                 child: ListView.builder(
                                                     key: PageStorageKey("Tab0"),
                                                     itemBuilder: (BuildContext context, int index) {
-														Goods good = this.firm.goods[index];
-														print(good);
+                                                      	Goods good = this.firm.goods[index];
                                                         return GestureDetector(
                                                             onTap: () {
                                                                 showModalBottomSheetHandler(index);
                                                             },
                                                             child: ServiceItem(
-																isShowBorder: this.firm.goods.length -1 == index ? false : true,
-																title: good.title,
-																area:good.area,
-																room:good.room,
-																window:good.window,
-																bed:good.bed,
-																intnet:good.intnet,
-																bathroom:good.bathroom,
-																picture:good.picture,
-																price:good.price
-															),
+                                                                isShowBorder: this.firm.goods.length -1 == index ? false : true,
+                                                                title: good.title,
+                                                                area:good.area,
+                                                                room:good.room,
+                                                                window:good.window,
+                                                                bed:good.bed,
+                                                                intnet:good.intnet,
+                                                                bathroom:good.bathroom,
+                                                                picture:good.picture,
+                                                                price:good.price
+                                                            ),
                                                         );
                                                     },
                                                     itemCount: this.firm.goods != null ? this.firm.goods.length : 0,

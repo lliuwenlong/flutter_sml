@@ -6,7 +6,7 @@ import '../../components/Input.dart';
 import '../../common/HttpUtil.dart';
 import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import '../../components/AppBarWidget.dart';
 class RegisterPage extends StatefulWidget {
   RegisterPage({Key key}) : super(key: key);
 
@@ -155,17 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 FocusScope.of(context).requestFocus(FocusNode()); 
             },
             child: Scaffold(
-                appBar: AppBar(
-                    title: Text("注册", style: TextStyle(
-                        color: Colors.black,
-                        fontSize: ScreenAdaper.fontSize(34)
-                    )),
-                    iconTheme: IconThemeData(color: Colors.black),
-                    centerTitle: true,
-                    elevation: 0,
-                    brightness: Brightness.light,
-                    backgroundColor: Colors.white
-                ),
+                appBar: AppBarWidget().buildAppBar('注册'),
                 // resizeToAvoidBottomPadding: false,
                 body: SingleChildScrollView(
                     child: Container(

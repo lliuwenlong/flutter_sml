@@ -57,7 +57,8 @@ class CommonListItem extends StatelessWidget {
                                             children: <Widget>[
                                                 Text(this.name, style: TextStyle(
                                                     color: ColorClass.titleColor,
-                                                    fontSize: ScreenAdaper.fontSize(30)
+                                                    fontSize: ScreenAdaper.fontSize(30),
+                                                    fontWeight: FontWeight.w600
                                                 )),
                                                 Align(
                                                     alignment: Alignment.centerRight,
@@ -69,14 +70,15 @@ class CommonListItem extends StatelessWidget {
                                             ],
                                         ),
                                         Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
                                             children: <Widget>[
-                                                Text("¥${this.price}  ", style: TextStyle(
+                                                Text("¥${this.price} ", style: TextStyle(
                                                     color: Color(0XFFfb4135),
-                                                    fontSize: ScreenAdaper.fontSize(24)
+                                                    fontSize: ScreenAdaper.fontSize(28)
                                                 )),
                                                 Text("/人", style: TextStyle(
                                                     color: ColorClass.subTitleColor,
-                                                    fontSize: ScreenAdaper.fontSize(24)
+                                                    fontSize: ScreenAdaper.fontSize(28)
                                                 ))
                                             ],
                                         ),

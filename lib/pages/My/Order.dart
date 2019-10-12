@@ -180,7 +180,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
 			"pageNO": this.page,
 			"pageSize": 10,
 			"status": _tabController.index == 5? 9 : _tabController.index,
-			"userId": this._userModel.userId
+			"userId": 1
 		});
 		if (response['code'] == 200) {
 			OrderDataModel res = OrderDataModel.fromJson(response);
@@ -245,9 +245,17 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
       return GestureDetector(
 				onTap: (){
           if(data.status == '1'){//去付款
-              Navigator.pushNamed(context, '/acknowledgement',arguments: {
+            if (data.type == 'house') {
+               Navigator.pushNamed(context, '/acknowledgement',arguments: {
                 'orderSn':data.orderSn,
               });
+            }else{
+                Navigator.pushNamed(context, '/payment',arguments: {
+                  'amount':data.amount,
+                  'orderSn':data.orderSn
+                });
+            }
+             
           }else{
               Navigator.pushNamed(context, '/cancellationOrder',arguments: {//取消订单
                   'orderSn':data.orderSn,
@@ -356,12 +364,16 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                                 ),
                                 highlightedBorderColor: Color(0XFF999999),
                                 onPressed: () {
-                                  if((data.type=='house')&&data.status=='1'){//去付款
-                                     Navigator.pushNamed(context, "/acknowledgement",arguments: {
+                                  if(data.type=='house'&&data.status=='1'){//去付款
+                                      Navigator.pushNamed(context, "/acknowledgement",arguments: {
                                        'orderSn':data.orderSn,
                                      });
+                                  }else if (data.type=='havefun'&&data.status=='1'){
+                                      Navigator.pushNamed(context, '/payment',arguments: {
+                                        'amount':data.amount,
+                                        'orderSn':data.orderSn
+                                      });
                                   }else if ((data.type=='house'||data.type=='havefun')&&data.status == '2'){//取消订单
-                                    
                                       Navigator.pushNamed(context, "/cancellationOrder",arguments: {
                                         'orderSn':data.orderSn,
                                         'type':data.type,

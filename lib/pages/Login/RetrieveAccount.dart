@@ -7,6 +7,7 @@ import 'package:flutter_sml/common/HttpUtil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/Input.dart';
+import '../../components/AppBarWidget.dart';
 class RetrieveAccount extends StatefulWidget {
     RetrieveAccount({Key key}) : super(key: key);
     _RetrieveAccountState createState() => _RetrieveAccountState();
@@ -168,17 +169,7 @@ class _RetrieveAccountState extends State<RetrieveAccount> {
         ScreenAdaper.init(context);
         return Container(
             child: Scaffold(
-                appBar: AppBar(
-                    title: Text("忘记密码", style: TextStyle(
-                        color: Colors.black,
-                        fontSize: ScreenAdaper.fontSize(34)
-                    )),
-                    iconTheme: IconThemeData(color: Colors.black),
-                    centerTitle: true,
-                    elevation: 0,
-                    brightness: Brightness.light,
-                    backgroundColor: Colors.white
-                ),
+                appBar: AppBarWidget().buildAppBar('忘记密码'),
                 resizeToAvoidBottomPadding: false,
                 body: Container(
                     width: double.infinity,

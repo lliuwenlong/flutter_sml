@@ -172,10 +172,11 @@ class _InvoiceState extends State<Invoice> {
   Widget build(BuildContext context) {
      ScreenAdaper.init(context);
         return Scaffold(
-            appBar: AppBar(
+            appBar: PreferredSize(
+              child: AppBar(
                 title: Text("我的发票", style: TextStyle(
                     color: Colors.black,
-                    fontSize: ScreenAdaper.fontSize(32)
+                    fontSize: ScreenAdaper.fontSize(34)
                 )),
                 elevation: 0,
                 iconTheme: IconThemeData(color: Colors.black),
@@ -192,11 +193,13 @@ class _InvoiceState extends State<Invoice> {
                             alignment: Alignment.center,
                             child: Text("开票历史", style: TextStyle(
                                 color: ColorClass.fontColor,
-                                fontSize: ScreenAdaper.fontSize(32)
+                                fontSize: ScreenAdaper.fontSize(30)
                             ), textAlign: TextAlign.center)
                         )
                     )
                 ]
+            ),
+            preferredSize: Size.fromHeight(ScreenAdaper.height(88))
             ),
             body:SmartRefresher(
               controller: _invoiceController,

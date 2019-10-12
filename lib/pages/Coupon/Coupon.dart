@@ -276,12 +276,14 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
             appBar: AppBar(
                 title: Text("我的优惠券", style: TextStyle(
                     color: Colors.black,
+                     fontSize: ScreenAdaper.fontSize(34)
                 )),
                 elevation: 1,
                 iconTheme: IconThemeData(color: Colors.black),
                 backgroundColor: Colors.white,
                 centerTitle: true,
                 brightness: Brightness.light,
+                
                 bottom: TabBar(
                     indicatorSize: TabBarIndicatorSize.label,
                     indicatorWeight: ScreenAdaper.height(6),

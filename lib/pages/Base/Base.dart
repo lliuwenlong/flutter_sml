@@ -125,6 +125,8 @@ class _BaseState extends State<Base> {
                                         ],
                                     ),
                                     Container(
+                                      width: ScreenAdaper.width(180),
+                                      height: ScreenAdaper.height(60),
                                         child: RaisedButton(
                                             onPressed: () {
                                                 Navigator.pushNamed(context, '/baseList', arguments: {"id": id});
@@ -136,7 +138,8 @@ class _BaseState extends State<Base> {
                                                 borderRadius: BorderRadius.all(Radius.circular(6))
                                             ),
                                             child: Text("查看神木", style: TextStyle(
-                                                color: Color(0xFFffffff)
+                                                color: Color(0xFFffffff),
+                                                fontSize: ScreenAdaper.fontSize(24)
                                             )),
                                         )
                                     )

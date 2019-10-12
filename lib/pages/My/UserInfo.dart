@@ -1,9 +1,7 @@
 import 'dart:io';
-
-// import 'package:url_launcher/url_launcher.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_luban/flutter_luban.dart';
+import 'package:flutter_luban/flutter_luban.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -22,31 +20,41 @@ class _UserInfoState extends State<UserInfo> {
     User _userModel;
     final Map arguments;
     _UserInfoState({this.arguments});
-
+    File compressedFile;
     @override
     void didChangeDependencies() {
         super.didChangeDependencies();
         _userModel = Provider.of<User>(context);
     }
 
-    _changeUserImage(File image) async {
-
-        String path = image.path;
+    _changeUserImage(File imageFile) async {
+      String path = imageFile.path;
         var name = path.substring(path.lastIndexOf("/") + 1, path.length);
-        print(await image.length());
+        CompressObject compressObject = CompressObject(
+          imageFile:imageFile, //image
+          path:'/storage/emulated/0/Android/data/com.itshouyu.sml/files/Pictures', //compress to path
+        );
+      Luban.compressImage(compressObject).then((_path) async {
         FormData formData = new FormData.from({
-            "image": new UploadFileInfo(image, name)
+            "image": new UploadFileInfo(File(_path), name)
         });
-
         Dio dio = new Dio();
-        var respone = await dio.post("http://api.zhongyunkj.cn/oss/img", data: formData);
-        print(respone);
-        if (respone.statusCode == 200) {
+        var response = await dio.post("http://api.zhongyunkj.cn/oss/img", data: formData);
+        if (response.statusCode== 200) {
             Map res = await this.http.post('/api/v11/user/reheader',data: {
-                "image": 'https://pic2.zhimg.com/v2-639b49f2f6578eabddc458b84eb3c6a1.jpg',
+                "image": response.data['data'],
                 "userId": this._userModel.userId
             });
             if(res['code'] == 200){
+                this._userModel.initUser(
+                    userId: this._userModel.userId,
+                    userName: this._userModel.userName,
+                    phone: this._userModel.phone,
+                    password: this._userModel.password,
+                    headerImage:response.data['data'],
+                    nickName: this._userModel.nickName,
+                    createTime: this._userModel.createTime
+                );
                 Fluttertoast.showToast(
                     msg: '修改成功',
                     toastLength: Toast.LENGTH_SHORT,
@@ -56,17 +64,22 @@ class _UserInfoState extends State<UserInfo> {
                     backgroundColor: Colors.black87,
                     fontSize: ScreenAdaper.fontSize(30)
                 );
-                this._userModel.initUser(
-                    userId: this._userModel.userId,
-                    userName: this._userModel.userName,
-                    phone: this._userModel.phone,
-                    password: this._userModel.password,
-                    headerImage:this._userModel.headerImage,
-                    nickName: this._userModel.nickName,
-                    createTime: this._userModel.createTime
-                );
+                
             }
+        }else{
+            Fluttertoast.showToast(
+                msg: '头像上传失败',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                backgroundColor: Colors.black87,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
         }
+      });
+       
+        
     }
 
   @override
@@ -100,7 +113,7 @@ class _UserInfoState extends State<UserInfo> {
                                         leading: new Icon(Icons.photo_camera),
                                         title: new Text("相机"),
                                         onTap: () async {
-                                          var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+                                          File imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
                                           this._changeUserImage(imageFile);
                                           Navigator.pop(context);
                                         },
@@ -109,7 +122,7 @@ class _UserInfoState extends State<UserInfo> {
                                         leading: new Icon(Icons.photo_library),
                                         title: new Text("相册"),
                                         onTap: () async {
-                                          var  imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+                                          File  imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
                                           this._changeUserImage(imageFile);
                                           Navigator.pop(context);
                                         },

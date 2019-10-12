@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_luban/flutter_luban.dart';
 import 'package:flutter_sml/common/HttpUtil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -19,10 +21,12 @@ class _AuthenticationState extends State<Authentication>{
   // 使用TextEditingController来获取内容
   TextEditingController _nameController = TextEditingController();
   TextEditingController _cardController = TextEditingController();
-  String _name = "";
-  String _card = "";
-  File  _positiveImage;
-  File  _negativeImage;
+  String _name;
+  String _card;
+  String  _positiveImage;
+  String  _negativeImage;
+  File zImage;
+  File fImage;
   User _userMedel;
   @override
   void initState() { 
@@ -149,118 +153,138 @@ class _AuthenticationState extends State<Authentication>{
     );
   }
 
+  _lunchImg (File imageFile,bool isBordor) async {
+      String path = imageFile.path;
+      var name = path.substring(path.lastIndexOf("/") + 1, path.length);
+      CompressObject compressObject = CompressObject(
+        imageFile:imageFile, //image
+        path:'/storage/emulated/0/Android/data/com.itshouyu.sml/files/Pictures', //compress to path
+      );
+      Luban.compressImage(compressObject).then((_path) async {
+        FormData formData = new FormData.from({
+            "image": new UploadFileInfo(File(_path), name)
+        });
+        Dio dio = new Dio();
+        var response = await dio.post("http://api.zhongyunkj.cn/oss/img", data: formData);
+        if (response.statusCode == 200) {
+          if (isBordor) {//正面
+              setState(() {
+              this._positiveImage = response.data['data'];
+            });
+          }else{//反面
+              this._negativeImage = response.data['data'];
+          }
+            
+        }
+      });
+  }
+
   // 弹出弹窗（相机或者相册）
   void _checkPopMenu(bool isBordor) async {
     if (isBordor) {
        // 身份证正面
-      showModalBottomSheet(
-          context: context,
-          builder: (BuildContext context){
-            return new Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                  new ListTile(
-                      leading: new Icon(Icons.photo_camera),
-                      title: new Text("相机"),
-                      onTap: () async {
-                        var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
-                        setState(() {
-                            this._positiveImage = imageFile;
-                        });
-                        print(this._positiveImage);
-                        Navigator.pop(context);
-                      },
-                  ),
-                  new ListTile(
-                      leading: new Icon(Icons.photo_library),
-                      title: new Text("相册"),
-                      onTap: () async {
-                        var  imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-                        setState(() {
-                          this._positiveImage = imageFile;
-                        });
-                          Navigator.pop(context);
-                      },
-                  ),
-              ],
-            );
-          }
-      );
+      	showModalBottomSheet(
+			context: context,
+			builder: (BuildContext context){
+            	return new Column(
+					mainAxisSize: MainAxisSize.min,
+					children: <Widget>[
+						new ListTile(
+							leading: new Icon(Icons.photo_camera),
+							title: new Text("相机"),
+							onTap: () async {
+								var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+								this._lunchImg(imageFile,true);
+								setState(() {
+									this.zImage = imageFile;
+								});
+								Navigator.pop(context);
+							},
+						),
+						new ListTile(
+							leading: new Icon(Icons.photo_library),
+							title: new Text("相册"),
+							onTap: () async {
+								var  imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+								this._lunchImg(imageFile,true);
+								setState(() {
+									this.zImage = imageFile;
+								});
+								Navigator.pop(context);
+							},
+						),
+					],
+            	);
+        	}
+      	);
     } else {
-      showModalBottomSheet(
-          context: context,
-          builder: (BuildContext context){
-            return new Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                  new ListTile(
-                      leading: new Icon(Icons.photo_camera),
-                      title: new Text("相机"),
-                      onTap: () async {
-                        var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
-                        setState(() {
-                            this._negativeImage = imageFile;
-                        });
-                        Navigator.pop(context);
-                      },
-                  ),
-                  new ListTile(
-                      leading: new Icon(Icons.photo_library),
-                      title: new Text("相册"),
-                      onTap: () async {
-                        var  imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-                        setState(() {
-                          this._negativeImage = imageFile;
-                        });
-                        Navigator.pop(context);
-                      },
-                  ),
-              ],
-            );
-          }
+      	showModalBottomSheet(
+			context: context,
+			builder: (BuildContext context){
+				return new Column(
+					mainAxisSize: MainAxisSize.min,
+					children: <Widget>[
+						new ListTile(
+								leading: new Icon(Icons.photo_camera),
+							title: new Text("相机"),
+							onTap: () async {
+								var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+								this._lunchImg(imageFile,false);
+								setState(() {
+									this.fImage = imageFile;
+								});
+								Navigator.pop(context);
+							},
+						),
+						new ListTile(
+							leading: new Icon(Icons.photo_library),
+							title: new Text("相册"),
+							onTap: () async {
+								var  imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+								this._lunchImg(imageFile,false);
+								setState(() {
+									this.fImage = imageFile;
+								});
+								Navigator.pop(context);
+							},
+						),
+					],
+				);
+			}
         );
     }
-  }
+}
 
   // 保存实名认证数据
-  void _save() async {
-    if (_name.isEmpty){
-      showOnClickSaveToast("请输入姓名");
-      return;
-    } else if (_card.isEmpty) {
-      showOnClickSaveToast("请输入身份证");
-      return;
-    } else if (!verificationCard(_card)){
-      showOnClickSaveToast("请输入正确的身份证");
-      return;
-    } else if (_positiveImage == null){
-      showOnClickSaveToast("请上传身份证正面照");
-      return;
-    } else if (_negativeImage == null){
-      showOnClickSaveToast("请上传身份证反面照");
-      return;
-    }
-    Map response = await HttpUtil().post("/api/v1/ident", params: {
-                "idcard": _card,
-                "idcardBack": _positiveImage.path,
-                "idcardFront": _negativeImage.path,
-                "realName": _name,
-                "userId": this._userMedel.userId
-            });
-
-
-			      print(response);
+  	void _save() async {
+		if (_name == null){
+			showOnClickSaveToast("请输入姓名");
+			return;
+		} 
+		if (_card == null) {
+			showOnClickSaveToast("请输入身份证");
+			return;
+		} 
+		if (!verificationCard(_card)){
+			showOnClickSaveToast("请输入正确的身份证");
+			return;
+		} 
+		if (_positiveImage == null){
+			showOnClickSaveToast("请上传身份证正面照");
+			return;
+		} 
+		if (_negativeImage == null){
+			showOnClickSaveToast("请上传身份证反面照");
+			return;
+		}
+		Map response = await HttpUtil().post("/api/v1/ident", data: {
+			"idcard": _card,
+			"idcardBack": _positiveImage,
+			"idcardFront": _negativeImage,
+			"realName": _name,
+			"userId": this._userMedel.userId
+		});
             if (response["code"] == 200 ) {
-                // UserModel userModel = new UserModel.fromJson(response);
-                // Data data = userModel.data;
-                // this.userModel.initUser(
-                //     userId: data.userId,
-                //     userName: data.userName,
-                //     phone: data.phone,
-                //     password: data.password,
-                //     nickName: data.nickName,
-                //     createTime: data.createTime
-                // );
                 Fluttertoast.showToast(
                     msg: '认证成功',
                     toastLength: Toast.LENGTH_SHORT,
@@ -291,8 +315,8 @@ class _AuthenticationState extends State<Authentication>{
           children: <Widget>[
             this._inputText("真实姓名", "请输入姓名", _nameController),
             this._inputText("身份证号", "请输入身份证号", _cardController),
-            this._uploadImage("身份证正面", _positiveImage),
-            this._uploadImage("身份证反面", _negativeImage, isBordor: false),
+            this._uploadImage("身份证正面", zImage),
+            this._uploadImage("身份证反面", fImage, isBordor: false),
             Container(
               margin: EdgeInsets.only(
                 top: ScreenAdaper.height(50)
@@ -339,48 +363,9 @@ class _AuthenticationState extends State<Authentication>{
     );
   }
 
-  // 判断手机号
+  // 验证身份证号码
   bool verificationCard(String card){
-    if(checkCode(card)){
-      return true;
-    }
-    return false;
+    RegExp reg = RegExp(r'(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)');
+	return reg.hasMatch(card);
   } 
-
-  // 验证号码
-  bool checkCode(String card){
-    RegExp p = RegExp(r'^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|[Xx])$' + 
-    '|' + r'^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$');
-    bool matches = p.hasMatch(card);
-    if(matches) {
-      if(card.length == 18){
-        // 将前17位加权因子保存在数组里
-        List idCardList = ["7", "9", "10", "5", "8", "4", "2", "1", "6", "3", "7", "9", "10", "5", "8", "4", "2"];
-          // 这是除以11后，可能产生的11位余数、验证码，也保存成数组
-          List idCardYArray = ["1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2"];  
-        int idCardWiSum = 0;
-        for(int i = 0; i < card.length; i++){
-          int subStrIndex = int.parse(card.substring(i, i + 1));
-          int idCardWiIndex = subStrIndex * idCardList[i];
-          idCardWiSum += idCardWiIndex;
-        }
-        // 计算出校验码所在数组的位置
-        int idCardMod = idCardWiSum % 11;
-        // 得到最后一位号码
-        String idCardLast = card.substring(17, 18);
-        // 判断最后一位
-        if(idCardMod == 2){
-          if (idCardLast == "x" || idCardLast == "X") {
-            return true;
-          }
-        }else{
-          if(idCardLast != idCardYArray[idCardMod]){
-            return false;
-          }
-        }
-      }
-    }
-    return matches;
-  }
-  
 }

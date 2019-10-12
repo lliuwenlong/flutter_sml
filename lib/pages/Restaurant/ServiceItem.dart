@@ -37,6 +37,7 @@ class ServiceItem extends StatelessWidget {
                 left: ScreenAdaper.width(30),
                 right: ScreenAdaper.width(30)
             ),
+            color: Colors.white,
             child: Container(
                 padding: EdgeInsets.only(
                     top: ScreenAdaper.width(30),
@@ -53,7 +54,7 @@ class ServiceItem extends StatelessWidget {
                 child: Row(
                     children: <Widget>[
                         Container(
-                            width: ScreenAdaper.width(150),
+                            width: ScreenAdaper.height(150),
                             height: ScreenAdaper.height(176),
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(5),

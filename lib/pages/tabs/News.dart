@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/ScreenAdaper.dart';
+import '../../components/AppBarWidget.dart';
 class NewsPage extends StatefulWidget {
     NewsPage({Key key}) : super(key: key);
     _NewsPageState createState() => _NewsPageState();
@@ -62,15 +63,7 @@ class _NewsPageState extends State<NewsPage> {
     Widget build(BuildContext context) {
       ScreenAdaper.init(context);
         return Scaffold(
-            appBar: AppBar(
-                title: Text("消息", style: TextStyle(
-                    color: Colors.black,
-                )),
-                elevation: 0,
-                brightness: Brightness.light,
-                backgroundColor: Colors.white,
-                centerTitle: true,
-            ),
+            appBar: AppBarWidget().buildAppBar('消息'),
             body: Container(
               color: Colors.white,
                 child: Container(

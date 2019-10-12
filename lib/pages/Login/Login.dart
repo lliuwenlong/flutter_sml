@@ -107,8 +107,8 @@ class _LoginPageState extends State<LoginPage> {
                             image: AssetImage(
                                 "images/loginbg.png",
                             ),
-                            fit: BoxFit.cover,
-                        )
+                            fit: BoxFit.fill,
+                        ),
                     ),
                     child: SafeArea(
                         child: Column(

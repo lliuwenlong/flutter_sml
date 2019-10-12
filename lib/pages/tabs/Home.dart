@@ -188,7 +188,9 @@ class _HomePageState extends State<HomePage> {
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(5.0),
                                         image: DecorationImage(
-                                            image: NetworkImage("https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws"),
+                                            image: NetworkImage(
+                                              "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws"
+                                            ),
                                             fit: BoxFit.cover
                                         )
                                     )
@@ -358,7 +360,7 @@ class _HomePageState extends State<HomePage> {
         return Scaffold(
             appBar: PreferredSize(
                 child: AppBarWidget().buildAppBar("神木林"),
-                preferredSize: Size.fromHeight(ScreenAdaper.height(110))
+                preferredSize: Size.fromHeight(ScreenAdaper.height(88))
             ),
             body: SmartRefresher(
                 controller: _refreshController,

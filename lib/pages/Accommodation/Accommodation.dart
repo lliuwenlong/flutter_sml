@@ -103,7 +103,7 @@ class _AccommodationState extends State<Accommodation> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                         Container(
-                            width: ScreenAdaper.width(190),
+                            width: ScreenAdaper.height(190),
                             height: ScreenAdaper.height(238),
                             decoration: BoxDecoration(
                                 color: Colors.white,
@@ -129,7 +129,8 @@ class _AccommodationState extends State<Accommodation> {
                                             children: <Widget>[
                                                 Text(name, style: TextStyle(
                                                     color: ColorClass.titleColor,
-                                                    fontSize: ScreenAdaper.fontSize(30)
+                                                    fontSize: ScreenAdaper.fontSize(30),
+                                                    fontWeight: FontWeight.w600
                                                 )),
                                                 SizedBox(width: ScreenAdaper.width(10)),
                                                 Text(type, style: TextStyle(
@@ -199,7 +200,7 @@ class _AccommodationState extends State<Accommodation> {
             child: Scaffold(
                 appBar: PreferredSize(
                     child: AppBarWidget().buildAppBar("神木住宿"),
-                    preferredSize: Size.fromHeight(ScreenAdaper.height(110))
+                    preferredSize: Size.fromHeight(ScreenAdaper.height(88))
                 ),
                 body: this.isLoading
                     ? Container(

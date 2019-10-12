@@ -70,6 +70,7 @@ class _CancellationOrderState extends State<CancellationOrder> {
   }
   
   onTapHandler({context}) async {
+    
     const Map<String, String> provincesData = {
       "1": "我不想买了",
       "2": "选择错误，重新购买",
@@ -90,7 +91,7 @@ class _CancellationOrderState extends State<CancellationOrder> {
         cancelWidget: Text("取消")
     );
 
-    // print(result);
+    print(result.provinceName);
   }
 
   final HttpUtil http = HttpUtil();
@@ -104,9 +105,8 @@ class _CancellationOrderState extends State<CancellationOrder> {
   }
 
   _getData() async {
-    Map response = await this
-        .http
-        .get('/api/v1/order/one', data: {'orderSn': arguments['orderSn']});
+    Map response = await this.http.get('/api/v1/order/one', data: {'orderSn': arguments['orderSn']});
+    print(response);
     if (response['code'] == 200) {
       setState(() {
         this.data = response['data'];
@@ -187,7 +187,7 @@ class _CancellationOrderState extends State<CancellationOrder> {
                     ),
               this._item("订单信息", [
                 {"name": "订单号", 'num': '', "value": data['orderSn']},
-                {"name": "下单时间", 'num': '', "value": ''},
+                {"name": "下单时间", 'num': '', "value": data['createTime']},
                 {"name": "付款时间", 'num': '', "value": data['payTime']},
                 {"name": "支付金额", 'num': '', "value": "¥ ${data['amount']}"},
               ]),

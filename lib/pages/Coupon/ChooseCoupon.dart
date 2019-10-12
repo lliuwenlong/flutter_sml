@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
+import '../../components/AppBarWidget.dart';
 class ChooseCoupon extends StatefulWidget {
   final arguments;
     ChooseCoupon({Key key,this.arguments}) : super(key: key);
@@ -116,17 +117,7 @@ class _ChooseCouponState extends State<ChooseCoupon> with SingleTickerProviderSt
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
         return Scaffold(
-            appBar: AppBar(
-                title: Text("选择优惠券", style: TextStyle(
-                    color: Colors.black,
-                )),
-                elevation: 1,
-                iconTheme: IconThemeData(color: Colors.black),
-                backgroundColor: Colors.white,
-                centerTitle: true,
-                brightness: Brightness.light,
-                
-            ),
+            appBar: AppBarWidget().buildAppBar('选择优惠券'),
             body: SafeArea(
               bottom: true,
               child: ListView.builder(

@@ -6,7 +6,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../model/api/base/BaseListModel.dart';
 import '../../components/LoadingSm.dart';
 import '../../components/NullContent.dart';
-
+import '../../components/AppBarWidget.dart';
 class BaseList extends StatefulWidget {
   final Map arguments;
   BaseList({Key key, this.arguments}) : super(key: key);
@@ -122,16 +122,7 @@ class _BaseListState extends State<BaseList> {
   Widget build(BuildContext context) {
     ScreenAdaper.init(context);
     return Scaffold(
-        appBar: AppBar(
-            title: Text("神木列表",
-                style: TextStyle(
-                  color: Colors.black,
-                )),
-            elevation: 1,
-            iconTheme: IconThemeData(color: Colors.black),
-            backgroundColor: Colors.white,
-            centerTitle: true,
-            brightness: Brightness.light),
+        appBar: AppBarWidget().buildAppBar('神木列表'),
         body: Padding(
             padding: EdgeInsets.fromLTRB(ScreenAdaper.width(30), 0,
                 ScreenAdaper.width(30), ScreenAdaper.width(30)),
