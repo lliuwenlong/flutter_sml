@@ -1,62 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
 import '../../model/store/user/User.dart';
- enum Action {
+enum Action {
     Ok,
     Cancel
-  }
+}
 class Setting extends StatefulWidget {
-  Setting({Key key}) : super(key: key);
-
-  _SettingState createState() => _SettingState();
+    Setting({Key key}) : super(key: key);
+    _SettingState createState() => _SettingState();
 }
 
 class _SettingState extends State<Setting> {
     Widget _listItem (String name,String routerName,{isBorder=true,int color=0XFF333333}){
-      return GestureDetector(
-        onTap: (){
-          Navigator.pushNamed(context, routerName);
-        },
-        child: Container(
-              height: ScreenAdaper.height(88),
-              padding:EdgeInsets.only(left: ScreenAdaper.width(30),right:ScreenAdaper.width(30)),
-              decoration: BoxDecoration(
-                color: Colors.white,
-              ),
-              child: Container(
+        return GestureDetector(
+            onTap: (){
+                Navigator.pushNamed(context, routerName);
+            },
+            child: Container(
+                height: ScreenAdaper.height(88),
+                padding:EdgeInsets.only(left: ScreenAdaper.width(30),right:ScreenAdaper.width(30)),
                 decoration: BoxDecoration(
-                  border: isBorder ? Border(bottom: BorderSide(
-                    color: Color(0XFFd9d9d9),
-                    width: 1
-                  )) : null
+                    color: Colors.white,
                 ),
-                child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                        Text(name, style: TextStyle(
-                            color: Color(color),
-                            fontSize: ScreenAdaper.fontSize(28, allowFontScaling: true)
-                        )),
-                        Expanded(
-                            flex: 1,
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                    Icon(
-                                      IconData(0xe61e, fontFamily: 'iconfont'), 
-                                      size: ScreenAdaper.fontSize(24, allowFontScaling: true),
-                                      color: Color(0xffaaaaaa)
-                                    )
-                                ]
-                            ),
-                        )
-                    ]
-              ),
-              )
-              
-             )
-      );
+                child: Container(
+                    decoration: BoxDecoration(
+                        border: isBorder ? Border(bottom: BorderSide(
+                            color: Color(0XFFd9d9d9),
+                            width: 1
+                        )) : null
+                    ),
+                    child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                            Text(name, style: TextStyle(
+                                color: Color(color),
+                                fontSize: ScreenAdaper.fontSize(28, allowFontScaling: true)
+                            )),
+                            Expanded(
+                                flex: 1,
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                        Icon(
+                                        IconData(0xe61e, fontFamily: 'iconfont'), 
+                                        size: ScreenAdaper.fontSize(24, allowFontScaling: true),
+                                        color: Color(0xffaaaaaa)
+                                        )
+                                    ]
+                                ),
+                            )
+                        ]
+                    ),
+                )
+            )
+        );
   }
     String  _choice ='';
     Future _openAlertDialog() async {
@@ -103,9 +102,10 @@ class _SettingState extends State<Setting> {
                     fontSize:ScreenAdaper.fontSize(30)
                   )
                 ),
-                onPressed: () {
+                onPressed: () async {
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  prefs.clear();
                   Navigator.pushNamedAndRemoveUntil(context, '/login', (router) => false);
-                  // Navigator.pop(context, Action.Ok);
                 },
               ),
             ],

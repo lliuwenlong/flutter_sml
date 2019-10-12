@@ -78,7 +78,7 @@ class _EntertainmentState extends State<Entertainment> {
         return Scaffold(
             appBar: PreferredSize(
                 child: AppBarWidget().buildAppBar("神木娱乐"),
-                preferredSize: Size.fromHeight(ScreenAdaper.height(110))
+                preferredSize: Size.fromHeight(ScreenAdaper.height(80))
             ),
             body: isLoading
                 ? Container(

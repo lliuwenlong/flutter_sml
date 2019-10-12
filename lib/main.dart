@@ -63,6 +63,7 @@ class _MyAppState extends State<MyApp>  {
     void initState() {
         super.initState();
         _initFluwx();
+        getUserId();
     }
 
     void didChangeDependencies() {
@@ -77,7 +78,6 @@ class _MyAppState extends State<MyApp>  {
             doOnIOS: false,
             enableMTA: false);
         var result = await fluwx.isWeChatInstalled();
-        await getUserId();
     }
 
     getUserId () async {

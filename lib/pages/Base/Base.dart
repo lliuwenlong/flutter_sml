@@ -158,7 +158,7 @@ class _BaseState extends State<Base> {
         return Scaffold(
             appBar: PreferredSize(
                 child: AppBarWidget().buildAppBar("神木基地"),
-                preferredSize: Size.fromHeight(ScreenAdaper.height(110))
+                preferredSize: Size.fromHeight(ScreenAdaper.height(80))
             ),
             body: isLoading ? Loading() : SmartRefresher(
                 enablePullDown: true,

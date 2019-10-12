@@ -1,4 +1,10 @@
 PODS:
+  - amap_location (0.0.1):
+    - AMapLocation
+    - Flutter
+  - AMapFoundation (1.5.7)
+  - AMapLocation (2.6.3):
+    - AMapFoundation (~> 1.4)
   - BSGridCollectionViewLayout (1.2.5)
   - BSImagePicker (2.10.2):
     - BSGridCollectionViewLayout (= 1.2.5)
@@ -38,6 +44,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - amap_location (from `.symlinks/plugins/amap_location/ios`)
   - city_pickers (from `.symlinks/plugins/city_pickers/ios`)
   - Flutter (from `.symlinks/flutter/ios-release`)
   - flutter_inappbrowser (from `.symlinks/plugins/flutter_inappbrowser/ios`)
@@ -60,8 +67,13 @@ SPEC REPOS:
     - HappyDNS
     - Qiniu
     - Reachability
+  trunk:
+    - AMapFoundation
+    - AMapLocation
 
 EXTERNAL SOURCES:
+  amap_location:
+    :path: ".symlinks/plugins/amap_location/ios"
   city_pickers:
     :path: ".symlinks/plugins/city_pickers/ios"
   Flutter:
@@ -90,6 +102,9 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/video_player/ios"
 
 SPEC CHECKSUMS:
+  amap_location: a3e2a140bb25950d4e97560ce1b00e53a121e4f4
+  AMapFoundation: 216d58448c80356434ac4332250a8fdb2f5c4d1e
+  AMapLocation: dc2c4fde95d72087d73934338160fadc72104bb7
   BSGridCollectionViewLayout: 333dcb457a5a3bdd9212607ab5756553dcfe06cb
   BSImagePicker: f7228c1e1abc1fa850248fd0e8018e0ccc19148a
   BSImageView: a149459433a2687157d034c78e059d30ac7f2544

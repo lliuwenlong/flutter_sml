@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_sml/model/store/user/User.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:fluwx/fluwx.dart' as fluwx;
 import 'package:provider/provider.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
@@ -35,20 +38,20 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
   bool isThumbup;
   _FriendDynamicsCommentState({Key key, this.isThumbup});
   TextEditingController controller =
-      TextEditingController.fromValue(TextEditingValue(text: ""));
-  TextEditingController controllerII =
-      TextEditingController.fromValue(TextEditingValue(
-    text: "",
-  ));
-  User _userModel;
-  bool isOpenKeyboard = false;
-  FocusNode _commentFocus = FocusNode();
+    TextEditingController.fromValue(TextEditingValue(text: ""));
+    TextEditingController controllerII =
+        TextEditingController.fromValue(TextEditingValue(
+        text: "",
+    ));
+    User _userModel;
+    bool isOpenKeyboard = false;
+    FocusNode _commentFocus = FocusNode();
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _userModel = Provider.of<User>(context);
-  }
+    @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        _userModel = Provider.of<User>(context);
+    }
 
   @override
   initState() {
@@ -248,7 +251,9 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                               GestureDetector(
-                                  onTap: this._setShare,
+                                  onTap: () {
+                                      this._setShare(1);
+                                  },
                                   child: Column(children: <Widget>[
                                     Icon(
                                         IconData(0xe667,
@@ -263,7 +268,9 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
                                   ])),
                               SizedBox(width: ScreenAdaper.width(167)),
                               GestureDetector(
-                                  onTap: this._setShare,
+                                  onTap: () {
+                                      this._setShare(2);
+                                  },
                                   child: Column(children: <Widget>[
                                     Icon(
                                         IconData(0xe668,
@@ -320,24 +327,35 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
     }
   }
 
-  _setShare() async {
-    Map response = await this.http.post(
-        "http://api.zhongyunkj.cn/api/v1/circle/msg/${this.widget.arguments["id"]}/share?type=1");
-    if (response["code"] == 200) {
-      setState(() {
-        this.shareNum = response["data"];
-      });
-      Navigator.pop(this.shareHandler);
-    } else {
-      Fluttertoast.showToast(
-          msg: response["msg"],
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIos: 1,
-          textColor: Colors.white,
-          fontSize: ScreenAdaper.fontSize(30));
+    _setShare(int type) async {
+        if (Platform.isAndroid) {
+            await fluwx.share(fluwx.WeChatShareWebPageModel(
+                transaction: "树友圈详情",
+                webPage: "http://192.168.2.121:8081/app/#/evaluate",
+                thumbnail: "",
+                title: "树友圈详情",
+                description: "树友圈详情",
+                scene: type == 1 ? fluwx.WeChatScene.SESSION : fluwx.WeChatScene.TIMELINE
+            ));
+        }
+        
+        Map response = await this.http.post("http://api.zhongyunkj.cn/api/v1/circle/msg/${this.widget.arguments["id"]}/share?type=1");
+        if (response["code"] == 200) {
+            setState(() {
+                this.shareNum = response["data"];
+            });
+            Navigator.pop(this.shareHandler);
+        } else {
+            Fluttertoast.showToast(
+                msg: response["msg"],
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        }
     }
-  }
 
   Widget _headPortrait(String url) {
     return Row(children: <Widget>[

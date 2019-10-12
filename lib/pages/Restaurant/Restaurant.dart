@@ -92,7 +92,7 @@ class _RestaurantState extends State<Restaurant> {
         return Scaffold(
             appBar: PreferredSize(
                 child: AppBarWidget().buildAppBar(this.nameMap[widget.arguments["type"]]),
-                preferredSize: Size.fromHeight(ScreenAdaper.height(110))
+                preferredSize: Size.fromHeight(ScreenAdaper.height(80))
             ),
             body: isLoading
                 ? Center(

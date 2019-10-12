@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sml/common/Color.dart';
@@ -56,6 +58,10 @@ class _LoginPageState extends State<LoginPage> {
                     nickName: data.nickName,
                     createTime: data.createTime
                 );
+                if (Platform.isIOS) {
+                    Navigator.pushNamedAndRemoveUntil(context, '/tabBars', (router) => false);
+                    return;
+                }
                 if (data.wxAuth == 0) {
                     await fluwx.sendAuth(scope: "snsapi_userinfo", state: "wechat_sdk_demo_test");
                 } else {

@@ -83,7 +83,7 @@ class _SystemMessageState extends State<SystemMessage> {
         return Scaffold(
             appBar: PreferredSize(
                 child: AppBarWidget().buildAppBar('${arguments['appTabName']}'),
-                preferredSize: Size.fromHeight(ScreenAdaper.height(110))
+                preferredSize: Size.fromHeight(ScreenAdaper.height(80))
             ),
             body: !_isLoading
                 ? this.noticeList.isEmpty

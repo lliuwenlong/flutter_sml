@@ -175,7 +175,7 @@ class _ReleaseEvaluateState extends State<ReleaseEvaluate> {
         return Scaffold(
             appBar: PreferredSize(
                 child:  AppBarWidget().buildAppBar("评价"),
-                preferredSize: Size.fromHeight(ScreenAdaper.height(110)),
+                preferredSize: Size.fromHeight(ScreenAdaper.height(80)),
             ),
             bottomSheet: Container(
                 width: double.infinity,

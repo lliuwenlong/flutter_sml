@@ -219,7 +219,7 @@ class _ShopPageState extends State<ShopPage> {
         return Scaffold(
             appBar: PreferredSize(
                 child: AppBarWidget().buildAppBar("商城"),
-                preferredSize: Size.fromHeight(ScreenAdaper.height(110))
+                preferredSize: Size.fromHeight(ScreenAdaper.height(80))
             ),
             body:  this.isLoading
                 ? Container(

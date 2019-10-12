@@ -160,22 +160,29 @@ class _HomePageState extends State<HomePage> {
                                 fontSize: ScreenAdaper.fontSize(30, allowFontScaling: true),
                                 color: Color.fromRGBO(51, 51, 51, 1)
                             )),
-                            Row(
-                                children: <Widget>[
-                                    Center(
-                                        child: Text("更多", style: TextStyle(
-                                            fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true),
-                                            color: Color.fromRGBO(153, 153, 153, 1)
-                                        ))
-                                    ),
-                                    Center(
-                                        child: Icon(
-                                            IconData(0xe61e, fontFamily: 'iconfont'),
-                                            color: Color.fromRGBO(170,170,170, 1),
-                                            size: ScreenAdaper.fontSize(24),
+                            GestureDetector(
+                                onTap: () {
+                                    Navigator.pushNamed(context, "/activityMessage", arguments: {
+                                        "appTabName": "活动公告"
+                                    });
+                                },
+                                child: Row(
+                                    children: <Widget>[
+                                        Center(
+                                            child: Text("更多", style: TextStyle(
+                                                fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true),
+                                                color: Color.fromRGBO(153, 153, 153, 1)
+                                            ))
+                                        ),
+                                        Center(
+                                            child: Icon(
+                                                IconData(0xe61e, fontFamily: 'iconfont'),
+                                                color: Color.fromRGBO(170,170,170, 1),
+                                                size: ScreenAdaper.fontSize(24),
+                                            )
                                         )
-                                    )
-                                ],
+                                    ],
+                                )
                             )
                         ],
                     ),

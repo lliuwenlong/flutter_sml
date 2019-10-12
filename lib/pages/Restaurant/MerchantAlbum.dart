@@ -24,7 +24,7 @@ class _MerchantAlbumState extends State<MerchantAlbum> {
         return Scaffold(
             appBar: PreferredSize(
                 child: AppBarWidget().buildAppBar("商家相册"),
-                preferredSize: Size.fromHeight(ScreenAdaper.height(110))
+                preferredSize: Size.fromHeight(ScreenAdaper.height(80))
             ),
             body: GridView.builder(
                 padding: EdgeInsets.all(ScreenAdaper.width(30)),

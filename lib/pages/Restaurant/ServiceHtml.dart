@@ -16,7 +16,7 @@ class ServiceHtml extends StatelessWidget {
         return Scaffold(
             appBar: PreferredSize(
                 child: AppBarWidget().buildAppBar(this.type == 4 ? "神木娱乐" : "服务详情"),
-                preferredSize: Size.fromHeight(ScreenAdaper.height(110))
+                preferredSize: Size.fromHeight(ScreenAdaper.height(80))
             ),
             bottomSheet: this.type == 4 ? Container(
                 width: double.infinity,

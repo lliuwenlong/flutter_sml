@@ -14,21 +14,21 @@ class SwiperComponent extends StatefulWidget {
 class _SwiperComponentState extends State<SwiperComponent> {
     
 final HttpUtil http = HttpUtil();
-List bannerList = [];
-@override
-void didChangeDependencies() {
-  super.didChangeDependencies();
-  _getData();
-}
-_getData () async {
-  Map response = await this.http.get('/api/v1/banner/index');  
-  
-  if (response['code'] == 200) {
-    setState(() {
-      this.bannerList = response['data'];
-    });
-  }
-}
+    List bannerList = [];
+    @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        _getData();
+    }
+    _getData () async {
+        Map response = await this.http.get('/api/v1/banner/index');  
+        print(response);
+        if (response['code'] == 200) {
+            setState(() {
+                this.bannerList = response['data'];
+            });
+        }
+    }
     @override
     void initState() {
         super.initState();
@@ -36,6 +36,7 @@ _getData () async {
 
     _getBannerList() async {
         Map<String, dynamic> response = await HttpUtil().get("/api/v1/banner/index");
+        print(response);
         BannerModel.fromJson(response);
     }
 
@@ -51,7 +52,7 @@ _getData () async {
             ),
             child: AspectRatio(
                 aspectRatio: 5 / 2,
-                child: Swiper(
+                child: bannerList.length != 0 ? Swiper(
                     autoplay: true,
                     itemBuilder: (BuildContext context,int index){
                         String url = this.bannerList[index]["imageUrl"];
@@ -70,7 +71,7 @@ _getData () async {
                         );
                     },
                     onTap: (int index) {
-                        this._getBannerList();
+                        // this._getBannerList();
                     },
                     itemCount: bannerList.length, 
                     pagination: new SwiperPagination(
@@ -82,7 +83,7 @@ _getData () async {
                             activeSize: 8
                         )
                     )
-                ),
+                ) : Container(),
             )
         );
     }
