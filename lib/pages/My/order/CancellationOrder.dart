@@ -210,8 +210,6 @@ class _CancellationOrderState extends State<CancellationOrder> {
                   ],
                 ),
               )
-
-
             ]));
   }
 }

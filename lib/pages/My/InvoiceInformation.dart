@@ -309,7 +309,9 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                     ),
                     GestureDetector(
                         onTap: () {
-                            Navigator.pushNamed(context, "/remarksInformation");
+                            Navigator.pushNamed(context, "/remarksInformation",arguments: {
+                              'remarks': this._invoiceModel.remarks
+                            });
                         },
                         child: Container(
                             padding: EdgeInsets.fromLTRB(
@@ -340,15 +342,15 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                                             child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: <Widget>[
-                                                  	this._invoiceModel.remarks == null? Text('请填写备注信息(非必填)', style: TextStyle(
-                                                        color: ColorClass.iconColor,
-                                                        fontSize: ScreenAdaper.fontSize(24)
-                                                    )):Text(
-                                                    this._invoiceModel.remarks,
-                                                    style: TextStyle(
-                                                      color: Color(0xff333333),
-                                                      fontSize: ScreenAdaper.fontSize(30)
-                                                    ),
+                                                      this._invoiceModel.remarks == null? Text('请填写备注信息(非必填)', style: TextStyle(
+                                                          color: ColorClass.iconColor,
+                                                          fontSize: ScreenAdaper.fontSize(24)
+                                                      )):Text(
+                                                      this._invoiceModel.remarks,
+                                                      style: TextStyle(
+                                                        color: Color(0xff333333),
+                                                        fontSize: ScreenAdaper.fontSize(30)
+                                                      ),
                                                   )
 													
                                                 	]
@@ -361,7 +363,11 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                     ),
                     GestureDetector(
                         onTap: () {
-                            Navigator.pushNamed(context, "/invoiceHarvestAddress");
+                            Navigator.pushNamed(context, "/invoiceHarvestAddress",arguments: {
+                              'name':this._invoiceModel.receiverUser,
+                              'phone':this._invoiceModel.phone,
+                              'address':this._invoiceModel.address
+                            });
                         },
                         child: Container(
                             margin: EdgeInsets.only(
@@ -395,14 +401,19 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                                             child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.end,
                                                 children: <Widget>[
-                                                  this._invoiceModel.province==null? Text("发票收货地址", style: TextStyle(
+                                                  Expanded(
+                                                    child: this._invoiceModel.province==null? Text("发票收货地址", style: TextStyle(
                                                         color: ColorClass.iconColor,
                                                         fontSize: ScreenAdaper.fontSize(24)
                                                     )):Text("${this._invoiceModel.province}${this._invoiceModel.city}${this._invoiceModel.county}${this._invoiceModel.address}", style: TextStyle(
                                                         color: ColorClass.fontColor,
-                                                        fontSize: ScreenAdaper.fontSize(30)
-                                                    )),
-                                                    SizedBox(width: ScreenAdaper.width(20)),
+                                                        fontSize: ScreenAdaper.fontSize(30),
+
+                                                    ),
+                                                    overflow: TextOverflow.ellipsis,      
+                                                    ),
+                                                  ),
+                                                    SizedBox(width: ScreenAdaper.width(10)),
                                                     Icon(
                                                         IconData(0Xe61e, fontFamily: "iconfont"),
                                                         size: ScreenAdaper.fontSize(24),

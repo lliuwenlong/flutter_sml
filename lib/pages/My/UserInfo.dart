@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_luban/flutter_luban.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
 import '../../common/HttpUtil.dart';
 import '../../model/store/user/User.dart';
+import '../../common/Config.dart';
 class UserInfo extends StatefulWidget {
     final Map arguments;
     UserInfo({Key key,this.arguments}) : super(key: key);
@@ -30,61 +32,60 @@ class _UserInfoState extends State<UserInfo> {
     }
 
     _changeUserImage(File imageFile) async {
-      String path = imageFile.path;
+        String path = imageFile.path;
         var name = path.substring(path.lastIndexOf("/") + 1, path.length);
+		    String imagePath = path.substring(0,path.lastIndexOf("/"));
         CompressObject compressObject = CompressObject(
           imageFile:imageFile, //image
-          path:'/storage/emulated/0/Android/data/com.itshouyu.sml/files/Pictures', //compress to path
+          path:imagePath, //compress to path
         );
-      Luban.compressImage(compressObject).then((_path) async {
-        FormData formData = new FormData.from({
-            "image": new UploadFileInfo(File(_path), name)
-        });
-        Dio dio = new Dio();
-        var response = await dio.post("http://api.zhongyunkj.cn/oss/img", data: formData);
-        if (response.statusCode== 200) {
-            Map res = await this.http.post('/api/v11/user/reheader',data: {
-                "image": response.data['data'],
-                "userId": this._userModel.userId
-            });
-            if(res['code'] == 200){
-               setState(() {
-                  this.headImage = response.data['data'];
-               });
-                this._userModel.initUser(
-                    userId: this._userModel.userId,
-                    userName: this._userModel.userName,
-                    phone: this._userModel.phone,
-                    password: this._userModel.password,
-                    headerImage:response.data['data'],
-                    nickName: this._userModel.nickName,
-                    createTime: this._userModel.createTime
-                );
-                Fluttertoast.showToast(
-                    msg: '修改成功',
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.CENTER,
-                    timeInSecForIos: 1,
-                    textColor: Colors.white,
-                    backgroundColor: Colors.black87,
-                    fontSize: ScreenAdaper.fontSize(30)
-                );
-                
-            }
-        }else{
-            Fluttertoast.showToast(
-                msg: '头像上传失败',
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-                timeInSecForIos: 1,
-                textColor: Colors.white,
-                backgroundColor: Colors.black87,
-                fontSize: ScreenAdaper.fontSize(30)
-            );
-        }
-      });
-       
-        
+      	Luban.compressImage(compressObject).then((_path) async {
+			FormData formData = new FormData.from({
+				"image": new UploadFileInfo(File(_path), name)
+			});
+			Dio dio = new Dio();
+			var response = await dio.post("${Config.apiUrl}/oss/img", data: formData);
+			if (response.statusCode== 200) {
+				Map res = await this.http.post('/api/v11/user/reheader',data: {
+					"image": response.data['data'],
+					"userId": this._userModel.userId
+				});
+				if(res['code'] == 200){
+				setState(() {
+					this.headImage = response.data['data'];
+				});
+					this._userModel.initUser(
+						userId: this._userModel.userId,
+						userName: this._userModel.userName,
+						phone: this._userModel.phone,
+						password: this._userModel.password,
+						headerImage:response.data['data'],
+						nickName: this._userModel.nickName,
+						createTime: this._userModel.createTime
+					);
+					Fluttertoast.showToast(
+						msg: '修改成功',
+						toastLength: Toast.LENGTH_SHORT,
+						gravity: ToastGravity.CENTER,
+						timeInSecForIos: 1,
+						textColor: Colors.white,
+						backgroundColor: Colors.black87,
+						fontSize: ScreenAdaper.fontSize(30)
+					);
+					
+				}
+			}else{
+				Fluttertoast.showToast(
+					msg: '头像上传失败',
+					toastLength: Toast.LENGTH_SHORT,
+					gravity: ToastGravity.CENTER,
+					timeInSecForIos: 1,
+					textColor: Colors.white,
+					backgroundColor: Colors.black87,
+					fontSize: ScreenAdaper.fontSize(30)
+				);
+			}
+      	});
     }
 
   @override

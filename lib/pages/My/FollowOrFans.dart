@@ -214,7 +214,7 @@ class _FollowOrFansState extends State<FollowOrFans> with SingleTickerProviderSt
                             )
                         ],
                     ),
-                    focus == "0" ? GestureDetector(
+                    GestureDetector(
                         onTap: onTap,
                         child: Container(
                             width: ScreenAdaper.width(160),
@@ -236,12 +236,10 @@ class _FollowOrFansState extends State<FollowOrFans> with SingleTickerProviderSt
                             ),
                         ),
                     )
-                    : SizedBox()
                 ]
             )
         );
     }
-
     @override
     Widget build(BuildContext context) {
         return Scaffold(
@@ -358,11 +356,11 @@ class _FollowOrFansState extends State<FollowOrFans> with SingleTickerProviderSt
                                         return this._listItem(
                                             data.headerImage,
                                             data.nickName,
-                                            '关注',
+                                            data.focus =='0'?'关注':'已关注',
                                             index,
-                                            () {
+                                           	data.focus =='0'? () {
                                                 this._subscribe(data.subId, index);
-                                            },
+                                            }:() {},
                                             focus: data.focus
                                         );
                                     },

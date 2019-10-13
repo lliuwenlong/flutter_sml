@@ -12,7 +12,7 @@ class AppBarWidget  {
               iconTheme: IconThemeData(color: Colors.black),
               backgroundColor: Colors.white,
               centerTitle: true,
-              brightness: Brightness.light
+              brightness: Brightness.light,
           ),
           preferredSize: Size.fromHeight(ScreenAdaper.height(88))
         );

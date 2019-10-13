@@ -163,7 +163,6 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
 	}
 
 	_getData ({bool isInit = false}) async {
-
 		if (
             isInit
             && ((this._tabController.index == 0 && this.allLoading == false)
@@ -180,65 +179,64 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
 			"pageNO": this.page,
 			"pageSize": 10,
 			"status": _tabController.index == 5? 9 : _tabController.index,
-			"userId": 1
+			"userId": this._userModel.userId
 		});
 		if (response['code'] == 200) {
 			OrderDataModel res = OrderDataModel.fromJson(response);
-		
-    	if (isInit) {
-          setState(() {
-            switch (_tabController.index) {
-              case 0 : {
-                allList = res.data.list;
-                allLoading = false;
-                this.loading = allLoading;
-              } break;
-              case 1 : {
-                paymentList = res.data.list;
-                paymentLoading = false;
-                this.loading = paymentLoading;
-              } break;
-              case 2 : {
-                toBeUsedList = res.data.list;
-                toBeUsedLoading = false;
-                this.loading = toBeUsedLoading;
-              } break;
-              case 3 : {
-                toBeEvaluatedList = res.data.list;
-                toBeEvaluatedLoading = false;
-                this.loading = toBeEvaluatedLoading;
-              } break;
-              case 4 : {
-                refundList = res.data.list;
-                refundLoading = false;
-                this.loading = refundLoading;
-              } break;
-              case 5 : {
-                finishedList = res.data.list;
-                finishedLoading = false;
-                this.loading = finishedLoading;
-              } break;
-            }
-        });
-      } else {
-          setState(() {
-                     if (_tabController.index == 0) {
-                        allList.addAll(res.data.list);
-                    } else if (_tabController.index == 1) {
-						paymentList.addAll(res.data.list);
-					}else if (_tabController.index == 2){
-                        toBeUsedList.addAll(res.data.list);
-                    } else if (_tabController.index == 3) {
-						toBeEvaluatedList.addAll(res.data.list);
-					} else if (_tabController.index == 4) {
-						refundList.addAll(res.data.list);
-					} else {
-						finishedList.addAll(res.data.list);
-					}
-                });
-      }
-		}
-		return response;
+			if (isInit) {
+			setState(() {
+				switch (_tabController.index) {
+				case 0 : {
+					allList = res.data.list;
+					allLoading = false;
+					this.loading = allLoading;
+				} break;
+				case 1 : {
+					paymentList = res.data.list;
+					paymentLoading = false;
+					this.loading = paymentLoading;
+				} break;
+				case 2 : {
+					toBeUsedList = res.data.list;
+					toBeUsedLoading = false;
+					this.loading = toBeUsedLoading;
+				} break;
+				case 3 : {
+					toBeEvaluatedList = res.data.list;
+					toBeEvaluatedLoading = false;
+					this.loading = toBeEvaluatedLoading;
+				} break;
+				case 4 : {
+					refundList = res.data.list;
+					refundLoading = false;
+					this.loading = refundLoading;
+				} break;
+				case 5 : {
+					finishedList = res.data.list;
+					finishedLoading = false;
+					this.loading = finishedLoading;
+				} break;
+				}
+			});
+      	} else {
+			setState(() {
+				if (_tabController.index == 0) {
+					allList.addAll(res.data.list);
+				} else if (_tabController.index == 1) {
+					paymentList.addAll(res.data.list);
+				}else if (_tabController.index == 2){
+					toBeUsedList.addAll(res.data.list);
+				} else if (_tabController.index == 3) {
+					toBeEvaluatedList.addAll(res.data.list);
+				} else if (_tabController.index == 4) {
+					refundList.addAll(res.data.list);
+				} else {
+					finishedList.addAll(res.data.list);
+				}
+			});
+      	}
+	}
+	return response;
 	}
   Widget _itemWidget ({var data}) {
       
@@ -248,11 +246,15 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
             if (data.type == 'house') {
                Navigator.pushNamed(context, '/acknowledgement',arguments: {
                 'orderSn':data.orderSn,
+                'type':data.type,
+                'firmId':data.firmId
               });
             }else{
+             
                 Navigator.pushNamed(context, '/payment',arguments: {
                   'amount':data.amount,
-                  'orderSn':data.orderSn
+                  'orderSn':data.orderSn,
+                  'firmId':data.firmId
                 });
             }
              
@@ -261,6 +263,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                   'orderSn':data.orderSn,
                   'status':data.status,
                   'type':data.type
+
               });
           }
           
@@ -364,16 +367,27 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                                 ),
                                 highlightedBorderColor: Color(0XFF999999),
                                 onPressed: () {
+                                  print(data.type);
                                   if(data.type=='house'&&data.status=='1'){//去付款
                                       Navigator.pushNamed(context, "/acknowledgement",arguments: {
                                        'orderSn':data.orderSn,
+                                       'type':data.type,
+                                       'firmId':data.firmId
                                      });
                                   }else if (data.type=='havefun'&&data.status=='1'){
                                       Navigator.pushNamed(context, '/payment',arguments: {
                                         'amount':data.amount,
-                                        'orderSn':data.orderSn
+                                        'orderSn':data.orderSn,
+                                        'type':data.type,
+                                        'firmId':data.firmId
                                       });
                                   }else if ((data.type=='house'||data.type=='havefun')&&data.status == '2'){//取消订单
+                                      Navigator.pushNamed(context, "/cancellationOrder",arguments: {
+                                        'orderSn':data.orderSn,
+                                        'type':data.type,
+                                        'status':data.status
+                                      });
+                                  }else if (data.type =='tree' && data.status == '8') {
                                       Navigator.pushNamed(context, "/cancellationOrder",arguments: {
                                         'orderSn':data.orderSn,
                                         'type':data.type,

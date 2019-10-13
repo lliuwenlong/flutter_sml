@@ -8,24 +8,24 @@ import 'package:provider/provider.dart';
 import '../../common/HttpUtil.dart';
 import '../../components/LoadingSm.dart';
 class FeedBack extends StatefulWidget {
-  FeedBack({Key key}) : super(key: key);
-  _FeedBackState createState() => _FeedBackState();
+	FeedBack({Key key}) : super(key: key);
+	_FeedBackState createState() => _FeedBackState();
 }
 
 
 class _FeedBackState extends State<FeedBack> {
-  static String _inputText ='';
-   User _userModel;
-   final HttpUtil http = HttpUtil();
-  TextEditingController input = TextEditingController.fromValue(
-      TextEditingValue(
-        text: _inputText,
-      )
-  );
+  	static String _inputText ='';
+   	User _userModel;
+   	final HttpUtil http = HttpUtil();
+  	TextEditingController input = TextEditingController.fromValue(
+      	TextEditingValue(
+        	text: _inputText,
+    	)
+  	);
   @override
-  void initState() { 
-    super.initState();
-  }
+  	void initState() { 
+    	super.initState();
+  	}
 
     @override
     void didChangeDependencies() {
@@ -40,7 +40,7 @@ class _FeedBackState extends State<FeedBack> {
             "userId": this._userModel.userId
         });
         if (response["code"] == 200) {
-           await Fluttertoast.showToast(
+           	await Fluttertoast.showToast(
                 msg: '提交成功',
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.CENTER,
@@ -59,7 +59,7 @@ class _FeedBackState extends State<FeedBack> {
                 gravity: ToastGravity.CENTER,
                 timeInSecForIos: 1,
                 textColor: Colors.white,
-                 backgroundColor: Colors.black87,
+                backgroundColor: Colors.black87,
                 fontSize: ScreenAdaper.fontSize(30)
             );
         }
@@ -68,11 +68,11 @@ class _FeedBackState extends State<FeedBack> {
   Widget build(BuildContext context) {
     ScreenAdaper.init(context);
     return Scaffold(
-      appBar: AppBarWidget().buildAppBar('意见反馈'),
-      body:Container(
-          padding: EdgeInsets.only(top: ScreenAdaper.height(10)),
-          color: Colors.white,
-          child: Column(
+		appBar: AppBarWidget().buildAppBar('意见反馈'),
+		body:Container(
+			padding: EdgeInsets.only(top: ScreenAdaper.height(20)),
+			color: Colors.white,
+			child: Column(
             children: <Widget>[
               Container(
                 width: ScreenAdaper.width(690),
@@ -80,20 +80,26 @@ class _FeedBackState extends State<FeedBack> {
                 child:  TextField(
                 maxLines: 6,
                 decoration: InputDecoration(
-                  hintText: '请输入您对我们的意见...',
-                  hintStyle: TextStyle(
-                    color: Color(0xffaaaaaa),
-                    fontSize: ScreenAdaper.fontSize(24)
-                  ),
-                  filled: true,
-                  fillColor: Color(0xfff5f5f5),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(5),
-                  )
+					hintText: '请输入您对我们的意见...',
+					hintStyle: TextStyle(
+						color: Color(0xffaaaaaa),
+						fontSize: ScreenAdaper.fontSize(24)
+					),
+                   	contentPadding: EdgeInsets.fromLTRB(
+						ScreenAdaper.width(30),
+						ScreenAdaper.width(25),
+						ScreenAdaper.width(30),
+						ScreenAdaper.width(25)
+                    ),
+					filled: true,
+					fillColor: Color(0xfff5f5f5),
+					border: OutlineInputBorder(
+						borderSide: BorderSide.none,
+						borderRadius: BorderRadius.circular(5),
+                  	)
                 ),
                 inputFormatters: <TextInputFormatter>[
-                  LengthLimitingTextInputFormatter(1000)
+                  	LengthLimitingTextInputFormatter(1000)
                 ],
                 controller: input,
               )),
@@ -106,8 +112,8 @@ class _FeedBackState extends State<FeedBack> {
                   child: Text(
                     '提交',
                     style: TextStyle(
-                      color: Colors.white,
-                      fontSize: ScreenAdaper.fontSize(40)
+						color: Colors.white,
+						fontSize: ScreenAdaper.fontSize(40)
                     ),
                   ),
                     disabledColor: Color(0XFF86d4ca),//禁用时的颜色
@@ -115,12 +121,11 @@ class _FeedBackState extends State<FeedBack> {
                     highlightColor:Color(0xff009a8a),
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5))
+                      	borderRadius: BorderRadius.all(Radius.circular(5))
                     ),
                     color: Color(0XFF22b0a1),//默认颜色
                     onPressed: (){
-                     this._submitData(input.text);
-                     
+                     	this._submitData(input.text);
                     },
                 ),
               )

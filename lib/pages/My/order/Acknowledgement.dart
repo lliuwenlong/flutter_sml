@@ -21,15 +21,12 @@ class _AcknowledgementState extends State<Acknowledgement> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // print(arguments['orderSn']);
     _getData();
   }
   _getData() async {
-    Map response = await this
-        .http
-        .get('/api/v1/order/one', data: {'orderSn': arguments['orderSn']});
+    Map response = await this.http.get('/api/v1/order/one', data: {'orderSn': arguments['orderSn']});
 
-    // print(response);
+   
     if (response['code'] == 200) {
       setState(() {
         this.data = response['data'];
@@ -105,7 +102,10 @@ class _AcknowledgementState extends State<Acknowledgement> {
                                 color: ColorClass.common,
                                 onPressed: () {
                                   Navigator.pushNamed(context, '/payment',arguments: {
-                                    'amount':data['amount']
+                                    'amount':data['amount'],
+                                    'type':arguments['type'],
+                                    'firmId':arguments['firmId'],
+                                    'orderSn':data['orderSn']
                                   });
                                 },
                                 shape: RoundedRectangleBorder(

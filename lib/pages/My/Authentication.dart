@@ -10,7 +10,7 @@ import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../model/store/user/User.dart';
-
+import '../../common/Config.dart';
 class Authentication extends StatefulWidget {
   Authentication({Key key}) : super(key: key);
   _AuthenticationState createState() => _AuthenticationState();
@@ -156,16 +156,17 @@ class _AuthenticationState extends State<Authentication>{
   _lunchImg (File imageFile,bool isBordor) async {
       String path = imageFile.path;
       var name = path.substring(path.lastIndexOf("/") + 1, path.length);
+      String imagePath = path.substring(0,path.lastIndexOf("/"));
       CompressObject compressObject = CompressObject(
         imageFile:imageFile, //image
-        path:'/storage/emulated/0/Android/data/com.itshouyu.sml/files/Pictures', //compress to path
+        path:imagePath, //compress to path
       );
       Luban.compressImage(compressObject).then((_path) async {
         FormData formData = new FormData.from({
             "image": new UploadFileInfo(File(_path), name)
         });
         Dio dio = new Dio();
-        var response = await dio.post("http://api.zhongyunkj.cn/oss/img", data: formData);
+        var response = await dio.post("${Config.apiUrl}/oss/img", data: formData);
         if (response.statusCode == 200) {
           if (isBordor) {//正面
               setState(() {

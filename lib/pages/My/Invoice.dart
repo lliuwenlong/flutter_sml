@@ -80,7 +80,17 @@ class _InvoiceState extends State<Invoice> {
     }
 
   Widget _item (var data,{bool isBorder = true}) {
-        return Container(
+        return GestureDetector(
+          onTap: (){
+            setState(() {
+                this._orderSn = data.orderSn;
+                this._invoiceModel.initInvoiceInfo(
+                  orderSn:data.orderSn,
+                  amount: data.amount
+                );
+            });
+          },
+          child: Container(
             padding: EdgeInsets.fromLTRB(
                 ScreenAdaper.width(30), 0, ScreenAdaper.width(30), 0
             ),
@@ -100,17 +110,7 @@ class _InvoiceState extends State<Invoice> {
                 child: Row(
                     children: <Widget>[
                             Container(
-                                child: GestureDetector(
-                                  onTap: (){
-                                      setState(() {
-                                        this._orderSn = data.orderSn;
-                                        this._invoiceModel.initInvoiceInfo(
-                                          orderSn:data.orderSn,
-                                          amount: data.amount
-                                        );
-                                      });
-                                      
-                                  },
+                                
                                   child:_orderSn==data.orderSn? CircleAvatar(
                                     backgroundColor: Color(0xffd4746c),
                                     radius: ScreenAdaper.width(20),
@@ -134,7 +134,7 @@ class _InvoiceState extends State<Invoice> {
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(20)))),
                                   ),
-                                ),
+                                
                             ),
                             SizedBox(width: ScreenAdaper.width(20)),
                             Expanded(
@@ -166,6 +166,7 @@ class _InvoiceState extends State<Invoice> {
                     ]
                 )
             )
+        ),
         );
     }
   @override

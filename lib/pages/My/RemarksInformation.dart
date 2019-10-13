@@ -7,29 +7,40 @@ import '../../model/store/invoice/InvoiceInfo.dart';
 
 
 class RemarksInformation extends StatefulWidget {
-  RemarksInformation({Key key}) : super(key: key);
+	final arguments;
+  RemarksInformation({Key key,this.arguments}) : super(key: key);
 
-  _RemarksInformationState createState() => _RemarksInformationState();
+  _RemarksInformationState createState() => _RemarksInformationState(arguments:arguments);
 }
 
 class _RemarksInformationState extends State<RemarksInformation> {
-    static String _inputText = '';
-    TextEditingController _remarksInformationController = new TextEditingController
-    .fromValue(
-      TextEditingValue(
-                text: _inputText
-            )
-    );
+	final arguments;
+	_RemarksInformationState({this.arguments});
+    String _inputText = '';
+    
     InvoiceInfo _invoiceModel;
     @override
     void didChangeDependencies() {
       super.didChangeDependencies();
       _invoiceModel = Provider.of<InvoiceInfo>(context);
-      // this._remarksInformationController.text = _invoiceModel.remarks!=null?_invoiceModel.remarks:'';
-    }
+	}
+	@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+		this._inputText = this.arguments['remarks']!=null? this.arguments['remarks']:'';
+	
+  }
     @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
+		TextEditingController _remarksInformationController = new TextEditingController
+    .fromValue(
+        TextEditingValue(
+            text: _inputText,
+            selection: TextSelection.fromPosition(TextPosition(
+                affinity: TextAffinity.downstream,
+                offset: _inputText.length))));
         return Scaffold(
             appBar: AppBarWidget().buildAppBar("备注信息"),
             body: Container(
@@ -50,6 +61,12 @@ class _RemarksInformationState extends State<RemarksInformation> {
                                     fontSize: ScreenAdaper.fontSize(26),
                                 ),
                                 filled: true,
+                                contentPadding: EdgeInsets.fromLTRB(
+                                    ScreenAdaper.width(30),
+                                    ScreenAdaper.width(25),
+                                    ScreenAdaper.width(30),
+                                    ScreenAdaper.width(25)
+                                ),
                                 fillColor: Color(0XFFf5f5f5),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
@@ -57,6 +74,11 @@ class _RemarksInformationState extends State<RemarksInformation> {
                                 )
                             ),
                             controller: _remarksInformationController,
+							onChanged: (val){
+								setState(() {
+								  this._inputText = val;
+								});
+							},
                         ),
                         Container(
                             margin: EdgeInsets.only(
@@ -79,7 +101,7 @@ class _RemarksInformationState extends State<RemarksInformation> {
                                     receiverUser: this._invoiceModel.receiverUser,
                                     amount: this._invoiceModel.amount,
                                     orderSn: this._invoiceModel.orderSn,
-                                    remarks: this._remarksInformationController.text,
+                                    remarks: this._inputText,
                                     receiptCode: this._invoiceModel.receiptCode,
                                     receiptHeader: this._invoiceModel.receiptHeader
                                   );

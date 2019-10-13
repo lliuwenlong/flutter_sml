@@ -56,7 +56,6 @@ dependencies:
   amap_location: ^0.2.0
   flutter_luban: ^0.1.7
   path_provider: ^1.3.0
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -188,6 +187,12 @@ flutter:
    - images/doast.png
    - images/2.0x/doast.png
    - images/3.0x/doast.png
+   - images/yes.png
+   - images/2.0x/yes.png
+   - images/3.0x/yes.png
+   - images/no.png
+   - images/2.0x/no.png
+   - images/3.0x/no.png
    - videos/video.mp4
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
