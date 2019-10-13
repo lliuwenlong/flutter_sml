@@ -14,7 +14,7 @@ import 'calendar_widget.dart';
 * */
 enum Location{left,mid,right}
 
-    typedef void SelectDateOnTap(DayModel checkInTimeModel, DayModel leaveTimeModel);
+    typedef void SelectDateOnTap(DayModel checkInTimeModel, DayModel leaveTimeModel, int day);
 
 class CalendarPage extends StatefulWidget {
     final DayModel startTimeModel;// 外部传入的之前选中的入住日期
@@ -458,7 +458,6 @@ class _CalendarPageState extends State<CalendarPage> {
         print('${_isSelectLeaveTimeModel.year},${_isSelectLeaveTimeModel.month},${_isSelectLeaveTimeModel.dayNum}');
         print('入住日期：$_selectCheckInTime, 离开时间：$_selectLeaveTime, 共$_checkInDays晚');
         // 把日期回调给外部
-        widget.selectDateOnTap(_selectCheckInTimeModel, _isSelectLeaveTimeModel);
-        Navigator.pop(context);
+        widget.selectDateOnTap(_selectCheckInTimeModel, _isSelectLeaveTimeModel, _checkInDays);
     }
 }

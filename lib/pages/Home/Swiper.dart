@@ -22,7 +22,6 @@ final HttpUtil http = HttpUtil();
     }
     _getData () async {
         Map response = await this.http.get('/api/v1/banner/index');  
-        print(response);
         if (response['code'] == 200) {
             setState(() {
                 this.bannerList = response['data'];

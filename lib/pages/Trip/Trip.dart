@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -59,11 +60,11 @@ class _TripState extends State<Trip> {
         return Container(
             child: Scaffold(
                 appBar: AppBarWidget().buildAppBar('神木出行'),
-                bottomSheet:Container(
+                bottomSheet: Container(
                     width: double.infinity,
-                    height: ScreenAdaper.height(88),
+                    height: ScreenAdaper.height(108) + MediaQueryData.fromWindow(window).padding.bottom,
                     padding: EdgeInsets.only(
-                        bottom: ScreenAdaper.height(10),
+                        bottom: MediaQueryData.fromWindow(window).padding.bottom + ScreenAdaper.height(10),
                         top: ScreenAdaper.height(10),
                         left: ScreenAdaper.width(30),
                         right: ScreenAdaper.width(30)

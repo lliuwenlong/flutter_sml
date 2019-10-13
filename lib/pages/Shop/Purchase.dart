@@ -11,8 +11,10 @@ import 'dart:ui';
 class Purchase extends StatefulWidget {
     int id;
     double price;
-    Purchase({Key key, this.id, this.price});
-    _PurchaseState createState() => _PurchaseState(id: this.id, price: this.price);
+    int baseid;
+    String type;
+    Purchase({Key key, this.id, this.price, this.baseid, this.type});
+    _PurchaseState createState() => _PurchaseState(id: this.id, price: this.price, baseid: this.baseid, type: this.type);
 }
 
 class _PurchaseState extends State<Purchase>  {
@@ -22,7 +24,9 @@ class _PurchaseState extends State<Purchase>  {
     double price;
     List<Data> list = [];
     ShopModel shopModel; 
-    _PurchaseState({this.id = 0, Key key, this.price});
+    int baseid;
+    String type;
+    _PurchaseState({this.id = 0, Key key, this.price, this.baseid, this.type});
     bool isPay = false;
     String payType = "wx";
     @override
@@ -38,7 +42,7 @@ class _PurchaseState extends State<Purchase>  {
     }
 
     _getData () async {
-        final response = await HttpUtil().get("/api/v1/wood/${this.id}/dists");
+        final response = await HttpUtil().get("/api/v1/wood/${this.type != null ? this.baseid : this.id}/dists");
         if (response["code"] == 200) {
             final DistsModel res = new DistsModel.fromJson(response);
             setState(() {

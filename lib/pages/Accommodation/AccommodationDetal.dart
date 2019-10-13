@@ -5,7 +5,11 @@ import 'package:flutter/material.dart' as prefix0;
 
 import 'package:flutter_sml/components/LoadingSm.dart';
 import 'package:flutter_sml/components/NullContent.dart';
+import 'package:flutter_sml/components/calendarPage/calendar_page_viewModel.dart';
 import 'package:flutter_sml/components/oldNestedScrollView/nested_scroll_view_inner_scroll_position_key_widget.dart';
+import 'package:flutter_sml/model/store/user/User.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_custom_calendar/flutter_custom_calendar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -70,7 +74,10 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
     List<CouponsDataApiModel> couponsData = [];
     int evaluateType = 1;
     List<AppraiseDataModelList> appraiseList = [];
-
+    User _userModel;
+    DayModel startTime;
+    DayModel endTime;
+    int dayNum = 0;
     @override
     void initState() {
         super.initState();
@@ -94,8 +101,10 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
     @override
     void didChangeDependencies() {
         super.didChangeDependencies();
-        this._appraiseData();
+        _userModel = Provider.of<User>(context);
+        this._appraiseData(0);
     }
+
 
     @override
     void dispose() {
@@ -145,7 +154,18 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
             builder: (BuildContext context){
                 return Container(
                     color: Colors.white,
-                    child: CalendarPage()
+                    child: CalendarPage(
+                        startTimeModel: this.startTime,
+                        endTimeModel: this.endTime,
+                        selectDateOnTap: (DayModel startTime, DayModel endTime, int day) {
+                            setState(() {
+                                this.startTime = startTime;
+                                this.endTime = endTime;
+                                this.dayNum = day;
+                            });
+                            Navigator.pop(context);
+                        }
+                    )
                 );
             }
         );
@@ -171,10 +191,11 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
         }
     }
 
-    _appraiseData () async {
+    _appraiseData (int pic) async {
         Map response = await this.http.get("/api/v1/firm/${widget.id}/appraise", data: {
-            "pageNO": 1,
-            "pageSize": 10
+            "pageNO": 0,
+            "pageSize": 0,
+            "pic": pic
         });
         if (response["code"] == 200) {
             AppraiseDataModelApi res = AppraiseDataModelApi.fromJson(response);
@@ -208,8 +229,37 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
             throw 'Could not launch $url';
         }
     }
-    // 优惠券
-    Widget _coupon () {
+
+    // 领取优惠券
+    _receiveCoupon (int id) async {
+        Map res = await http.post("/api/v1/coupon/draw", data: {
+            "couponId": id,
+            "firmId": this.firm.firmId,
+            "userId": this._userModel.userId
+        });
+        if (res["code"] == 200) {
+            Fluttertoast.showToast(
+                msg: "领取成功",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.TOP,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        } else {
+            Fluttertoast.showToast(
+                msg: res["msg"],
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.TOP,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        }
+    }
+
+// 优惠券
+    Widget _coupon (String name, String endTime, String price, int id) {
         return Container(
             width: ScreenAdaper.width(624),
             height: ScreenAdaper.height(180),
@@ -256,7 +306,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                                     )
                                                 ),
                                                 TextSpan(
-                                                    text: "20",
+                                                    text: "${price}",
                                                     style: TextStyle(
                                                         fontSize: ScreenAdaper.fontSize(80),
                                                         fontWeight: FontWeight.w500
@@ -276,7 +326,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                                     color: ColorClass.fontRed,
                                                     fontSize: ScreenAdaper.fontSize(30)
                                                 )),
-                                                Text("有效期至2019.07.09", style: TextStyle(
+                                                Text("有效期至${endTime}", style: TextStyle(
                                                     color: ColorClass.fontColor,
                                                     fontSize: ScreenAdaper.fontSize(24)
                                                 ))
@@ -304,51 +354,55 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                         ),
                         Expanded(
                             flex: 1,
-                            child: Container(
-                                width: ScreenAdaper.width(94),
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: AssetImage(
-                                            "images/couponborder2.png",
-                                        ),
-                                        fit: BoxFit.fill
+                            child: GestureDetector(
+                                onTap: () {
+                                    this._receiveCoupon(id);
+                                },
+                                child: Container(
+                                    width: ScreenAdaper.width(94),
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                                "images/couponborder2.png",
+                                            ),
+                                            fit: BoxFit.fill
+                                        )
+                                    ),
+                                    child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                            Container(
+                                                child: Column(
+                                                    children: <Widget>[
+                                                        Text("立即", style: TextStyle(
+                                                            fontSize: ScreenAdaper.fontSize(24),
+                                                            color: ColorClass.fontRed
+                                                        )),
+                                                        Text("领取", style: TextStyle(
+                                                            fontSize: ScreenAdaper.fontSize(24),
+                                                            color: ColorClass.fontRed
+                                                        ))
+                                                    ]
+                                                ),
+                                            ),
+                                            Container(
+                                                width: ScreenAdaper.width(70),
+                                                height: ScreenAdaper.height(30),
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(20),
+                                                    color: Color(0xFFc1a786)
+                                                ),
+                                                child: Text("GO>", style: TextStyle(
+                                                    fontSize: ScreenAdaper.fontSize(24),
+                                                    color: Colors.white
+                                                ))
+                                            )
+                                        ]
                                     )
                                 ),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: <Widget>[
-                                        Container(
-                                            child: Column(
-                                                children: <Widget>[
-                                                    Text("立即", style: TextStyle(
-                                                        fontSize: ScreenAdaper.fontSize(24),
-                                                        color: ColorClass.fontRed
-                                                    )),
-                                                    Text("领取", style: TextStyle(
-                                                        fontSize: ScreenAdaper.fontSize(24),
-                                                        color: ColorClass.fontRed
-                                                    ))
-                                                ]
-                                            ),
-                                        ),
-                                        Container(
-                                            width: ScreenAdaper.width(70),
-                                            height: ScreenAdaper.height(30),
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(20),
-                                                color: Color(0xFFc1a786)
-                                            ),
-                                            child: Text("GO>", style: TextStyle(
-                                                fontSize: ScreenAdaper.fontSize(24),
-                                                color: Colors.white
-                                            ))
-                                        )
-                                    ]
-                                )
                             )
                         )
-                        
                     ]
                 ),
             )
@@ -356,7 +410,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
     }
 
     // label 标签
-    Widget _label () {
+    Widget _label (String name) {
         return Container(
             padding: EdgeInsets.fromLTRB(
                 ScreenAdaper.width(10),
@@ -368,7 +422,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                 border: Border.all(color: Color(0XFFdac4a3), width: 1.0),
                 color: Color(0XFFf8f5e8)
             ),
-            child: Text("10元优惠券", style: TextStyle(
+            child: Text("${name}", style: TextStyle(
                 color: ColorClass.fontRed,
                 fontSize: ScreenAdaper.fontSize(20)
             )),
@@ -451,27 +505,31 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                 child: Wrap(
                                     spacing: ScreenAdaper.width(10),
                                     runSpacing: ScreenAdaper.height(10),
-                                    children: <Widget>[
-                                        this._label(),
-                                        this._label()
-                                    ],
+                                    children: this.couponsData.map((item) {
+                                        return _label(item.name);
+                                    }).toList(),
                                 )
                             ),
                             Container(
                                 width: ScreenAdaper.width(30),
                                 height: ScreenAdaper.height(40),
                                 alignment: Alignment.center,
-                                child: GestureDetector(
-                                    onTap: () {
-                                        setState(() {
-                                            this.isOpen = false;
-                                        });
-                                    },
-                                    child: Icon(
-                                        IconData(0xe63a, fontFamily: "iconfont"),
-                                        size: ScreenAdaper.fontSize(16),
-                                        color: ColorClass.iconColor,
-                                    ),
+                                child: Container(
+                                    width: ScreenAdaper.width(40),
+                                    height: ScreenAdaper.height(50),
+                                    alignment: Alignment.center,
+                                    child: IconButton(
+                                        onPressed: () {
+                                            setState(() {
+                                                this.isOpen = false;
+                                            });
+                                        },
+                                        icon: Icon(
+                                            IconData(0xe63a, fontFamily: "iconfont"),
+                                            size: ScreenAdaper.fontSize(16),
+                                            color: ColorClass.iconColor,
+                                        )
+                                    )
                                 )
                             )
                         ] : []
@@ -479,10 +537,9 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                         alignment: Alignment.center,
                         child: Column(
                             children: <Widget>[
-                                _coupon(),
-                                _coupon(),
-                                _coupon(),
-                                _coupon(),
+                                ...this.couponsData.map((item) {
+                                    return  _coupon(item.name, item.endDate, item.worth, item.couponId);
+                                }).toList(),
                                 GestureDetector(
                                     onTap: () {
                                         setState(() {
@@ -507,32 +564,32 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
     }
 
     Widget _dateWidget () {
-        return Container(
-            margin: EdgeInsets.only(
-                top: ScreenAdaper.height(20)
-            ),
-            color: Colors.white,
-            padding: EdgeInsets.fromLTRB(
-                ScreenAdaper.width(30),
-                ScreenAdaper.height(30),
-                ScreenAdaper.width(30),
-                ScreenAdaper.height(30)
-            ),
-            child: GestureDetector(
-                onTap: () {
-                    showModalCalendaHandler();
-                },
+        return GestureDetector(
+            onTap: () {
+                showModalCalendaHandler();
+            },
+            child: Container(
+                margin: EdgeInsets.only(
+                    top: ScreenAdaper.height(20)
+                ),
+                color: Colors.white,
+                padding: EdgeInsets.fromLTRB(
+                    ScreenAdaper.width(30),
+                    ScreenAdaper.height(30),
+                    ScreenAdaper.width(30),
+                    ScreenAdaper.height(30)
+                ),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                         Row(
                             children: <Widget>[
-                                Text("8月3日", style: TextStyle(
+                                Text(this.dayNum == 0 ? "请选择" : "${this.startTime.month}月${this.startTime.day}日", style: TextStyle(
                                     color: ColorClass.date,
                                     fontSize: ScreenAdaper.fontSize(34, allowFontScaling: true)
                                 )),
                                 SizedBox(width: ScreenAdaper.width(20)),
-                                Text("今日入住", style: TextStyle(
+                                Text(this.dayNum == 0 ? "入住时间" : "入住", style: TextStyle(
                                     color: ColorClass.fontColor,
                                     fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true)
                                 )),
@@ -547,12 +604,12 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                     ),
                                 ),
                                 SizedBox(width: ScreenAdaper.width(30)),
-                                Text("8月3日", style: TextStyle(
+                                Text(this.dayNum == 0 ? "请选择" : "${this.endTime.month}月${this.endTime.day}日", style: TextStyle(
                                     color: ColorClass.date,
                                     fontSize: ScreenAdaper.fontSize(34, allowFontScaling: true)
                                 )),
                                 SizedBox(width: ScreenAdaper.width(20)),
-                                Text("周五离店", style: TextStyle(
+                                Text(this.dayNum == 0 ? "离店时间" : "离店", style: TextStyle(
                                     color: ColorClass.fontColor,
                                     fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true)
                                 ))
@@ -560,7 +617,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                         ),
                         Row(
                             children: <Widget>[
-                                Text("共1晚", style: TextStyle(
+                                Text("共${this.dayNum}晚", style: TextStyle(
                                     color: ColorClass.fontColor,
                                     fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true)
                                 )),
@@ -575,9 +632,9 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                             ]
                         )
                     ]
-                ),
+                )
             )
-        ); 
+        );
     }
 
 
@@ -642,6 +699,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                         )
                                     ),
                                     onPressed: () {
+                                        this._appraiseData(0);
                                         setState(() {
                                             this.evaluateType = 1;
                                         });
@@ -668,6 +726,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                         )
                                     ),
                                     onPressed: () {
+                                        this._appraiseData(1);
                                         setState(() {
                                             this.evaluateType = 2;
                                         });
@@ -847,14 +906,14 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                                             child: ServiceItem(
                                                                 isShowBorder: this.firm.goods.length -1 == index ? false : true,
                                                                 title: good.title,
-                                                                area:good.area,
-                                                                room:good.room,
-                                                                window:good.window,
-                                                                bed:good.bed,
-                                                                intnet:good.intnet,
-                                                                bathroom:good.bathroom,
-                                                                picture:good.picture,
-                                                                price:good.price
+                                                                area: good.area != null ? good.area : "",
+                                                                room:good.room != null ? good.room : "",
+                                                                window:good.window != null ? good.window : "",
+                                                                bed:good.bed != null ? good.bed : "",
+                                                                intnet:good.intnet != null ? good.intnet : "",
+                                                                bathroom:good.bathroom != null ? good.bathroom : "",
+                                                                picture:good.picture != null ? good.picture : "",
+                                                                price:good.price != null ? good.price : ""
                                                             ),
                                                         );
                                                     },

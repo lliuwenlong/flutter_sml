@@ -62,7 +62,12 @@ class _ShenmuDetailsState extends State<ShenmuDetails> {
             )
           ),
           builder: (BuildContext context) {
-            return Purchase(id: this.data.woodId, price: double.parse(this.data.price));
+            return Purchase(
+                id: this.data.woodId,
+                price: double.parse(this.data.price),
+                baseid: widget.arguments["baseid"],
+                type: widget.arguments["type"])
+            ;
           }
         );
 	}

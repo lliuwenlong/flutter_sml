@@ -94,7 +94,7 @@ class _BaseState extends State<Base> {
                                         topLeft: Radius.circular(4)
                                     ),
                                     child: Image.network(
-                                      baseImage,
+                                        baseImage == null ? "" : baseImage,
                                         fit: BoxFit.cover,
                                     )
                                 )
@@ -125,12 +125,18 @@ class _BaseState extends State<Base> {
                                         ],
                                     ),
                                     Container(
-                                      width: ScreenAdaper.width(180),
+                                      width: ScreenAdaper.width(140),
                                       height: ScreenAdaper.height(60),
                                         child: RaisedButton(
                                             onPressed: () {
                                                 Navigator.pushNamed(context, '/baseList', arguments: {"id": id});
                                             },
+                                            padding: EdgeInsets.fromLTRB(
+                                                ScreenAdaper.width(15),
+                                                ScreenAdaper.height(18),
+                                                ScreenAdaper.width(15),
+                                                ScreenAdaper.height(18)
+                                            ),
                                             color: Color(0xFF22b0a1),
                                             splashColor: Color.fromRGBO(0, 0, 0, 0),
                                             elevation: 0,

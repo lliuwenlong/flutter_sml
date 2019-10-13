@@ -3,6 +3,9 @@ import 'package:flutter/material.dart' hide NestedScrollView;
 
 import 'package:flutter_sml/components/oldNestedScrollView/nested_scroll_view_inner_scroll_position_key_widget.dart';
 import 'package:flutter_custom_calendar/flutter_custom_calendar.dart';
+import 'package:flutter_sml/model/store/user/User.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../components/oldNestedScrollView/old_extended_nested_scroll_view.dart';
@@ -67,6 +70,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
     List<CouponsDataApiModel> couponsData = [];
     int evaluateType = 1;
     List<AppraiseDataModelList> appraiseList = [];
+    User _userModel;
 
     @override
     void initState() {
@@ -91,9 +95,9 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
     @override
     void didChangeDependencies() {
         super.didChangeDependencies();
-        this._appraiseData();
+        _userModel = Provider.of<User>(context);
+        this._appraiseData(0);
     }
-
 
     @override
     void dispose() {
@@ -101,9 +105,8 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
         _scrollViewController.dispose();
         _tabController.dispose();
     }
-    
-    void showModalBottomSheetHandler () {
-    }
+
+    void showModalBottomSheetHandler () {}
 
     _getData () async {
         Map response = await this.http.get("/api/v1/firm/${widget.id}");
@@ -125,10 +128,11 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
         }
     }
 
-    _appraiseData () async {
+    _appraiseData (int pic) async {
         Map response = await this.http.get("/api/v1/firm/${widget.id}/appraise", data: {
             "pageNO": 0,
-            "pageSize": 0
+            "pageSize": 0,
+            "pic": pic
         });
         if (response["code"] == 200) {
             AppraiseDataModelApi res = AppraiseDataModelApi.fromJson(response);
@@ -137,7 +141,8 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
             });
         }
     }
-  //拨打电话  
+
+    //拨打电话  
     _launchPhone () async {
         String url = 'tel:${this.firm.telphone}';
         if (await canLaunch(url)) {
@@ -146,7 +151,8 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
             throw 'Could not launch $url';
         }
     }
-  //地图跳转
+
+    //地图跳转
     _launchMap () async {
         String url = "androidamap://navi?sourceApplication=appname&poiname=fangheng&lat=36.547901&lon=104.258354&dev=1&style=2";
         if (await canLaunch(url)) {
@@ -158,8 +164,36 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
 
     void showModalCalendaHandler () {}
     
+    // 领取优惠券
+    _receiveCoupon (int id) async {
+        Map res = await http.post("/api/v1/coupon/draw", data: {
+            "couponId": id,
+            "firmId": this.firm.firmId,
+            "userId": this._userModel.userId
+        });
+        if (res["code"] == 200) {
+            Fluttertoast.showToast(
+                msg: "领取成功",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.TOP,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        } else {
+            Fluttertoast.showToast(
+                msg: res["msg"],
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.TOP,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        }
+    }
+
     // label 标签
-    Widget _label () {
+    Widget _label (String name) {
         return Container(
             padding: EdgeInsets.fromLTRB(
                 ScreenAdaper.width(10),
@@ -171,7 +205,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                 border: Border.all(color: Color(0XFFdac4a3), width: 1.0),
                 color: Color(0XFFf8f5e8)
             ),
-            child: Text("10元优惠券", style: TextStyle(
+            child: Text("${name}", style: TextStyle(
                 color: ColorClass.fontRed,
                 fontSize: ScreenAdaper.fontSize(20)
             )),
@@ -179,7 +213,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
     }
 
     // 优惠券
-    Widget _coupon () {
+    Widget _coupon (String name, String endTime, String price, int id) {
         return Container(
             width: ScreenAdaper.width(624),
             height: ScreenAdaper.height(180),
@@ -226,7 +260,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                                     )
                                                 ),
                                                 TextSpan(
-                                                    text: "20",
+                                                    text: "${price}",
                                                     style: TextStyle(
                                                         fontSize: ScreenAdaper.fontSize(80),
                                                         fontWeight: FontWeight.w500
@@ -246,7 +280,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                                     color: ColorClass.fontRed,
                                                     fontSize: ScreenAdaper.fontSize(30)
                                                 )),
-                                                Text("有效期至2019.07.09", style: TextStyle(
+                                                Text("有效期至${endTime}", style: TextStyle(
                                                     color: ColorClass.fontColor,
                                                     fontSize: ScreenAdaper.fontSize(24)
                                                 ))
@@ -274,48 +308,53 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                         ),
                         Expanded(
                             flex: 1,
-                            child: Container(
-                                width: ScreenAdaper.width(94),
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: AssetImage(
-                                            "images/couponborder2.png",
-                                        ),
-                                        fit: BoxFit.fill
+                            child: GestureDetector(
+                                onTap: () {
+                                    this._receiveCoupon(id);
+                                },
+                                child: Container(
+                                    width: ScreenAdaper.width(94),
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                                "images/couponborder2.png",
+                                            ),
+                                            fit: BoxFit.fill
+                                        )
+                                    ),
+                                    child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                            Container(
+                                                child: Column(
+                                                    children: <Widget>[
+                                                        Text("立即", style: TextStyle(
+                                                            fontSize: ScreenAdaper.fontSize(24),
+                                                            color: ColorClass.fontRed
+                                                        )),
+                                                        Text("领取", style: TextStyle(
+                                                            fontSize: ScreenAdaper.fontSize(24),
+                                                            color: ColorClass.fontRed
+                                                        ))
+                                                    ]
+                                                ),
+                                            ),
+                                            Container(
+                                                width: ScreenAdaper.width(70),
+                                                height: ScreenAdaper.height(30),
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(20),
+                                                    color: Color(0xFFc1a786)
+                                                ),
+                                                child: Text("GO>", style: TextStyle(
+                                                    fontSize: ScreenAdaper.fontSize(24),
+                                                    color: Colors.white
+                                                ))
+                                            )
+                                        ]
                                     )
                                 ),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: <Widget>[
-                                        Container(
-                                            child: Column(
-                                                children: <Widget>[
-                                                    Text("立即", style: TextStyle(
-                                                        fontSize: ScreenAdaper.fontSize(24),
-                                                        color: ColorClass.fontRed
-                                                    )),
-                                                    Text("领取", style: TextStyle(
-                                                        fontSize: ScreenAdaper.fontSize(24),
-                                                        color: ColorClass.fontRed
-                                                    ))
-                                                ]
-                                            ),
-                                        ),
-                                        Container(
-                                            width: ScreenAdaper.width(70),
-                                            height: ScreenAdaper.height(30),
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(20),
-                                                color: Color(0xFFc1a786)
-                                            ),
-                                            child: Text("GO>", style: TextStyle(
-                                                fontSize: ScreenAdaper.fontSize(24),
-                                                color: Colors.white
-                                            ))
-                                        )
-                                    ]
-                                )
                             )
                         )
                     ]
@@ -389,7 +428,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                             )
                         ]
                     ),
-                    SizedBox(height: ScreenAdaper.height(this.couponsData.isNotEmpty ? 18 : 0)),
+                    SizedBox(height: ScreenAdaper.height(this.couponsData.isNotEmpty ? 25 : 0)),
                     this.isOpen ? Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: this.couponsData.isNotEmpty ? <Widget>[
@@ -398,15 +437,14 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                 child: Wrap(
                                     spacing: ScreenAdaper.width(10),
                                     runSpacing: ScreenAdaper.height(10),
-                                    children: <Widget>[
-                                        this._label(),
-                                        this._label()
-                                    ],
+                                    children: this.couponsData.map((item) {
+                                        return _label(item.name);
+                                    }).toList(),
                                 )
                             ),
                             Container(
-                                width: ScreenAdaper.width(30),
-                                height: ScreenAdaper.height(40),
+                                width: ScreenAdaper.width(40),
+                                height: ScreenAdaper.height(50),
                                 alignment: Alignment.center,
                                 child: IconButton(
                                     onPressed: () {
@@ -426,10 +464,9 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                         alignment: Alignment.center,
                         child: Column(
                             children: <Widget>[
-                                _coupon(),
-                                _coupon(),
-                                _coupon(),
-                                _coupon(),
+                                ...this.couponsData.map((item) {
+                                    return  _coupon(item.name, item.endDate, item.worth, item.couponId);
+                                }).toList(),
                                 IconButton(
                                     padding: EdgeInsets.all(0),
                                     onPressed: () {
@@ -528,7 +565,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
     // appBar
     Widget _sliverBuilder () {
         return SliverAppBar(
-            title: Text(this.offset > 20 ? "标题" : "", style: TextStyle(
+            title: Text(this.offset > 20 ? "${this.firm.name}" : "", style: TextStyle(
                 color: Colors.black,
             )),
             centerTitle: true,
@@ -585,6 +622,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                         )
                                     ),
                                     onPressed: () {
+                                        this._appraiseData(0);
                                         setState(() {
                                             this.evaluateType = 1;
                                         });
@@ -611,6 +649,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                         )
                                     ),
                                     onPressed: () {
+                                        this._appraiseData(1);
                                         setState(() {
                                             this.evaluateType = 2;
                                         });

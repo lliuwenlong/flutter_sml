@@ -9,21 +9,6 @@ class FoodServiceItem extends StatelessWidget {
     String title;
     String price;
     FoodServiceItem(this.name, this.picture, this.title, this.price, {Key key, this.isShowBorder = true});
-    Widget _rowItem () {
-        return Row(
-            children: <Widget>[
-                Text("面积", style: TextStyle(
-                    color: ColorClass.fontColor,
-                    fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true)
-                )),
-                SizedBox(width: ScreenAdaper.width(20)),
-                Text("25㎡", style: TextStyle(
-                    color: ColorClass.titleColor,
-                    fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true)
-                ))
-            ]
-        );
-    }
 
     @override
     Widget build(BuildContext context) {
@@ -77,7 +62,7 @@ class FoodServiceItem extends StatelessWidget {
                                             color: Color(0xFF666666),
                                             fontSize: ScreenAdaper.fontSize(24)
                                         ), overflow: TextOverflow.ellipsis, maxLines: 2,),
-                                        Text(this.price, style: TextStyle(
+                                        Text("￥${this.price}", style: TextStyle(
                                             color: Color(0xFFfb4135),
                                             fontSize: ScreenAdaper.fontSize(30)
                                         ))

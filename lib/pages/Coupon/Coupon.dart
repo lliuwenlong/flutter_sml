@@ -25,6 +25,15 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
     User userModel;
     List notUseList = [];
     List beOverdueList = [];
+    Map<String, Icon> iconMap = {
+        "food": Icon(IconData(0xe659, fontFamily: "iconfont"), color: Color(0xFFf6cf70), size: ScreenAdaper.fontSize(80)),
+        "house": Icon(IconData(0xe659, fontFamily: "iconfont"),  color: Color(0xFFc1a786), size: ScreenAdaper.fontSize(80)),
+    };
+
+    Map<String, Icon> beOverdueIconMap = {
+        "food": Icon(IconData(0xe659, fontFamily: "iconfont"), color: Color(0xFFaaaaaa), size: ScreenAdaper.fontSize(80)),
+        "house": Icon(IconData(0xe659, fontFamily: "iconfont"),  color: Color(0xFFaaaaaa), size: ScreenAdaper.fontSize(80)),
+    };
 
     @override
     void didChangeDependencies() {
@@ -122,7 +131,8 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
         }
     }
 
-    Widget _cardItem (var data,{isBeOverdue: false}) {
+    Widget _cardItem (ListItem data,{isBeOverdue: false}) {
+        Map<String, Icon> icon = isBeOverdue ? this.beOverdueIconMap : this.iconMap;
         return Container(
             padding: EdgeInsets.fromLTRB(
                 ScreenAdaper.width(25),
@@ -149,10 +159,12 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                         height: ScreenAdaper.height(80),
                                         child: ClipRRect(
                                             borderRadius: BorderRadius.circular(5),
-                                            child: Image.network(
-                                                data.coverImage,
-                                                fit: BoxFit.cover,
-                                            ),
+                                            child: icon[data.type] != null
+                                                ? icon[data.type]
+                                                : Image.network(
+                                                    data.coverImage,
+                                                    fit: BoxFit.cover,
+                                                ),
                                         ),
                                     ),
                                     SizedBox(width: ScreenAdaper.width(20)),
@@ -179,10 +191,20 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                                 children: <Widget>[
                                                     Align(
                                                         alignment: Alignment.bottomRight,
-                                                        child: Text("¥ ${data.worth}", style: TextStyle(
-                                                            color: isBeOverdue ? ColorClass.iconColor : Color(0XFFfb4135),
-                                                            fontSize: ScreenAdaper.fontSize(44)
-                                                        )),
+                                                        child: Text.rich(
+                                                            TextSpan(
+                                                                children: [
+                                                                    TextSpan(text: "¥", style: TextStyle(
+                                                                        color: isBeOverdue ? ColorClass.iconColor : Color(0XFFfb4135),
+                                                                        fontSize: ScreenAdaper.fontSize(24)
+                                                                    )),
+                                                                    TextSpan(text: "${data.worth}", style: TextStyle(
+                                                                        color: isBeOverdue ? ColorClass.iconColor : Color(0XFFfb4135),
+                                                                        fontSize: ScreenAdaper.fontSize(44)
+                                                                    ))
+                                                                ]
+                                                            )
+                                                        )
                                                     )
                                                 ]
                                             ),
@@ -196,9 +218,15 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                 left: ScreenAdaper.width(35),
                                 right: ScreenAdaper.width(35)
                             ),
-                            child: Divider(
-                                color: Color(0XFFd9d9d9),
-                            )
+                            height: 1,
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage("images/doast.png"),
+                                        fit: BoxFit.fill
+                                    )
+                                ),
+                            ),
                         ),
                         Container(
                             padding: isBeOverdue
@@ -253,7 +281,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                                     fontSize: ScreenAdaper.fontSize(24)
                                                 )),
                                                 highlightedBorderColor: ColorClass.common,
-                                                borderSide:new BorderSide(color: ColorClass.common),
+                                                borderSide: new BorderSide(color: ColorClass.common),
                                                 splashColor: Color.fromRGBO(0, 0, 0, 0),
                                                 shape: BeveledRectangleBorder(
                                                     borderRadius: BorderRadius.all(Radius.circular(ScreenAdaper.width(5)))

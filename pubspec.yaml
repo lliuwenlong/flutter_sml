@@ -182,6 +182,12 @@ flutter:
    - images/code.png
    - images/2.0x/code.png
    - images/3.0x/code.png
+   - images/bg-option.png
+   - images/2.0x/bg-option.png
+   - images/3.0x/bg-option.png
+   - images/doast.png
+   - images/2.0x/doast.png
+   - images/3.0x/doast.png
    - videos/video.mp4
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
