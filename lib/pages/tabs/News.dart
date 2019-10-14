@@ -20,7 +20,7 @@ class _NewsPageState extends State<NewsPage> {
             decoration: BoxDecoration(
                 border: isBorder ? Border(bottom: BorderSide(
                     color: Color(0XFFd9d9d9),
-                    width: 1
+                    width: ScreenAdaper.height(1)
                 )) : null
             ),
            

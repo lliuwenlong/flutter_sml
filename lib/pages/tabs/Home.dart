@@ -314,7 +314,7 @@ class _HomePageState extends State<HomePage> {
                                                 style: TextStyle(
                                                     fontSize: ScreenAdaper.fontSize(24),
                                                     color: Color(0xFF666666),
-                                                    height: 1.3
+                                                    height: 1
                                                 ),
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 2,

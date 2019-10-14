@@ -103,7 +103,7 @@ class _InvoiceState extends State<Invoice> {
                     border: Border(
                         bottom: isBorder ? BorderSide(
                             color: ColorClass.borderColor,
-                            width: 1
+                            width: ScreenAdaper.height(1)
                         ) : BorderSide.none
                     )
                 ),
@@ -121,6 +121,7 @@ class _InvoiceState extends State<Invoice> {
                                     ),
                                   )
                                 : CircleAvatar(
+                                  backgroundColor:Colors.white,
                                     radius: ScreenAdaper.width(20),
                                     child: Container(
                                         width: ScreenAdaper.width(40),

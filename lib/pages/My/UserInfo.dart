@@ -140,6 +140,7 @@ class _UserInfoState extends State<UserInfo> {
                         },
                         child: CircleAvatar(
                           radius: ScreenAdaper.height(43),
+                          backgroundColor:Colors.white,
                           backgroundImage: NetworkImage(
                               this.headImage
                           )),

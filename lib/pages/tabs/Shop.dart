@@ -158,10 +158,12 @@ class _ShopPageState extends State<ShopPage> {
                                     size: ScreenAdaper.fontSize(30)
                                 ),
                                 SizedBox(width: ScreenAdaper.width(20)),
-                                Text(val.baseName, style: TextStyle(
+                                Expanded(
+                                  child: Text(val.baseName, style: TextStyle(
                                     fontSize: ScreenAdaper.fontSize(28, allowFontScaling: true),
                                     color: Color(0xFF666666)
-                                ))
+                                ),overflow: TextOverflow.ellipsis,),
+                                )
                             ],
                         )
                     ),

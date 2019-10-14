@@ -27,7 +27,7 @@ class Business extends StatelessWidget {
                     border: Border(
                         bottom: this.isBorder ? BorderSide(
                             color: Color(0XFFd9d9d9),
-                            width: 1
+                            width: ScreenAdaper.height(1)
                         ) : BorderSide.none
                     )
                     
