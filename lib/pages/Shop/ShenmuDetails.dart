@@ -21,8 +21,7 @@ class _ShenmuDetailsState extends State<ShenmuDetails> {
     _ShenmuDetailsState({this.arguments});
     List<Map> bannerList = [
         {
-        "url":
-            'http://img.pconline.com.cn/images/upload/upc/tx/photoblog/1411/14/c2/40920783_40920783_1415949861822_mthumb.jpg'
+        "url": 'http://img.pconline.com.cn/images/upload/upc/tx/photoblog/1411/14/c2/40920783_40920783_1415949861822_mthumb.jpg'
         },
         {"url": 'http://img.juimg.com/tuku/yulantu/110126/292-11012613321981.jpg'},
         {
@@ -115,7 +114,7 @@ class _ShenmuDetailsState extends State<ShenmuDetails> {
                         ),
                         color: Color(0XFF22b0a1),
                         onPressed: (){
-                          this._purchase();
+                            this._purchase();
                         },
                     ),
                     ),

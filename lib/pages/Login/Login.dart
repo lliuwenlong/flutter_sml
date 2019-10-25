@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                     nickName: data.nickName,
                     createTime: data.createTime
                 );
-                if (Platform.isIOS) {
+                if (true) {
                     Navigator.pushNamedAndRemoveUntil(context, '/tabBars', (router) => false);
                     return;
                 }

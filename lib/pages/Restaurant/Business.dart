@@ -8,7 +8,8 @@ class Business extends StatelessWidget {
     bool isIcon = false;
     String subTitle;
     Icon icon;
-    Business(this.name, {this.isBorder = true, this.isIcon = false, this.subTitle = '', this.icon, Key key}) : super(key: key);
+    Color color;
+    Business(this.name, {this.isBorder = true, this.isIcon = false, this.subTitle = '', this.icon, this.color, Key key}) : super(key: key);
 
     @override
     Widget build(BuildContext context) {
@@ -46,7 +47,7 @@ class Business extends StatelessWidget {
                             child: Container(
                                 alignment: Alignment.centerRight,
                                 child: !isIcon ? Text(subTitle, style: TextStyle(
-                                    color: ColorClass.fontColor,
+                                    color: color != null ? color : ColorClass.fontColor,
                                     fontSize: ScreenAdaper.fontSize(24)
                                 ), textAlign: TextAlign.end) : icon,
                             ),

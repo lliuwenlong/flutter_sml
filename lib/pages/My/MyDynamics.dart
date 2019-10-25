@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:flutter_sml/model/api/friendDynamics/CircleMsgApiModel.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -505,7 +506,14 @@ class _MyDynamicsState extends State<MyDynamics> {
                                 });
                             },
                             child: Container(
-                                child: Text(data.content, maxLines: 3, overflow: TextOverflow.ellipsis)
+                                child: Text(
+                                    data.content,
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: ScreenAdaper.fontSize(26)
+                                    ),
+                                )
                             ),
                         ),
                     ),

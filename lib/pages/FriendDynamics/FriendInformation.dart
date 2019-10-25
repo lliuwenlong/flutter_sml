@@ -487,7 +487,9 @@ class _FriendInformationState extends State<FriendInformation> {
                                 });
                             },
                             child: Container(
-                                child: Text(data.content, maxLines: 3, overflow: TextOverflow.ellipsis)
+                                child: Text(data.content, maxLines: 3, overflow: TextOverflow.ellipsis, style: TextStyle(
+                                    fontSize: ScreenAdaper.fontSize(26)
+                                ),)
                             )
                         )
                     ),

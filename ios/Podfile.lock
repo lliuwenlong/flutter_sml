@@ -25,8 +25,12 @@ PODS:
   - keyboard_visibility (0.5.0):
     - Flutter
     - Reachability
+  - location_permissions (2.0.3):
+    - Flutter
   - multi_image_picker (4.5.4):
     - BSImagePicker (~> 2.10.1)
+    - Flutter
+  - path_provider (0.0.1):
     - Flutter
   - Qiniu (7.2.5):
     - HappyDNS (~> 0.3)
@@ -52,7 +56,9 @@ DEPENDENCIES:
   - fluwx (from `.symlinks/plugins/fluwx/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - keyboard_visibility (from `.symlinks/plugins/keyboard_visibility/ios`)
+  - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
   - multi_image_picker (from `.symlinks/plugins/multi_image_picker/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - screen (from `.symlinks/plugins/screen/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sy_flutter_qiniu_storage (from `.symlinks/plugins/sy_flutter_qiniu_storage/ios`)
@@ -88,8 +94,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker/ios"
   keyboard_visibility:
     :path: ".symlinks/plugins/keyboard_visibility/ios"
+  location_permissions:
+    :path: ".symlinks/plugins/location_permissions/ios"
   multi_image_picker:
     :path: ".symlinks/plugins/multi_image_picker/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
   screen:
     :path: ".symlinks/plugins/screen/ios"
   shared_preferences:
@@ -116,7 +126,9 @@ SPEC CHECKSUMS:
   HappyDNS: 00c15e651a347206e58a20503a32a5564589b56a
   image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
   keyboard_visibility: 96a24de806fe6823c3ad956c01ba2ec6d056616f
+  location_permissions: 195ff2a1182fa9029ef3f2653156961ee5a1e40b
   multi_image_picker: b0e37df1ae01ed78cefc5ce57a07b1076438fae2
+  path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
   Qiniu: 909b408ee489ea54827e9717be90b94bc9dfbc48
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0

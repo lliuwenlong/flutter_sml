@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/common/CommonHandler.dart';
 import 'package:flutter_sml/components/AppBarWidget.dart';
 import 'package:flutter_sml/pages/Restaurant/RestaurantDetails.dart';
 import '../../components/CommonListItem.dart';
@@ -34,6 +35,14 @@ class _EntertainmentState extends State<Entertainment> {
         });
 
         if (response["code"] == 200) {
+            var loction = await getLoction();
+            if (loction != null) {
+                List data = response["data"]["list"];
+                data.forEach((item) {
+                    double distance = calculatedDistance(loction["latitude"], loction["longitude"], double.parse(item["latitude"]), double.parse(item["longitude"]));
+                    item["distance"] = distance;
+                });
+            }
             final res = new FoodModel.fromJson(response);
             if (isInit) {
                 setState(() {
@@ -118,7 +127,7 @@ class _EntertainmentState extends State<Entertainment> {
                                     data.mainGoods,
                                     "${data.city}${data.county}${data.address}",
                                     double.parse(data.perPrice),
-                                    "<500"
+                                    getDistanceText(data.distance)
                                 )
                             );
                         },

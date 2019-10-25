@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
 import '../../common/HttpUtil.dart';
+import 'package:fluwx/fluwx.dart' as fluwx;
 import 'dart:ui';
 
 class ProductBuy extends StatefulWidget {
@@ -20,6 +24,7 @@ class _ProductBuyState extends State<ProductBuy>  {
     String woodSn;
     _ProductBuyState({Key key,this.userId, this.price, this.woodSn});
     bool isPay = true;
+    bool isDisabled = false;
     String payType = "Wechat";
     final HttpUtil http = HttpUtil();
     @override
@@ -30,39 +35,45 @@ class _ProductBuyState extends State<ProductBuy>  {
     @override
     initState () {
         super.initState();
+        fluwx.responseFromPayment.listen((response){
+            setState(() {
+                this.isDisabled = false;
+            });
+            if (response.errCode == 0) {
+                Navigator.pushReplacementNamed(context, "/order");
+            }
+        });
     }
     _payment () async {
-        Map  response =  await this.http.post('/api/v1/wood/renew',data: {
-          'userId': this.userId,
-          'woodSn': this.woodSn,
+        setState(() {
+            this.isDisabled = true;
         });
-        if(response['code'] == 200){
-            Fluttertoast.showToast(
-              msg: '支付成功',
-              toastLength: Toast.LENGTH_SHORT,
-              backgroundColor: Colors.black87,
-              textColor: Colors.white,
-              timeInSecForIos: 1,
-              gravity: ToastGravity.CENTER,
-              fontSize: ScreenAdaper.fontSize(30)
-            );
-             Navigator.pop(context);
-        }else{
-           Fluttertoast.showToast(
-              msg: response['msg'],
-              toastLength: Toast.LENGTH_SHORT,
-              backgroundColor: Colors.black87,
-              textColor: Colors.white,
-              timeInSecForIos: 1,
-              gravity: ToastGravity.CENTER,
-              fontSize: ScreenAdaper.fontSize(30)
+        Map res =  await this.http.post('/api/v12/wxpay/unifiedorder', params: {
+            "renew": {
+                "channel": "Wechat",
+                "platform": Platform.isAndroid ? "Android" : "IOS",
+                "tradeType": "APP",
+                "userId": this.userId,
+                "woodSn": this.woodSn
+            },
+            "goodsType": "renew",
+        });
+        if (res["code"] == 200) {
+            var data = jsonDecode(res["data"]);
+            await fluwx.pay(appId: "wxa22d7212da062286", 
+                partnerId: data["partnerid"],
+                prepayId: data["prepayid"],
+                packageValue: data["package"],
+                nonceStr: data["noncestr"],
+                timeStamp: int.parse(data["timestamp"]),
+                sign: data["sign"].toString(),
+                signType: data["signType"]
             );
         }
-
     }
     _onPay () {
         print(this.payType);
-      this._payment();
+        this._payment();
 
     }
     Widget _header (String name) {
@@ -85,15 +96,20 @@ class _ProductBuyState extends State<ProductBuy>  {
                         color: ColorClass.fontColor,
                         fontSize: ScreenAdaper.fontSize(30)
                     )),
-                    GestureDetector(
-                        onTap: () {
-                            Navigator.pop(_selfContext);
-                        },
-                        child: Icon(
-                            IconData(0xe633, fontFamily: "iconfont"),
-                            color: ColorClass.borderColor,
-                            size: ScreenAdaper.fontSize(30)
-                        )
+                    Container(
+                        width: ScreenAdaper.width(50),
+                        height: ScreenAdaper.width(50),
+                        child: IconButton(
+                            padding: EdgeInsets.all(0),
+                            onPressed: () {
+                                Navigator.pop(_selfContext);
+                            },
+                            icon: Icon(
+                                Icons.close,
+                                color: ColorClass.borderColor,
+                                size: ScreenAdaper.fontSize(60)
+                            )
+                        ),
                     )
                 ]
             )
@@ -190,21 +206,21 @@ class _ProductBuyState extends State<ProductBuy>  {
                         ),
                         decoration: BoxDecoration(
                             border: Border(
-                                bottom: BorderSide(
-                                    color: ColorClass.borderColor,
-                                    width: ScreenAdaper.width(1)
-                                )
+                                // bottom: BorderSide(
+                                //     color: ColorClass.borderColor,
+                                //     width: ScreenAdaper.width(1)
+                                // )
                             )
                         ),
                         child: _rowItem("Wechat")
                     ),
-                    Container(
-                        padding: EdgeInsets.only(
-                            top: ScreenAdaper.height(30),
-                            bottom: ScreenAdaper.height(30)
-                        ),
-                        child: _rowItem("Alipay")
-                    ),
+                    // Container(
+                    //     padding: EdgeInsets.only(
+                    //         top: ScreenAdaper.height(30),
+                    //         bottom: ScreenAdaper.height(30)
+                    //     ),
+                    //     child: _rowItem("Alipay")
+                    // ),
                     Container(
                         margin:  EdgeInsets.only(
                             top: ScreenAdaper.height(20),
@@ -245,7 +261,7 @@ class _ProductBuyState extends State<ProductBuy>  {
                 height: ScreenAdaper.height(88),
                 child: RaisedButton(
                     elevation: 0,
-                    onPressed: () {
+                    onPressed: this.isDisabled ? null : () {
                         onTap != null && onTap();
                     },
                     shape: RoundedRectangleBorder(

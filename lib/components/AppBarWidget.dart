@@ -6,7 +6,7 @@ class AppBarWidget  {
           child: AppBar(
               title: Text(text, style: TextStyle(
                   color: Colors.black,
-                  fontSize: ScreenAdaper.fontSize(34)
+                  fontSize: ScreenAdaper.fontSize(30)
               )),
               elevation: elevation,
               iconTheme: IconThemeData(color: Colors.black),
@@ -16,10 +16,5 @@ class AppBarWidget  {
           ),
           preferredSize: Size.fromHeight(ScreenAdaper.height(88))
         );
-        
-        
-        
-        
-        
     }
 }

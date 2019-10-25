@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sml/components/LoadingSm.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../components/AppBarWidget.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
@@ -31,6 +32,15 @@ class _ContactCustomerServiceState extends State<ContactCustomerService> {
 			});
 		}
 	}
+
+    _launchPhone () async {
+        String url = 'tel:${concatData.hotline}';
+        if (await canLaunch(url)) {
+            await launch(url);
+        } else {
+            throw 'Could not launch $url';
+        }
+    }
 	Widget _business (String name, String subTitle, {bool isBorder = true, Color subColor}) {
 			return Container(
 				color: Colors.white,
@@ -86,7 +96,10 @@ class _ContactCustomerServiceState extends State<ContactCustomerService> {
 				child: Loading(),
 			):Column(
                 children: <Widget>[
-                    this._business("客服热线", concatData.hotline, subColor: ColorClass.common),
+                    GestureDetector(
+                        onTap: _launchPhone,
+                        child: this._business("客服热线", concatData.hotline, subColor: ColorClass.common),
+                    ),
                     this._business("官网地址", concatData.website),
                     this._business("公司地址", concatData.address, isBorder: false)
                 ]

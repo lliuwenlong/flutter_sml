@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sml/common/Color.dart';
+import 'package:flutter_sml/services/ScreenAdaper.dart';
 import './time_utils.dart';
 import 'package:flutter_color_plugin/flutter_color_plugin.dart';
 
@@ -70,7 +71,7 @@ class _CalendarItemState extends State<CalendarItem> {
         '$year.$month',
         style: TextStyle(
           color: ColorUtil.color('212121'),
-          fontSize: 18,
+          fontSize: ScreenAdaper.fontSize(24),
           fontFamily: 'Avenir-Heavy',
         ),
       ),
@@ -115,7 +116,7 @@ class _CalendarItemState extends State<CalendarItem> {
         title,
         style: TextStyle(
           color: ColorUtil.color('757575'),
-          fontSize: 12,
+          fontSize: ScreenAdaper.fontSize(26),
           fontFamily: 'PingFangSC-Semibold',
         ),
       ),
@@ -230,7 +231,7 @@ class _CalendarItemState extends State<CalendarItem> {
                 color: model.isOverdue
                     ? ColorUtil.color('BDBDBD')
                     : ColorUtil.color('212121'),
-                fontSize: 15,
+                fontSize: ScreenAdaper.fontSize(24),
                 fontFamily: 'Avenir-Medium',
               ),
             ),

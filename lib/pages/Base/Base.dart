@@ -132,10 +132,10 @@ class _BaseState extends State<Base> {
                                                 Navigator.pushNamed(context, '/baseList', arguments: {"id": id});
                                             },
                                             padding: EdgeInsets.fromLTRB(
-                                                ScreenAdaper.width(15),
-                                                ScreenAdaper.height(18),
-                                                ScreenAdaper.width(15),
-                                                ScreenAdaper.height(18)
+                                                ScreenAdaper.width(10),
+                                                ScreenAdaper.width(10),
+                                                ScreenAdaper.width(10),
+                                                ScreenAdaper.width(10)
                                             ),
                                             color: Color(0xFF22b0a1),
                                             splashColor: Color.fromRGBO(0, 0, 0, 0),

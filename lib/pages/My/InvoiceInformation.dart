@@ -22,11 +22,11 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
             controller: controller,
             decoration: InputDecoration(
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(vertical: 1),
+                contentPadding: const EdgeInsets.symmetric(vertical: 0),
                 hintText: hintText,
                 hintStyle: TextStyle(
                     color: ColorClass.iconColor,
-                    fontSize: ScreenAdaper.fontSize(24)
+                    fontSize: ScreenAdaper.fontSize(26)
                 ),
             ),
             onChanged: onChange,
@@ -344,7 +344,7 @@ class _InvoiceInformationState extends State<InvoiceInformation> {
                                                 children: <Widget>[
                                                       this._invoiceModel.remarks == null? Text('请填写备注信息(非必填)', style: TextStyle(
                                                           color: ColorClass.iconColor,
-                                                          fontSize: ScreenAdaper.fontSize(24)
+                                                          fontSize: ScreenAdaper.fontSize(26)
                                                       )):Text(
                                                       this._invoiceModel.remarks,
                                                       style: TextStyle(

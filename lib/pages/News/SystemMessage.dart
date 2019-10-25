@@ -37,7 +37,7 @@ class _SystemMessageState extends State<SystemMessage> {
             "type": "sysnotice",
         });
         if (response["code"] == 200) {
-            final NoticeApiModel articleModel = new NoticeApiModel.fromJson(response);
+            final NoticeApiModel articleModel = new NoticeApiModel.fromJson(response["data"]);
             if (isInit) {
                 setState(() {
                     noticeList = articleModel.data;

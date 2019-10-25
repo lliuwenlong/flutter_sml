@@ -320,14 +320,14 @@ class _ProductDetailState extends State<ProductDetail> {
 		}
 	}
   _getDetail () async {
-     Map resDetail = await this.http.get('/api/v1/user/wood/one',data: {
-         'woodSn':arguments['woodSn']
-     });
-     if(resDetail['code'] == 200){
-         setState(() {
-           this.detailData = resDetail['data'];
-         });
-     }
+        Map resDetail = await this.http.get('/api/v1/user/wood/one', data: {
+            'woodSn':arguments['woodSn']
+        });
+        if(resDetail['code'] == 200){
+            setState(() {
+                this.detailData = resDetail['data'];
+            });
+        }
  }
   _getBanner () async {
     Map resBanner = await this.http.get('/api/v1/banner/tree',data: {
@@ -345,15 +345,15 @@ class _ProductDetailState extends State<ProductDetail> {
         context: this._selfContext,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(ScreenAdaper.width(10)),
-          topRight: Radius.circular(ScreenAdaper.width(10)),
+            topLeft: Radius.circular(ScreenAdaper.width(10)),
+            topRight: Radius.circular(ScreenAdaper.width(10)),
         )),
         builder: (BuildContext context) {
-          return ProductBuy(
-              userId:this._userModel.userId,
-              price: double.parse(detailData['price']),
-              woodSn:arguments['woodSn'],
-          );
+            return ProductBuy(
+                userId:this._userModel.userId,
+                price: double.parse(detailData['price']),
+                woodSn: arguments['woodSn'],
+            );
         });
   }
 
@@ -371,14 +371,14 @@ class _ProductDetailState extends State<ProductDetail> {
               alignment: Alignment.topLeft,
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(bottom: ScreenAdaper.height(132)),
+                  padding: EdgeInsets.only(bottom: ScreenAdaper.height(110)),
                   child: ListView(
                     children: <Widget>[
                       
                     detailData!=null?  Container(
                           child: AspectRatio(
                         aspectRatio: 5 / 2,
-                        child: Swiper(
+                        child: this.bannerList.length != 0 ? Swiper(
                           itemBuilder: (BuildContext context, int index) {
                             return Container(
                                 height: ScreenAdaper.height(300),
@@ -402,7 +402,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                 right: ScreenAdaper.width(30)),
                             alignment: Alignment.bottomRight,
                           ),
-                        ),
+                        ) : Container(),
                       )):Container(),
                     
                    detailData!=null?   Container(
@@ -606,7 +606,8 @@ class _ProductDetailState extends State<ProductDetail> {
                           ),
                           onTap: () {
                             Navigator.pushNamed(context, '/valueAddedServices',arguments: {
-								'woodSn': arguments['woodSn']
+								'woodSn': arguments['woodSn'],
+                                "woodId": arguments['woodId']
 							});
                           },
                         ),

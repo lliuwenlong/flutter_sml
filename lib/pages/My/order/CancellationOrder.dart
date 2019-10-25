@@ -131,9 +131,10 @@ class _CancellationOrderState extends State<CancellationOrder> {
             bottomSheet: ((arguments['type'] == 'house' ||
                         arguments['type'] == 'havefun') &&
                     arguments['status'] == '2')||(arguments['type']=='tree'&&arguments['status']=='8')
-                ? FotterButton("取消订单", onTapHandler: () {
-                    this.onTapHandler(context: context);
-                  })
+                ? SizedBox(height: 0,)
+                // FotterButton("取消订单", onTapHandler: () {
+                //     this.onTapHandler(context: context);
+                //   })
                 : SizedBox(height: 0,),
             body: ListView(children: <Widget>[
             arguments['type']== 'tree' || arguments['type']== 'house'||arguments['type']== 'havefun'||arguments['type']== 'food'?	this._item(

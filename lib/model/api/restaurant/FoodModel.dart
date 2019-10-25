@@ -89,7 +89,11 @@ class ListModel {
     String status;
     String telphone;
     String type;
-
+    String longitude;
+    String latitude;
+    double distance;
+    String coupons;
+    String tags;
     ListModel(
         {this.account,
         this.accountBank,
@@ -116,7 +120,12 @@ class ListModel {
         this.province,
         this.status,
         this.telphone,
-        this.type});
+        this.type,
+        this.longitude,
+        this.latitude,
+        this.distance,
+        this.coupons,
+        this.tags});
 
     ListModel.fromJson(Map<String, dynamic> json) {
         account = json['account'];
@@ -145,6 +154,11 @@ class ListModel {
         status = json['status'];
         telphone = json['telphone'];
         type = json['type'];
+        longitude = json['longitude'];
+        latitude = json['latitude'];
+        distance = json['distance'];
+        coupons = json['coupons'];
+        tags = json['tags'];
     }
 
     Map<String, dynamic> toJson() {
@@ -175,6 +189,11 @@ class ListModel {
         data['status'] = this.status;
         data['telphone'] = this.telphone;
         data['type'] = this.type;
+        data['longitude'] = this.longitude;
+        data['latitude'] = this.latitude;
+        data['distance'] = this.distance;
+        data['coupons'] = this.coupons;
+        data['tags'] = this.tags;
         return data;
     }
 }

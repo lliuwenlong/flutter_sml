@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_luban/flutter_luban.dart';
+import 'package:flutter_sml/common/Config.dart';
 import 'package:flutter_sml/model/store/user/User.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -28,9 +33,6 @@ class _FriendDynamicsReleaseState extends State<FriendDynamicsRelease> {
     void didChangeDependencies() {
         super.didChangeDependencies();
         _userModel = Provider.of<User>(context);
-    }
-    void uploadImages () {
-
     }
 
     void getImages () async {
@@ -64,6 +66,42 @@ class _FriendDynamicsReleaseState extends State<FriendDynamicsRelease> {
             this.images.removeAt(this.images.indexOf(val));
         });
     }
+
+    uploadImages () async {
+        Dio dio = new Dio();
+        List<String> formDataArr = [];
+        await Future.wait(resultList.map((item) async {
+            String path = await item.filePath;
+            String name = path.substring(path.lastIndexOf("/") + 1, path.length);
+            CompressObject compressObject = CompressObject(
+                imageFile: File(path), //image
+                path:'/storage/emulated/0/Android/data/com.itshouyu.sml/files/Pictures', //compress to path
+            );
+            String _path = await Luban.compressImage(compressObject);
+            formDataArr.add(_path);
+            return _path;
+        }).toList());
+        var response = await dio.post("${Config.apiUrl}/oss/imgs", data: FormData.from({
+            "images": formDataArr.map((item) {
+                String name = item.substring(item.lastIndexOf("/") + 1, item.length);
+                return new UploadFileInfo(File(item), name);
+            }).toList()
+        }));
+        if (response.statusCode == 200) {
+            return response.data;
+        } else {
+            Fluttertoast.showToast(
+                msg: "图片上传失败",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.TOP,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+            return null;
+        }
+    }
+
     void sendMsg () async {
         if (controller.text.isEmpty && images.length == 0) {
             Fluttertoast.showToast(
@@ -76,13 +114,26 @@ class _FriendDynamicsReleaseState extends State<FriendDynamicsRelease> {
             );
             return;
         }
-        Map response = await HttpUtil().post("/api/v1/circle/msg", params: {
-            "content": controller.text,
-            "imageUrls": null,
-            "userId": this._userModel.userId
-        });
-        if (response["code"] == 200) {
-            Navigator.pop(context);
+        if (images.length != 0) {
+            Map res = await this.uploadImages();
+            if (res["code"] == 200) {
+                Map response = await HttpUtil().post("/api/v1/circle/msg", params: {
+                    "content": controller.text,
+                    "imageUrls": res["data"]["urls"] != null ? res["data"]["urls"] : null,
+                    "userId": this._userModel.userId
+                });
+                if (response["code"] == 200) {
+                    await Fluttertoast.showToast(
+                        msg: "发布成功",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.TOP,
+                        timeInSecForIos: 1,
+                        textColor: Colors.white,
+                        fontSize: ScreenAdaper.fontSize(30)
+                    );
+                    Navigator.pop(context);
+                }
+            }
         }
     }
 

@@ -81,12 +81,12 @@ class _ValueDetailState extends State<ValueDetail> {
               alignment: Alignment.topLeft,
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(bottom: ScreenAdaper.height(110)),
-                  child:Container(
-                    child: InAppWebView(
-                        initialUrl: "${Config.WEB_URL}/app/#/valueDetail?sid=${arguments['sid']}",
+                    padding: EdgeInsets.only(bottom: ScreenAdaper.height(110)),
+                    child:Container(
+                        child: InAppWebView(
+                            initialUrl: "${Config.WEB_URL}/app/#/valueDetail?sid=${arguments['sid']}",
+                        ),
                     ),
-                  ),
                 ),
                 Positioned(
                   left: 0,

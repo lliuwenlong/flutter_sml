@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/components/AppBarWidget.dart';
 import 'package:flutter_sml/components/MyUnderlineIndicator.dart';
 import 'package:flutter_sml/components/NullContent.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -317,10 +318,10 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
 
     AppBar _appBar () {
         return AppBar(
-            title: Text("树友圈", style: TextStyle(
-                color: Colors.black,
-                fontSize: ScreenAdaper.fontSize(34)
-            )),
+            title: PreferredSize(
+                child: AppBarWidget().buildAppBar("树友圈"),
+                preferredSize: Size.fromHeight(ScreenAdaper.height(88))
+            ),
             elevation: 1,
             iconTheme: IconThemeData(color: Colors.black),
             backgroundColor: Colors.white,
@@ -472,7 +473,7 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
                     child: GestureDetector(
                         onTap: () {
                           // print(id);
-                           this._shareHandler();
+                        //    this._shareHandler();
                            this.infoId = id;
                             // Navigator.pushNamed(context, "/friendDynamicsComment", arguments: {
                             //     "id": id,
@@ -515,7 +516,16 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
                             },
                             child: Container(
                               width: double.infinity,
-                              child: Text(data.content, maxLines: 3, overflow: TextOverflow.ellipsis),
+                              child: Text(
+                                    data.content,
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        height: 1.2,
+                                        fontSize: ScreenAdaper.fontSize(26)
+                                    ),
+                                    
+                                ),
                             )
                         )
                         

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sml/common/Color.dart';
+import 'package:flutter_sml/services/ScreenAdaper.dart';
 import './toast_widget.dart';
 import 'package:flutter_color_plugin/flutter_color_plugin.dart';
 
@@ -192,7 +193,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 '$day晚',
                 style: TextStyle(
                 color: ColorUtil.color('BDBDBD'),
-                fontSize: 12,
+                fontSize: ScreenAdaper.fontSize(28),
                 ),
             ),
         );
@@ -225,7 +226,7 @@ class _CalendarPageState extends State<CalendarPage> {
                             child: Text(
                                 '完成',
                                 style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: ScreenAdaper.fontSize(28),
                                     color: Colors.white,
                                     fontFamily: 'PingFangSC-Light',
                                 )

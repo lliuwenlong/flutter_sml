@@ -1,4 +1,8 @@
+import 'package:amap_location/amap_location.dart';
+import 'package:amap_location/amap_location_option.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/common/CommonHandler.dart';
+import 'package:location_permissions/location_permissions.dart';
 import '../Home/Swiper.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
@@ -16,6 +20,7 @@ class _HomePageState extends State<HomePage> {
     int _page = 1;
     List<Data> articleList = [];
     RefreshController _refreshController = RefreshController(initialRefresh: false);
+    List news = [];
     _onTap (String router, int type) {
         type == null
             ? Navigator.pushNamed(context, router)
@@ -28,13 +33,19 @@ class _HomePageState extends State<HomePage> {
     void initState () {
         super.initState();
         this.getArticleData();
+        this.getNews();
     }
 
     getArticleData({bool isInit = false}) async {
+        await AMapLocationClient.startup(new AMapLocationOption( desiredAccuracy:CLLocationAccuracy.kCLLocationAccuracyHundredMeters  ));
+        await AMapLocationClient.getLocation(true);
+
+
         Map response = await http.get("/api/v1/article/articles/article", data: {
             "pageSize": 10,
             "pageNO": this._page
         });
+        getLoction();
         if (response["code"] == 200) {
             final ArticleModel articleModel = new ArticleModel.fromJson(response);
             if (isInit) {
@@ -49,9 +60,21 @@ class _HomePageState extends State<HomePage> {
                 return response;
             }
         }
+        
         return response;
     }
 
+    getNews () async {
+        Map response = await http.get("/api/v1/notice/data/news", data: {
+            "pageSize": 20,
+            "pageNO": 1,
+        });
+        if (response["code"] == 200) {
+            setState(() {
+                this.news = response["data"]["list"];
+            });
+        }
+    }
     void _onLoading() async{
         setState(() {
             this._page++;
@@ -187,59 +210,67 @@ class _HomePageState extends State<HomePage> {
                         ],
                     ),
                     SizedBox(height: ScreenAdaper.height(20)),
-                    AspectRatio(
-                        aspectRatio: 690 / 236,
-                        child: Stack(
-                            children: <Widget>[
-                                Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5.0),
-                                        image: DecorationImage(
-                                            image: NetworkImage(
-                                              "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws"
-                                            ),
-                                            fit: BoxFit.cover
-                                        )
-                                    )
-                                ),
-                                Positioned(
-                                    bottom: 0,
-                                    left: 0,
-                                    top: 0,
-                                    right: 0,
-                                    child: Container(
+                    GestureDetector(
+                        onTap: () {
+                            Navigator.pushNamed(context, "/newsDetail", arguments: {
+                                "id": this.news[0]["noticeId"],
+                                "appTabName": "活动公告"
+                            });
+                        },
+                        child: this.news.length == 0 ? Container() : AspectRatio(
+                            aspectRatio: 690 / 236,
+                            child: Stack(
+                                children: <Widget>[
+                                    Container(
                                         decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(5.0),
-                                            color: Color.fromRGBO(0, 0, 0, 0.5)
+                                            image: DecorationImage(
+                                                image: NetworkImage(
+                                                    this.news[0]["coverImage"]
+                                                ),
+                                                fit: BoxFit.fill
+                                            )
                                         )
                                     ),
-                                ),
-                                Positioned(
-                                    bottom: ScreenAdaper.height(28),
-                                    left: ScreenAdaper.width(30),
-                                    child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                            Text(
-                                                "【如何成为什么尊享会员？】",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: ScreenAdaper.fontSize(28, allowFontScaling: true)
-                                                )
-                                            ),
-                                            SizedBox(height: ScreenAdaper.height(20)),
-                                            Text(
-                                                "时间：2019年7月1日——2019年8月20日",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: ScreenAdaper.fontSize(22)
-                                                )
+                                    Positioned(
+                                        bottom: 0,
+                                        left: 0,
+                                        top: 0,
+                                        right: 0,
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(5.0),
+                                                color: Color.fromRGBO(0, 0, 0, 0.5)
                                             )
-                                        ],
+                                        ),
                                     ),
-                                )
-                            ],
-                        )
+                                    Positioned(
+                                        bottom: ScreenAdaper.height(28),
+                                        left: ScreenAdaper.width(30),
+                                        child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                                Text(
+                                                    "【${this.news[0]['noticeTitle']}】",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: ScreenAdaper.fontSize(28, allowFontScaling: true)
+                                                    )
+                                                ),
+                                                SizedBox(height: ScreenAdaper.height(20)),
+                                                Text(
+                                                    "时间：2019年7月1日——2019年8月20日",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: ScreenAdaper.fontSize(22)
+                                                    )
+                                                )
+                                            ],
+                                        ),
+                                    )
+                                ],
+                            )
+                        ),
                     ),
                     SizedBox(height: ScreenAdaper.height(20)),
                     Row(
@@ -249,10 +280,17 @@ class _HomePageState extends State<HomePage> {
                                 color: Color.fromRGBO(153,153,153, 1),
                                 fontSize: ScreenAdaper.fontSize(24, allowFontScaling: true)
                             )),
-                            Icon(
-                                IconData(0xe61e, fontFamily: 'iconfont'),
-                                color: Color.fromRGBO(170,170,170, 1),
-                                size: ScreenAdaper.fontSize(24, allowFontScaling: true),
+                            GestureDetector(
+                                onTap: () {
+                                    Navigator.pushNamed(context, "/activityMessage", arguments: {
+                                        "appTabName": "活动公告"
+                                    });
+                                },
+                                child: Icon(
+                                    IconData(0xe61e, fontFamily: 'iconfont'),
+                                    color: Color.fromRGBO(170,170,170, 1),
+                                    size: ScreenAdaper.fontSize(24, allowFontScaling: true),
+                                )
                             )
                         ],
                     )
@@ -291,7 +329,7 @@ class _HomePageState extends State<HomePage> {
                                 child: ClipRRect(
                                     borderRadius: BorderRadius.circular(3),
                                     child: Image.network(
-                                        "https://dpic.tiankong.com/pa/7s/QJ8189390931.jpg?x-oss-process=style/670ws",
+                                        value.coverImage,
                                         fit: BoxFit.cover
                                     )
                                 ),
@@ -307,7 +345,7 @@ class _HomePageState extends State<HomePage> {
                                             Text(value.articleTitle, style: TextStyle(
                                                 fontSize: ScreenAdaper.fontSize(28),
                                                 color: Color(0xFF333333)
-                                            )),
+                                            ), overflow: TextOverflow.ellipsis,),
                                             SizedBox(height: ScreenAdaper.height(15)),
                                             Text(
                                                 value.articleSummary,

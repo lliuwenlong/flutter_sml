@@ -22,13 +22,13 @@ import './components/AppFuncBrowse.dart';
 import 'package:amap_location/amap_location.dart';
 
 void main() {
+    AMapLocationClient.setApiKey("022af4564933e753fc99559734e3edfe");
     // 强制竖屏
     SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
         DeviceOrientation.portraitDown
     ]);
     //高德地图
-    AMapLocationClient.setApiKey("022af4564933e753fc99559734e3edfe");
     runApp(
         MultiProvider(
             providers: [
@@ -73,11 +73,11 @@ class _MyAppState extends State<MyApp>  {
 
     _initFluwx() async {
         await fluwx.register(
-            appId: "wx44dec623dc2c028b",
+            appId: "wxa22d7212da062286",
             doOnAndroid: true,
             doOnIOS: false,
             enableMTA: false);
-        var result = await fluwx.isWeChatInstalled();
+        await fluwx.isWeChatInstalled();
     }
 
     getUserId () async {

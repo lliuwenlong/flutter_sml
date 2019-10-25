@@ -60,6 +60,7 @@ class _FriendDynamicsCommentState extends State<FriendDynamicsComment> {
     _getCommentData(isInit: true);
     KeyboardVisibilityNotification().addNewListener(
         onChange: (bool visible) {
+            print("!23123");
             if (!visible) {
                 setState(() {
                     this.isOpenKeyboard = false;
@@ -418,7 +419,9 @@ _getData() async {
                       this.data.content.isNotEmpty
                     ? Container(
                       margin: EdgeInsets.only(top: ScreenAdaper.width(30)),
-                      child: Text(this.data.content),
+                      child: Text(this.data.content, style: TextStyle(
+                          fontSize: ScreenAdaper.fontSize(26)
+                      ),),
                     )
                   : SizedBox(),
               SizedBox(height: ScreenAdaper.height(30)),
@@ -612,99 +615,87 @@ _getData() async {
     );
   }
 
-  Widget _editInput(BuildContext context) {
-    return Stack(
-      alignment: AlignmentDirectional.bottomStart,
-      children: <Widget>[
-        Container(
-            width: double.infinity,
-            height: ScreenAdaper.getScreenHeight() -
-                MediaQuery.of(context).viewInsets.bottom -
-                MediaQueryData.fromWindow(window).padding.top -
-                86,
-            color: Color.fromRGBO(0, 0, 0, 0.1),
+Widget _editInput(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.only(
+            top: ScreenAdaper.height(30)
         ),
-        Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-                padding: EdgeInsets.all(ScreenAdaper.width(30)),
-                color: Colors.white,
-                child: Column(children: <Widget>[
-                  TextField(
-                    focusNode: _commentFocus,
-                    autofocus: true,
-                    maxLines: 5,
-                    controller: controller,
-                    onChanged: (String val) {
-                      if (val.isNotEmpty) {
-                        setState(() {
-                          this.isDisabled = true;
-                        });
-                      } else {
-                        setState(() {
-                          this.isDisabled = false;
-                        });
-                      }
-                    },
-                    decoration: InputDecoration(
-                        fillColor: Color(0xFFf5f5f5),
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(ScreenAdaper.width(10)),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: EdgeInsets.fromLTRB(
-                            ScreenAdaper.width(30),
-                            ScreenAdaper.width(25),
-                            ScreenAdaper.width(30),
-                            ScreenAdaper.width(25)),
-                        hintText: "快给他评价一下吧",
-                        hintStyle: TextStyle(
-                            color: ColorClass.subTitleColor,
-                            fontSize: ScreenAdaper.fontSize(28))),
-                  ),
-                  Container(
-                    alignment: Alignment.centerRight,
-                    margin: EdgeInsets.only(top: ScreenAdaper.height(20)),
-                    child: Container(
-                        width: ScreenAdaper.width(160),
-                        height: ScreenAdaper.height(75),
-                        child: RaisedButton(
-                        color: ColorClass.common,
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(ScreenAdaper.width(10)),
-                          // side: BorderSide(
-                          //     color: Color(0xFFc1a786)
-                          // )
-                        ),
-                        elevation: 0,
-                        disabledColor: Color(0xFF86d4ca),
-                        onPressed: this.isDisabled
-                            ? () {
-                                this._addComent();
-                              }
-                            : null,
-                        child: Text("发送",
-                            style: TextStyle(
-                                fontSize: ScreenAdaper.fontSize(32),
-                                color: Colors.white)),
-                      ),
+        height: ScreenAdaper.height(380),
+        color: Colors.white,
+        child: Column(children: <Widget>[
+            TextField(
+                focusNode: _commentFocus,
+                autofocus: true,
+                maxLines: 5,
+                controller: controller,
+            onChanged: (String val) {
+                if (val.isNotEmpty) {
+                setState(() {
+                    this.isDisabled = true;
+                });
+                } else {
+                setState(() {
+                    this.isDisabled = false;
+                });
+                }
+            },
+            decoration: InputDecoration(
+                fillColor: Color(0xFFf5f5f5),
+                filled: true,
+                border: OutlineInputBorder(
+                    borderRadius:
+                        BorderRadius.circular(ScreenAdaper.width(10)),
+                    borderSide: BorderSide.none,
+                ),
+                contentPadding: EdgeInsets.fromLTRB(
+                    ScreenAdaper.width(30),
+                    ScreenAdaper.width(25),
+                    ScreenAdaper.width(30),
+                    ScreenAdaper.width(25)),
+                hintText: "快给他评价一下吧",
+                hintStyle: TextStyle(
+                    color: ColorClass.subTitleColor,
+                    fontSize: ScreenAdaper.fontSize(28))),
+            ),
+            Container(
+                alignment: Alignment.centerRight,
+                margin: EdgeInsets.only(top: ScreenAdaper.height(20)),
+                child: Container(
+                    width: ScreenAdaper.width(160),
+                    height: ScreenAdaper.height(75),
+                    child: RaisedButton(
+                    color: ColorClass.common,
+                    shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(ScreenAdaper.width(10)),
+                        // side: BorderSide(
+                        //     color: Color(0xFFc1a786)
+                        // )
                     ),
-                  ),
-                ])))
-      ],
-    );
+                    elevation: 0,
+                    disabledColor: Color(0xFF86d4ca),
+                    onPressed: this.isDisabled
+                        ? () {
+                            this._addComent();
+                            }
+                        : null,
+                    child: Text("发送",
+                        style: TextStyle(
+                            fontSize: ScreenAdaper.fontSize(32),
+                            color: Colors.white)),
+                    ),
+                ),
+            )
+        ]));
   }
 
   @override
   Widget build(BuildContext context) {
     this.selfContext = context;
     ScreenAdaper.init(context);
-    return Scaffold(
+    return Stack(
+        children: <Widget>[
+            Scaffold(
         appBar: PreferredSize(
             child: AppBarWidget().buildAppBar("详情"),
             preferredSize: Size.fromHeight(ScreenAdaper.height(110))),
@@ -745,6 +736,18 @@ _getData() async {
                 child: !this.isOpenKeyboard
                     ? this._readInput()
                     : this._editInput(context))
-        ]));
+        ])),
+        !this.isOpenKeyboard ? Container() : Positioned(
+                top: 0,
+                left: 0,
+                bottom: MediaQuery.of(context).viewInsets.bottom + ScreenAdaper.height(400),
+                right: 0,
+                child: Container(
+                    height: double.infinity,
+                    color: Colors.black38,
+                ),
+            )
+        ],
+    );
   }
 }

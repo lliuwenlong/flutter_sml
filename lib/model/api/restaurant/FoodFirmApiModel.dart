@@ -14,7 +14,9 @@ class FoodFirmApiModel {
     List<Goods> goods;
     List<String> attachs;
     List<String> goodsAttaches;
-
+    String longitude;
+    String latitude;
+    String distance;
     FoodFirmApiModel(
         {this.firmId,
         this.name,
@@ -30,7 +32,10 @@ class FoodFirmApiModel {
         this.tags,
         this.goods,
         this.attachs,
-        this.goodsAttaches});
+        this.goodsAttaches,
+        this.longitude,
+        this.latitude,
+        this.distance});
 
     FoodFirmApiModel.fromJson(Map<String, dynamic> json) {
         firmId = json['firmId'];
@@ -45,6 +50,9 @@ class FoodFirmApiModel {
         closeTime = json['closeTime'];
         logo = json['logo'];
         tags = json['tags'];
+        longitude = json['longitude'];
+        latitude = json['latitude'];
+        distance = json['distance'];
         if (json['goods'] != null) {
             goods = new List<Goods>();
             json['goods'].forEach((v) {
@@ -69,6 +77,9 @@ class FoodFirmApiModel {
         data['closeTime'] = this.closeTime;
         data['logo'] = this.logo;
         data['tags'] = this.tags;
+        data['longitude'] = this.longitude;
+        data['latitude'] = this.latitude;
+        data['distance'] = this.distance;
         if (this.goods != null) {
             data['goods'] = this.goods.map((v) => v.toJson()).toList();
         }

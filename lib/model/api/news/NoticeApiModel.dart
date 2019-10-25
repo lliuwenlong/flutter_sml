@@ -1,12 +1,18 @@
 class NoticeApiModel {
     List<NoticeDataApiModel> data;
-
+    List<NoticeDataApiModel> list;
     NoticeApiModel({this.data});
 
     NoticeApiModel.fromJson(Map<String, dynamic> json) {
         if (json['data'] != null) {
             data = new List<NoticeDataApiModel>();
             json['data'].forEach((v) {
+                data.add(new NoticeDataApiModel.fromJson(v));
+            });
+        }
+        if (json['list'] != null) {
+            data = new List<NoticeDataApiModel>();
+            json['list'].forEach((v) {
                 data.add(new NoticeDataApiModel.fromJson(v));
             });
         }

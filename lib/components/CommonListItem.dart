@@ -62,7 +62,7 @@ class CommonListItem extends StatelessWidget {
                                                 )),
                                                 Align(
                                                     alignment: Alignment.centerRight,
-                                                    child: Text("${this.distance}米", style: TextStyle(
+                                                    child: Text("${this.distance}", style: TextStyle(
                                                         color: ColorClass.fontColor,
                                                         fontSize: ScreenAdaper.fontSize(24)
                                                     )),

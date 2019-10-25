@@ -15,11 +15,11 @@ class Order extends StatefulWidget {
 class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
     final List<Map> _tabList = [
         {"id": 1, "name": "全部"},
+        {"id": 6, "name": "已完成"},
         {"id": 2, "name": "待付款"},
         {"id": 3, "name": "待使用"},
         {"id": 4, "name": "待评价"},
         {"id": 5, "name": "退款"},
-		    {"id": 6, "name": "已完成"}
     ];
     
     TabController _tabController;
@@ -61,6 +61,51 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
     List toBeEvaluatedList = [];
     List refundList = [];
 	List finishedList = [];
+    Map<String, int> orderType = {
+        "0": 0,
+        "1": 9,
+        "2": 1,
+        "3": 2,
+        "4": 3,
+        "5": 4
+    };
+    Map<String, Icon> typeIcon = {
+        "tree": Icon(
+            IconData(0xe661, fontFamily: "iconfont"),
+            color: Color(0xff22b0a1),
+            size: ScreenAdaper.fontSize(30),
+        ),
+        "house": Icon(
+            IconData(0xe662, fontFamily: "iconfont"),
+            color: Color(0xffc1a786),
+            size: ScreenAdaper.fontSize(30),
+        ),
+        "havefun": Icon(
+            IconData(0xe665, fontFamily: "iconfont"),
+            color: Color(0xffe99470),
+            size: ScreenAdaper.fontSize(30),
+        ),
+        "food": Icon(//餐饮
+            IconData(0xe664, fontFamily: "iconfont"),
+            color: Color(0xfff6cf70),
+            size: ScreenAdaper.fontSize(30),
+        ),
+        "shopping": Icon(//购物
+            IconData(0xe660, fontFamily: "iconfont"),
+            color: Color(0xffd4746c),
+            size: ScreenAdaper.fontSize(30),
+        ),
+        "nearplay": Icon(//周边游
+            IconData(0xe663, fontFamily: "iconfont"),
+            color: Color(0xff91c2a2),
+            size: ScreenAdaper.fontSize(30),
+        ),
+        "valuepro": Icon(//周边游
+            IconData(0xe66c, fontFamily: "iconfont"),
+            color: Color(0xFF7dc26b),
+            size: ScreenAdaper.fontSize(30),
+        )
+    };
 
 	String status = '0'; 
 	// 0-全部
@@ -166,19 +211,20 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
 		if (
             isInit
             && ((this._tabController.index == 0 && this.allLoading == false)
-            || (this._tabController.index == 1 && this.paymentLoading == false)
-			|| (this._tabController.index == 2 && this.toBeUsedLoading == false)
-			|| (this._tabController.index == 3 && this.toBeEvaluatedLoading == false)
-			|| (this._tabController.index == 4 && this.refundLoading == false)
-			|| (this._tabController.index == 5 && this.finishedLoading == false)
+            || (this._tabController.index == 2 && this.paymentLoading == false)
+			|| (this._tabController.index == 3 && this.toBeUsedLoading == false)
+			|| (this._tabController.index == 4 && this.toBeEvaluatedLoading == false)
+			|| (this._tabController.index == 5 && this.refundLoading == false)
+			|| (this._tabController.index == 6 && this.finishedLoading == false)
 			)
         ) {
             return null;
         }
+         
 		Map response = await this.http.get('/api/v1/order/data', data: {
 			"pageNO": this.page,
 			"pageSize": 10,
-			"status": _tabController.index == 5? 9 : _tabController.index,
+			"status": orderType[_tabController.index.toString()],
 			"userId": this._userModel.userId
 		});
 		if (response['code'] == 200) {
@@ -191,44 +237,45 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
 					allLoading = false;
 					this.loading = allLoading;
 				} break;
-				case 1 : {
-					paymentList = res.data.list;
-					paymentLoading = false;
-					this.loading = paymentLoading;
-				} break;
-				case 2 : {
-					toBeUsedList = res.data.list;
-					toBeUsedLoading = false;
-					this.loading = toBeUsedLoading;
-				} break;
-				case 3 : {
-					toBeEvaluatedList = res.data.list;
-					toBeEvaluatedLoading = false;
-					this.loading = toBeEvaluatedLoading;
-				} break;
-				case 4 : {
+                case 1 : {
 					refundList = res.data.list;
 					refundLoading = false;
 					this.loading = refundLoading;
 				} break;
-				case 5 : {
+                case 2 : {
 					finishedList = res.data.list;
 					finishedLoading = false;
 					this.loading = finishedLoading;
 				} break;
+				case 3 : {
+					paymentList = res.data.list;
+					paymentLoading = false;
+					this.loading = paymentLoading;
+				} break;
+				case 4 : {
+					toBeUsedList = res.data.list;
+					toBeUsedLoading = false;
+					this.loading = toBeUsedLoading;
+				} break;
+				case 5 : {
+					toBeEvaluatedList = res.data.list;
+					toBeEvaluatedLoading = false;
+					this.loading = toBeEvaluatedLoading;
+				} break;
+				
 				}
 			});
       	} else {
 			setState(() {
 				if (_tabController.index == 0) {
 					allList.addAll(res.data.list);
-				} else if (_tabController.index == 1) {
+				} else if (_tabController.index == 2) {
 					paymentList.addAll(res.data.list);
-				}else if (_tabController.index == 2){
+				}else if (_tabController.index == 3){
 					toBeUsedList.addAll(res.data.list);
-				} else if (_tabController.index == 3) {
-					toBeEvaluatedList.addAll(res.data.list);
 				} else if (_tabController.index == 4) {
+					toBeEvaluatedList.addAll(res.data.list);
+				} else if (_tabController.index == 5) {
 					refundList.addAll(res.data.list);
 				} else {
 					finishedList.addAll(res.data.list);
@@ -278,32 +325,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                 	children: <Widget>[
                     Row(
                         children: <Widget>[
-                           data.type=='tree'? Icon(//神木
-                                IconData(0xe661, fontFamily: "iconfont"),
-                                color: Color(0xff22b0a1),
-                                size: ScreenAdaper.fontSize(30),
-                            ):data.type=='house'?Icon(//住宿
-                                IconData(0xe662, fontFamily: "iconfont"),
-                                color: Color(0xffc1a786),
-                                size: ScreenAdaper.fontSize(30),
-                            ):data.type == 'havefun'?Icon(//娱乐
-                                IconData(0xe665, fontFamily: "iconfont"),
-                                color: Color(0xffe99470),
-                                size: ScreenAdaper.fontSize(30),
-                            ):data.type == 'food'?Icon(//餐饮
-                                IconData(0xe664, fontFamily: "iconfont"),
-                                color: Color(0xfff6cf70),
-                                size: ScreenAdaper.fontSize(30),
-                            ):data.type == 'shopping'?
-                            Icon(//购物
-                                IconData(0xe660, fontFamily: "iconfont"),
-                                color: Color(0xffd4746c),
-                                size: ScreenAdaper.fontSize(30),
-                            ):data.type=='nearplay'?Icon(//周边游
-                                IconData(0xe663, fontFamily: "iconfont"),
-                                color: Color(0xff91c2a2),
-                                size: ScreenAdaper.fontSize(30),
-                            ):Text(''),
+                            typeIcon[data.type] != null ? typeIcon[data.type] : Text(''),
                             SizedBox(width: ScreenAdaper.width(20)),
                             Text(data.name!=null?data.name:'', style: TextStyle(
                                 color: ColorClass.titleColor,
@@ -327,7 +349,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                                 child: ClipRRect(
                                     borderRadius: BorderRadius.circular(ScreenAdaper.width(10)),
                                     child: Image.network(
-										                    data.logo!=null?data.logo:'',
+										data.logo!=null?data.logo:'',
                                         fit: BoxFit.cover,
                                     )
                                 ),
@@ -351,7 +373,9 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                             )
                         ]
                     ),
-                    Container(
+                    ((data.type=='house'||data.type=='havefun')&&data.status == '2')||(data.type=='tree'&&data.status=='8') 
+                    ? SizedBox()
+                    : Container(
                         alignment: Alignment.centerRight,
                         child: 
                         data.status!='4'&&data.status!='5'&&data.status!='6'&&data.status!='9'?Container(
@@ -367,7 +391,6 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                                 ),
                                 highlightedBorderColor: Color(0XFF999999),
                                 onPressed: () {
-                                  print(data.type);
                                   if(data.type=='house'&&data.status=='1'){//去付款
                                       Navigator.pushNamed(context, "/acknowledgement",arguments: {
                                        'orderSn':data.orderSn,
@@ -394,7 +417,11 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                                         'status':data.status
                                       });
                                   }else if (data.status == '3') {//去评价
-                                      print('去评价');
+                                        Navigator.pushNamed(context, "/releaseEvaluate", arguments: {
+                                            "firmId": data.firmId,
+                                            "name": data.name,
+                                            "logo": data.logo
+                                        });
                                   }
                                 },
                                 child:
@@ -500,6 +527,66 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                             )
                     ),
                     SmartRefresher(
+                        controller: refundController,
+                        enablePullDown: true,
+                        enablePullUp: true,
+                        header: WaterDropHeader(),
+                        footer: ClassicFooter(
+                            loadStyle: LoadStyle.ShowWhenLoading,
+                            idleText: "上拉加载",
+                            failedText: "加载失败！点击重试！",
+                            canLoadingText: "加载更多",
+                            noDataText: "没有更多数据",
+                            loadingText: "加载中"
+                        ),
+                        onRefresh: _onRefresh,
+                        onLoading: _onLoading,
+                        child: this.loading
+                            ? Container(
+                                margin: EdgeInsets.only(
+                                    top: ScreenAdaper.height(200)
+                                ),
+                                child: Loading(),
+                            ) : this.refundList.length <= 0 ? NullContent('暂无数据'):
+                             ListView.builder(
+                                itemCount: this.refundList.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                    var data = this.refundList[index];
+                                    return this._itemWidget(data:data);
+                                }
+                            )
+                    ),
+                    SmartRefresher(
+                        controller: finishedController,
+                        enablePullDown: true,
+                        enablePullUp: true,
+                        header: WaterDropHeader(),
+                        footer: ClassicFooter(
+                            loadStyle: LoadStyle.ShowWhenLoading,
+                            idleText: "上拉加载",
+                            failedText: "加载失败！点击重试！",
+                            canLoadingText: "加载更多",
+                            noDataText: "没有更多数据",
+                            loadingText: "加载中"
+                        ),
+                        onRefresh: _onRefresh,
+                        onLoading: _onLoading,
+                        child: this.loading
+                            ? Container(
+                                margin: EdgeInsets.only(
+                                    top: ScreenAdaper.height(200)
+                                ),
+                                child: Loading(),
+                            ) : this.finishedList.length <= 0 ? NullContent('暂无数据'):
+                             ListView.builder(
+                                itemCount: this.finishedList.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                    var data = this.finishedList[index];
+                                    return this._itemWidget(data:data);
+                                }
+                            )
+                    ),
+                    SmartRefresher(
                         controller: paymentController,
                         enablePullDown: true,
                         enablePullUp: true,
@@ -559,7 +646,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                                 }
                             )
                     ),
-					          SmartRefresher(
+					SmartRefresher(
                         controller: toBeEvaluatedController,
                         enablePullDown: true,
                         enablePullUp: true,
@@ -585,66 +672,6 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                                 itemCount: this.toBeEvaluatedList.length,
                                 itemBuilder: (BuildContext context, int index) {
                                     var data = this.toBeEvaluatedList[index];
-                                    return this._itemWidget(data:data);
-                                }
-                            )
-                    ),
-					SmartRefresher(
-                        controller: refundController,
-                        enablePullDown: true,
-                        enablePullUp: true,
-                        header: WaterDropHeader(),
-                        footer: ClassicFooter(
-                            loadStyle: LoadStyle.ShowWhenLoading,
-                            idleText: "上拉加载",
-                            failedText: "加载失败！点击重试！",
-                            canLoadingText: "加载更多",
-                            noDataText: "没有更多数据",
-                            loadingText: "加载中"
-                        ),
-                        onRefresh: _onRefresh,
-                        onLoading: _onLoading,
-                        child: this.loading
-                            ? Container(
-                                margin: EdgeInsets.only(
-                                    top: ScreenAdaper.height(200)
-                                ),
-                                child: Loading(),
-                            ) : this.refundList.length <= 0 ? NullContent('暂无数据'):
-                             ListView.builder(
-                                itemCount: this.refundList.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                    var data = this.refundList[index];
-                                    return this._itemWidget(data:data);
-                                }
-                            )
-                    ),
-					SmartRefresher(
-                        controller: finishedController,
-                        enablePullDown: true,
-                        enablePullUp: true,
-                        header: WaterDropHeader(),
-                        footer: ClassicFooter(
-                            loadStyle: LoadStyle.ShowWhenLoading,
-                            idleText: "上拉加载",
-                            failedText: "加载失败！点击重试！",
-                            canLoadingText: "加载更多",
-                            noDataText: "没有更多数据",
-                            loadingText: "加载中"
-                        ),
-                        onRefresh: _onRefresh,
-                        onLoading: _onLoading,
-                        child: this.loading
-                            ? Container(
-                                margin: EdgeInsets.only(
-                                    top: ScreenAdaper.height(200)
-                                ),
-                                child: Loading(),
-                            ) : this.finishedList.length <= 0 ? NullContent('暂无数据'):
-                             ListView.builder(
-                                itemCount: this.finishedList.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                    var data = this.finishedList[index];
                                     return this._itemWidget(data:data);
                                 }
                             )

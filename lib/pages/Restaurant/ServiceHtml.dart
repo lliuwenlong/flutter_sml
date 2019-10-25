@@ -6,10 +6,20 @@ import 'package:flutter_sml/common/Color.dart';
 import 'package:flutter_sml/common/Config.dart';
 import 'package:flutter_sml/components/AppBarWidget.dart';
 import '../../services/ScreenAdaper.dart';
-class ServiceHtml extends StatelessWidget {
+class ServiceHtml extends StatefulWidget {
     int id;
     int type;
-    ServiceHtml(this.id, this.type);
+    String price;
+    ServiceHtml(this.id, this.type, {this.price, Key key}) : super(key: key);
+    @override
+    _ServiceHtmlState createState() => _ServiceHtmlState(this.id, this.type, price: this.price);
+}
+
+class _ServiceHtmlState extends State<ServiceHtml> {
+    int id;
+    int type;
+    String price;
+    _ServiceHtmlState(this.id, this.type, {this.price});
     @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
@@ -42,7 +52,7 @@ class ServiceHtml extends StatelessWidget {
                                         color: ColorClass.fontRed,
                                         fontSize: ScreenAdaper.fontSize(26)
                                     )),
-                                    TextSpan(text: "189", style: TextStyle(
+                                    TextSpan(text: "${this.price}", style: TextStyle(
                                         color: ColorClass.fontRed,
                                         fontSize: ScreenAdaper.fontSize(44)
                                     )),
@@ -58,7 +68,13 @@ class ServiceHtml extends StatelessWidget {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                        Navigator.pushNamed(context, "/payment", arguments: {
+                                            "amount": 155,
+                                            "type": widget.type,
+                                            "firmId": widget.id
+                                        });
+                                    },
                                     child: Text("购买", style: TextStyle(
                                         color: Colors.white,
                                         fontSize: ScreenAdaper.fontSize(40)

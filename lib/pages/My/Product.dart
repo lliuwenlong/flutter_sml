@@ -188,6 +188,25 @@ void _onRefresh() async{
                                         top: ScreenAdaper.width(20),
                                         left: ScreenAdaper.width(20),
                                         child: Label(data.name),
+                                    ),
+                                    Positioned(
+                                        bottom: 0,
+                                        left: 0,
+                                        right: 0,
+                                        child: Container(
+                                            width: double.infinity,
+                                            height: ScreenAdaper.height(70),
+                                            decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    image: AssetImage("images/bg-option.png"),
+                                                    fit: BoxFit.fill
+                                                ),
+                                                borderRadius: BorderRadius.only(
+                                                    bottomLeft: Radius.circular(ScreenAdaper.width(10)),
+                                                    bottomRight: Radius.circular(ScreenAdaper.width(10))
+                                                )
+                                            ),
+                                        ),
                                     )
                                 ],
                             ),

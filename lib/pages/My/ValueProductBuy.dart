@@ -83,17 +83,22 @@ class _PurchaseState extends State<Purchase>  {
                 children: <Widget>[
                     Text(name, style: TextStyle(
                         color: ColorClass.fontColor,
-                        fontSize: ScreenAdaper.fontSize(30)
+                        fontSize: ScreenAdaper.fontSize(26)
                     )),
-                    GestureDetector(
-                        onTap: () {
-                            Navigator.pop(_selfContext);
-                        },
-                        child: Icon(
-                            IconData(0xe633, fontFamily: "iconfont"),
-                            color: ColorClass.borderColor,
-                            size: ScreenAdaper.fontSize(30)
-                        )
+                    Container(
+                        width: ScreenAdaper.width(50),
+                        height: ScreenAdaper.width(50),
+                        child: IconButton(
+                            padding: EdgeInsets.all(0),
+                            onPressed: () {
+                                Navigator.pop(_selfContext);
+                            },
+                            icon: Icon(
+                                Icons.close,
+                                color: ColorClass.borderColor,
+                                size: ScreenAdaper.fontSize(60)
+                            )
+                        ),
                     )
                 ]
             )

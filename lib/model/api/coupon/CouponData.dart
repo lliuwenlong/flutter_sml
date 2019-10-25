@@ -72,7 +72,7 @@ class ListItem {
     String title;
     String type;
     String worth;
-
+    int times;
     ListItem(
         {this.couponSn,
         this.coverImage,
@@ -82,7 +82,8 @@ class ListItem {
         this.name,
         this.title,
         this.type,
-        this.worth});
+        this.worth,
+        this.times});
 
   ListItem.fromJson(Map<String, dynamic> json) {
         couponSn = json['couponSn'];
@@ -94,6 +95,7 @@ class ListItem {
         title = json['title'];
         type = json['type'];
         worth = json['worth'];
+        times = json['times'];
   }
 
     Map<String, dynamic> toJson() {
@@ -107,6 +109,7 @@ class ListItem {
         data['title'] = this.title;
         data['type'] = this.type;
         data['worth'] = this.worth;
+        data['times'] = this.times;
         return data;
     }
 }

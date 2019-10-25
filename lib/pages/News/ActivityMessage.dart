@@ -35,10 +35,10 @@ class _ActivityMessageState extends State<ActivityMessage> {
         Map response = await http.get("/api/v1/notice/data/notice", data: {
             "pageSize": 20,
             "pageNO": this._pageNO,
-            "type": "sysnotice",
+            "type": "notice",
         });
         if (response["code"] == 200) {
-            final NoticeApiModel articleModel = new NoticeApiModel.fromJson(response);
+            final NoticeApiModel articleModel = new NoticeApiModel.fromJson(response["data"]);
             if (isInit) {
                 setState(() {
                     noticeList = articleModel.data;

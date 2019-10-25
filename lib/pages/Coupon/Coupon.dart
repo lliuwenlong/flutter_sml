@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/pages/Accommodation/AccommodationDetal.dart';
+import 'package:flutter_sml/pages/Restaurant/RestaurantDetails.dart';
 import 'package:provider/provider.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
@@ -27,14 +29,19 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
     List beOverdueList = [];
     Map<String, Icon> iconMap = {
         "food": Icon(IconData(0xe659, fontFamily: "iconfont"), color: Color(0xFFf6cf70), size: ScreenAdaper.fontSize(80)),
-        "house": Icon(IconData(0xe659, fontFamily: "iconfont"),  color: Color(0xFFc1a786), size: ScreenAdaper.fontSize(80)),
+        "house": Icon(IconData(0xe657, fontFamily: "iconfont"),  color: Color(0xFFc1a786), size: ScreenAdaper.fontSize(80)),
     };
 
     Map<String, Icon> beOverdueIconMap = {
         "food": Icon(IconData(0xe659, fontFamily: "iconfont"), color: Color(0xFFaaaaaa), size: ScreenAdaper.fontSize(80)),
-        "house": Icon(IconData(0xe659, fontFamily: "iconfont"),  color: Color(0xFFaaaaaa), size: ScreenAdaper.fontSize(80)),
+        "house": Icon(IconData(0xe657, fontFamily: "iconfont"),  color: Color(0xFFaaaaaa), size: ScreenAdaper.fontSize(80)),
     };
 
+    Map<String, int> typeMap = {
+        "food": 1,
+        "nearplay": 3,
+        "shopping": 2
+    };
     @override
     void didChangeDependencies() {
         super.didChangeDependencies();
@@ -47,7 +54,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
         super.initState();
         _tabController = new TabController(
             vsync: this,
-            length: 2
+            length: 3
         );
     }
 
@@ -159,10 +166,10 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                         height: ScreenAdaper.height(80),
                                         child: ClipRRect(
                                             borderRadius: BorderRadius.circular(5),
-                                            child: icon[data.type] != null
+                                            child: data.firmId == 0 || data.firmId == null
                                                 ? icon[data.type]
                                                 : Image.network(
-                                                    data.coverImage,
+                                                    data.coverImage != null ? data.coverImage : "",
                                                     fit: BoxFit.cover,
                                                 ),
                                         ),
@@ -172,7 +179,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: <Widget>[
-                                            Text(data.name, style: TextStyle(
+                                            Text(data.name != null ? data.name : "", style: TextStyle(
                                                 color: isBeOverdue ? ColorClass.iconColor : Color(0XFF333333),
                                                 fontSize: ScreenAdaper.fontSize(28)
                                             )),
@@ -245,7 +252,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                     data.firmId==0?Text("平台赠送", style: TextStyle(
                                         color: isBeOverdue ? ColorClass.iconColor : ColorClass.fontColor,
                                         fontSize: ScreenAdaper.fontSize(28)
-                                    )):Text(data.title, style: TextStyle(
+                                    )):Text(data.title != null ? data.title : "", style: TextStyle(
                                         color: isBeOverdue ? ColorClass.iconColor : ColorClass.fontColor,
                                         fontSize: ScreenAdaper.fontSize(28)
                                     )),
@@ -266,15 +273,31 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                             child: OutlineButton(
                                                 padding: EdgeInsets.all(0),
                                                 onPressed: () {
-                                                  if(data.firmId == 0){
-                                                      if(data.type == 'house'){
-                                                          Navigator.pushNamed(context, '/accommodation');
-                                                      }else if(data.type == 'food'){
-                                                          Navigator.pushNamed(context, '/restaurant');
-                                                      }
-                                                  }else{
-                                                          Navigator.pushNamed(context, '/restaurant');
-                                                  }
+                                                    if(data.firmId == 0 || data.firmId == null){
+                                                        if (data.type == 'house') {
+                                                            Navigator.pushNamed(context, '/accommodation');
+                                                        } else if (data.type == 'havefun') {
+                                                            Navigator.pushNamed(context, '/entertainment');
+                                                        } else {
+                                                            Navigator.pushNamed(context, '/restaurant', arguments: {
+                                                                "type": this.typeMap[data.type]
+                                                            });
+                                                        }
+                                                    } else{
+                                                        if (data.type == 'house') {
+                                                            Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
+                                                                return new AccommodationDetal(id: data.firmId);
+                                                            }));
+                                                        } else if (data.type == 'havefun') {
+                                                            Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
+                                                                return new RestaurantDetails(id: data.firmId, type: 4);
+                                                            }));
+                                                        } else {
+                                                            Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
+                                                                return new RestaurantDetails(id: data.firmId, type: this.typeMap[data.type]);
+                                                            }));
+                                                        }
+                                                    }
                                                 },
                                                 child: Text("立即使用", style: TextStyle(
                                                     color: ColorClass.common,
@@ -331,7 +354,8 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                         Container(
                             child: Tab(child: Text("未使用")),
                         ),
-                        Tab(child: Text("已过期"))
+                        Tab(child: Text("已过期")),
+                        Tab(child: Text("已使用"))
                     ],
                     onTap: (int index) {
                         this._getData(isInit: true);
@@ -400,6 +424,9 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                     return this._cardItem(data,isBeOverdue: true);
                                 }
                             )
+                    ),
+                    Container(
+                        child: NullContent('暂无数据')
                     )
                 ]
             )

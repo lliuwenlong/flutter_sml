@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../services/ScreenAdaper.dart';
+import 'package:flutter_sml/common/CommonHandler.dart';
+import 'package:flutter_sml/services/ScreenAdaper.dart';
 import '../../common/Color.dart';
 import '../../components/AppBarWidget.dart';
 import '../../common/HttpUtil.dart';
@@ -33,6 +34,14 @@ class _AccommodationState extends State<Accommodation> {
         });
 
         if (response["code"] == 200) {
+            var loction = await getLoction();
+            if (loction != null) {
+                List data = response["data"]["list"];
+                data.forEach((item) {
+                    double distance = calculatedDistance(loction["latitude"], loction["longitude"], double.parse(item["latitude"]), double.parse(item["longitude"]));
+                    item["distance"] = distance;
+                });
+            }
             final res = new FoodModel.fromJson(response);
             if (isInit) {
                 setState(() {
@@ -73,7 +82,7 @@ class _AccommodationState extends State<Accommodation> {
         }
     }
 
-    Widget _label () {
+    Widget _label (String name) {
         return Container(
             padding: EdgeInsets.fromLTRB(
                 ScreenAdaper.width(10),
@@ -85,13 +94,13 @@ class _AccommodationState extends State<Accommodation> {
                 border: Border.all(color: Color(0XFFdac4a3), width: 1.0),
                 color: Color(0XFFf8f5e8)
             ),
-            child: Text("10元优惠券", style: TextStyle(
+            child: Text("${name}", style: TextStyle(
                 color: ColorClass.fontRed,
                 fontSize: ScreenAdaper.fontSize(20)
             )),
         );
     }
-    Widget _listItem (String name, String type, int price, String city, String url) {
+    Widget _listItem (String name, String type, int price, String city, String url, String distance, List coupons) {
         return Container(
             margin: EdgeInsets.only(top: ScreenAdaper.height(20)),
             decoration: BoxDecoration(
@@ -141,7 +150,7 @@ class _AccommodationState extends State<Accommodation> {
                                                     flex: 1,
                                                     child: Container(
                                                         alignment: Alignment.bottomRight,
-                                                        child: Text("<500米", style: TextStyle(
+                                                        child: Text("${distance}", style: TextStyle(
                                                             color: ColorClass.fontColor,
                                                             fontSize: ScreenAdaper.fontSize(24)
                                                         )
@@ -178,10 +187,9 @@ class _AccommodationState extends State<Accommodation> {
                                         Wrap(
                                             spacing: ScreenAdaper.width(10),
                                             runSpacing: ScreenAdaper.height(10),
-                                            children: <Widget>[
-                                                this._label(),
-                                                this._label()
-                                            ]
+                                            children: (coupons.length > 2 ? coupons.take(2) : coupons).map((item) {
+                                                return _label(item);
+                                            }).toList()
                                         )
                                     ]
                                 )
@@ -227,6 +235,7 @@ class _AccommodationState extends State<Accommodation> {
                     child: ListView.builder(
                         itemBuilder: (BuildContext context, int index) {
                             ListModel data = this.list[index];
+                            List coupons = data.coupons != null ?  data.coupons.split(',') : [];
                             return GestureDetector(
                                 onTap: () {
                                     Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
@@ -235,10 +244,12 @@ class _AccommodationState extends State<Accommodation> {
                                 },
                                 child: this._listItem(
                                     data.name,
-                                    "豪华型",
+                                    data.tags,
                                     int.parse(data.perPrice),
                                     "${data.city}${data.county}${data.address}",
-                                    data.logo
+                                    data.logo,
+                                    getDistanceText(data.distance),
+                                    coupons
                                 )
                             );
                         },

@@ -30,9 +30,11 @@ class _ValueAddedServicesState extends State<ValueAddedServices> {
   }
 
     _getData({isInit:false}) async {
+        print(this.arguments);
       	Map response = await this.http.post('/api/v1/vp/data', data: {
           "pageNO":1,
-          "pageSize":10
+          "pageSize":10,
+          "woodId": widget.arguments["woodId"],
       	});
 		if(response['code'] == 200){
 			ValueAddedDataModel  res = new ValueAddedDataModel.fromJson(response);

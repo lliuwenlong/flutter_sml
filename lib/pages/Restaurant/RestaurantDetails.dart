@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart' hide NestedScrollView;
+import 'package:flutter/material.dart' as prefix0;
 
 import 'package:flutter_sml/components/oldNestedScrollView/nested_scroll_view_inner_scroll_position_key_widget.dart';
 import 'package:flutter_custom_calendar/flutter_custom_calendar.dart';
@@ -23,6 +24,7 @@ import '../../model/api/restaurant/FoodFirmApiModel.dart';
 import '../../model/api/restaurant/CouponsApiModel.dart';
 import '../../model/api/restaurant/AppraiseDataModelApi.dart';
 import './ServiceHtml.dart';
+import 'package:intl/intl.dart';
 
 class RestaurantDetails extends StatefulWidget {
     int id;
@@ -192,6 +194,12 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
         }
     }
 
+    dateFormData (String timee) {
+        DateTime time = DateTime.parse(timee);
+        DateFormat formatter = new DateFormat('yyyy-MM-dd');
+        return formatter.format(time);
+    }
+
     // label 标签
     Widget _label (String name) {
         return Container(
@@ -280,7 +288,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                                     color: ColorClass.fontRed,
                                                     fontSize: ScreenAdaper.fontSize(30)
                                                 )),
-                                                Text("有效期至${endTime}", style: TextStyle(
+                                                Text("有效期至${dateFormData(endTime)}", style: TextStyle(
                                                     color: ColorClass.fontColor,
                                                     fontSize: ScreenAdaper.fontSize(24)
                                                 ))
@@ -437,7 +445,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                 child: Wrap(
                                     spacing: ScreenAdaper.width(10),
                                     runSpacing: ScreenAdaper.height(10),
-                                    children: this.couponsData.map((item) {
+                                    children: (this.couponsData.length > 2 ? this.couponsData.take(2) : this.couponsData).map((item) {
                                         return _label(item.name);
                                     }).toList(),
                                 )
@@ -567,6 +575,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
         return SliverAppBar(
             title: Text(this.offset > 20 ? "${this.firm.name}" : "", style: TextStyle(
                 color: Colors.black,
+                fontSize: ScreenAdaper.fontSize(28)
             )),
             centerTitle: true,
             iconTheme: IconThemeData(color: Colors.black),
@@ -732,7 +741,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
         );
         var pinnedHeaderHeight = statusBarHeight + kToolbarHeight;
         return Scaffold(
-            bottomSheet: Container(
+            bottomSheet:  widget.type ==4 ? null : Container(
                 width: double.infinity,
                 height: ScreenAdaper.height(110) + MediaQueryData.fromWindow(window).padding.bottom,
                 padding: EdgeInsets.only(
@@ -751,16 +760,18 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                     elevation: 0,
                     onPressed: () {
                         Navigator.pushNamed(context, "/payment", arguments: {
-                            "amount": 155
+                            "amount": 155,
+                            "type": widget.type,
+                            "firmId": widget.id
                         });
                     },
                     color: ColorClass.common,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(ScreenAdaper.width(10))
                     ),
-                    child: Text("付款", style: TextStyle(
+                    child: Text(widget.type == 1 ? "买单" : "付款", style: TextStyle(
                         color: Colors.white,
-                        fontSize: ScreenAdaper.fontSize(40)
+                        fontSize: ScreenAdaper.fontSize(28)
                     ))
                 )
             ),
@@ -823,7 +834,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                                         return GestureDetector(
                                                             onTap: () {
                                                                 Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
-                                                                    return new ServiceHtml(good.goodsId, widget.type);
+                                                                    return new ServiceHtml(good.goodsId, widget.type, price: good.price);
                                                                 }));
                                                             },
                                                             child: FoodServiceItem(
@@ -895,7 +906,10 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                                     Business("商家名称", subTitle: this.firm.name),
                                                     Business("商家分类", subTitle: this.firm.tags),
                                                     Business("商家地址", subTitle: '${this.firm.province}${this.firm.city}${this.firm.county}${this.firm.address}'),
-                                                    Business("商家电话", subTitle: this.firm.telphone, isBorder: false),
+                                                    GestureDetector(
+                                                        onTap: _launchPhone,
+                                                        child: Business("商家电话", subTitle: this.firm.telphone, isBorder: false, color: ColorClass.common),
+                                                    ),
                                                     Container(
                                                         margin: EdgeInsets.only(
                                                             top: ScreenAdaper.height(20)

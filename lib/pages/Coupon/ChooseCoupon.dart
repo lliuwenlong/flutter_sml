@@ -8,7 +8,7 @@ import '../../components/LoadingSm.dart';
 import '../../components/NullContent.dart';
 class ChooseCoupon extends StatefulWidget {
   final arguments;
-    ChooseCoupon({Key key,this.arguments}) : super(key: key);
+    ChooseCoupon({Key key, this.arguments}) : super(key: key);
     _ChooseCouponState createState() => _ChooseCouponState(arguments:this.arguments);
 }
 
@@ -22,6 +22,7 @@ class _ChooseCouponState extends State<ChooseCoupon> with SingleTickerProviderSt
 	int _isChooseId ;
     @override
     void didChangeDependencies() {
+        print(arguments);
         super.didChangeDependencies();
          _userModel = Provider.of<User>(context);
 		 _isChooseId = arguments['couponId']!=null?arguments['couponId']:0;
@@ -29,6 +30,7 @@ class _ChooseCouponState extends State<ChooseCoupon> with SingleTickerProviderSt
     }
 
     _getData () async{
+        print(this.arguments['firmId']);
 		Map response = await this.http.get('/api/v1/coupon/user',data: {
 			'firmId': this.arguments['firmId'],
 			'userId': this._userModel.userId
@@ -55,14 +57,14 @@ class _ChooseCouponState extends State<ChooseCoupon> with SingleTickerProviderSt
 					setState(() {
 					  	_isChooseId = data['id'];
 					});
-					Navigator.of(context).pushReplacementNamed('/payment',arguments:{
-						'couponId':data['id'],
-						'firmId':arguments['firmId'],
-						'type':arguments['type'],
-						'orderSn':arguments['orderSn'],
-						'amount':arguments['amount'],
-						'worth':data['worth']
-					});
+                    Navigator.of(context).pop({
+                        'couponId': data['id'],
+						'firmId': arguments['firmId'],
+						'type': arguments['type'],
+						'orderSn': arguments['orderSn'],
+						'amount': arguments['amount'],
+						'worth': data['worth']
+                    });
 				},
                 child: Container(
 					decoration: BoxDecoration(
@@ -99,7 +101,7 @@ class _ChooseCouponState extends State<ChooseCoupon> with SingleTickerProviderSt
 										),
 										Expanded(
 											flex: 1,
-											child: Container(
+											child: data.firmId == 0 ? SizedBox() : Container(
 												height: ScreenAdaper.height(80),
 												child: Stack(
 													children: <Widget>[

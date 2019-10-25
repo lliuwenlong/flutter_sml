@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/model/store/user/User.dart';
 import 'package:provider/provider.dart';
 import '../../services/ScreenAdaper.dart';
 import '../Shop/Purchase.dart';
@@ -8,6 +12,7 @@ import '../../model/api/shop/ShopModel.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../components/LoadingSm.dart';
 import '../../model/store/shop/Shop.dart';
+import 'package:fluwx/fluwx.dart' as fluwx;
 
 class ShopPage extends StatefulWidget {
     ShopPage({Key key}) : super(key: key);
@@ -20,12 +25,24 @@ class _ShopPageState extends State<ShopPage> {
     int _page = 1;
     bool isLoading = true;
     List<Data> shopList = [];
+    HttpUtil http = HttpUtil();
+    User userModel;
     @override
     initState() {
         super.initState();
         this._getData(isInit: true);
+        fluwx.responseFromPayment.listen((response){
+            Provider.of<ShopModel>(context).changeIsDisabled(false);
+            if (response.errCode == 0) {
+                nav();
+            }
+        });
     }
 
+    nav () {
+        Navigator.pop(context);
+        Navigator.pushNamed(context, '/order'); 
+    }
     _getData ({bool isInit: false}) async {
         Map<String, dynamic> response = await HttpUtil().post(
             "/api/v1/wood/shop/",
@@ -74,9 +91,47 @@ class _ShopPageState extends State<ShopPage> {
             _refreshController.loadComplete();
         }
     }
+    onPay (String type, int number, int id, int forestTypes) async {
+        int userId = Provider.of<User>(context).userId;
+        if (type == "wx") {
+            Map res = await this.http.post("/api/v12/wxpay/unifiedorder", params: {
+                "wood": {
+                    "channel": "Wechat",
+                    "num": number,
+                    "platform": Platform.isAndroid ? "Android" : "IOS",
+                    "tradeType": "APP",
+                    "userId": userId,
+                    "woodId": id,
+                    "districtId": forestTypes
+                },
+                "goodsType": "tree"
+            });
+            if (res["code"] == 200) {
+                var data = jsonDecode(res["data"]);
+                await fluwx.pay(appId: "wxa22d7212da062286", 
+                    partnerId: data["partnerid"],
+                    prepayId: data["prepayid"],
+                    packageValue: data["package"],
+                    nonceStr: data["noncestr"],
+                    timeStamp: int.parse(data["timestamp"]),
+                    sign: data["sign"].toString(),
+                    signType: data["signType"]
+                );
+            }
+        }
+        // fluwx.pay( appId: 'wxd930ea5d5a258f4f', 
+        //     partnerId: '1900000109',
+        //     prepayId: '1101000000140415649af9fc314aa427',
+        //     packageValue: 'Sign=WXPay',
+        //     nonceStr: '1101000000140429eb40476f8896f4c9',
+        //     timeStamp: 1398746574,
+        //     sign: '7FFECB600D7157C5AA49810D2D8F28BC2811827B'
+        // );
+    }
 
     _purchase (Data val) {
-        Provider.of<ShopModel>(context).setShopNum(1);
+        Provider.of<ShopModel>(context).reset();
+
 		showModalBottomSheet(
 			context: this._selfContext,
 			shape:  RoundedRectangleBorder(
@@ -86,7 +141,9 @@ class _ShopPageState extends State<ShopPage> {
 				)
 			),
 			builder: (BuildContext context) {
-				return Purchase(id: val.woodId, price: double.parse(val.price));
+				return Purchase(id: val.woodId, price: double.parse(val.price), onPay: (String type, int number, int forestTypes) {
+                    this.onPay(type, number, val.woodId, forestTypes);
+                });
 			}
 		);
 	}
@@ -141,6 +198,25 @@ class _ShopPageState extends State<ShopPage> {
                                         color: Colors.white,
                                         fontSize: ScreenAdaper.fontSize(30)
                                     )),
+                                ),
+                            ),
+                            Positioned(
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                child: Container(
+                                    width: double.infinity,
+                                    height: ScreenAdaper.height(70),
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: AssetImage("images/bg-option.png"),
+                                            fit: BoxFit.fill
+                                        ),
+                                        borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(ScreenAdaper.width(10)),
+                                            bottomRight: Radius.circular(ScreenAdaper.width(10))
+                                        )
+                                    ),
                                 ),
                             )
                         ],

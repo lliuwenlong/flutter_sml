@@ -29,6 +29,9 @@ import '../../model/api/restaurant/AppraiseDataModelApi.dart';
 import 'package:flutter_sml/model/api/restaurant/CouponsApiModel.dart';
 import 'package:flutter_sml/model/api/restaurant/FoodFirmApiModel.dart';
 
+import 'PlaceOrder.dart';
+import 'package:intl/intl.dart';
+
 class AccommodationDetal extends StatefulWidget {
     int id;
     AccommodationDetal({Key key, this.id}) : super(key: key);
@@ -113,6 +116,35 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
         _tabController.dispose();
     }
     
+    dateFormData (String timee) {
+        DateTime time = DateTime.parse(timee);
+        DateFormat formatter = new DateFormat('yyyy-MM-dd');
+        return formatter.format(time);
+    }
+
+    placeOrder (String title, String price, int goodId) {
+        if (this.dayNum != 0) {
+            Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
+                return new PlaceOrder(
+                    title: title,
+                    startTime: startTime,
+                    endTime: endTime,
+                    price: price,
+                    goodId: goodId,
+                    firmId: this.firm.firmId
+                );
+            }));
+        } else {
+            Fluttertoast.showToast(
+                msg: "请选择入住时间",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.TOP,
+                timeInSecForIos: 1,
+                textColor: Colors.white,
+                fontSize: ScreenAdaper.fontSize(30)
+            );
+        }
+    }
     void showModalBottomSheetHandler (int index) {
 		Goods good = this.firm.goods[index];
         ShowBottomModelAlert.showModalBottomSheet(
@@ -127,15 +159,19 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                 return Container(
                     color: Colors.white,
                     child: Reserve(
+                        firm: this.firm,
 						title: good.title,
-						area:good.area,
-						room:good.room,
-						windows:good.window,
-						bed:good.bed,
-						intnet:good.intnet,
-						bathroom:good.bathroom,
-						picture:good.picture,
-						price:good.price
+						area: good.area != null ? good.area : "",
+                        room:good.room != null ? good.room : "",
+                        windows:good.window != null ? good.window : "",
+                        bed:good.bed != null ? good.bed : "",
+                        intnet:good.intnet != null ? good.intnet : "",
+                        bathroom:good.bathroom != null ? good.bathroom : "",
+                        picture:good.picture != null ? good.picture : "",
+                        price:good.price != null ? good.price : "",
+                        placeOrder: () {
+                            this.placeOrder(good.title, good.price, good.goodsId);
+                        }
 					)
                 );
             }
@@ -326,7 +362,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                                     color: ColorClass.fontRed,
                                                     fontSize: ScreenAdaper.fontSize(30)
                                                 )),
-                                                Text("有效期至${endTime}", style: TextStyle(
+                                                Text("有效期至${dateFormData(endTime)}", style: TextStyle(
                                                     color: ColorClass.fontColor,
                                                     fontSize: ScreenAdaper.fontSize(24)
                                                 ))
@@ -505,7 +541,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                 child: Wrap(
                                     spacing: ScreenAdaper.width(10),
                                     runSpacing: ScreenAdaper.height(10),
-                                    children: this.couponsData.map((item) {
+                                    children: (this.couponsData.length > 2 ? this.couponsData.take(2) : this.couponsData).map((item) {
                                         return _label(item.name);
                                     }).toList(),
                                 )
@@ -644,6 +680,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
         return SliverAppBar(
             title: Text(this.offset > 20 ? this.firm.name : "", style: TextStyle(
                 color: Colors.black,
+                fontSize: ScreenAdaper.fontSize(30)
             )),
             centerTitle: true,
             iconTheme: IconThemeData(color: Colors.black),
@@ -974,7 +1011,10 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                                                 Business("商家名称", subTitle: this.firm.name),
                                                 Business("商家分类", subTitle: this.firm.tags),
                                                 Business("商家地址", subTitle: '${this.firm.province}${this.firm.city}${this.firm.county}${this.firm.address}'),
-                                                Business("商家电话", subTitle: this.firm.telphone, isBorder: false),
+                                                GestureDetector(
+                                                    onTap: _launchPhone,
+                                                    child: Business("商家电话", subTitle: this.firm.telphone, isBorder: false, color: ColorClass.common),
+                                                ),
                                                 Container(
                                                     margin: EdgeInsets.only(
                                                         top: ScreenAdaper.height(20)

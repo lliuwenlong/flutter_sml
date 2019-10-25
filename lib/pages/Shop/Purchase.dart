@@ -6,15 +6,22 @@ import '../../common/Color.dart';
 import '../../model/api/shop/DistsModel.dart';
 import '../../common/HttpUtil.dart';
 import '../../model/store/shop/Shop.dart';
+import './PurchaseAgreement.dart';
 import 'dart:ui';
+
+typedef void OnPay(String type, int number, int regionId);
 
 class Purchase extends StatefulWidget {
     int id;
     double price;
     int baseid;
     String type;
-    Purchase({Key key, this.id, this.price, this.baseid, this.type});
-    _PurchaseState createState() => _PurchaseState(id: this.id, price: this.price, baseid: this.baseid, type: this.type);
+    OnPay onPay;
+    Purchase({Key key, this.id, this.price, this.baseid, this.type, this.onPay});
+    _PurchaseState createState() => _PurchaseState(
+        id: this.id, price: this.price,
+        baseid: this.baseid, type: this.type
+    );
 }
 
 class _PurchaseState extends State<Purchase>  {
@@ -29,6 +36,7 @@ class _PurchaseState extends State<Purchase>  {
     _PurchaseState({this.id = 0, Key key, this.price, this.baseid, this.type});
     bool isPay = false;
     String payType = "wx";
+    bool isDisabled = false;
     @override
     void didChangeDependencies() {
         super.didChangeDependencies();
@@ -54,15 +62,20 @@ class _PurchaseState extends State<Purchase>  {
         }
     }
 
-    _onPay () {
-        print(this.payType);
+    _onPay (ShopModel shopModel) async {
+        shopModel.changeIsDisabled(true);
+        if (widget.onPay != null) {
+            widget.onPay(this.payType, this.shopModel.shopNum, this.shopModel.forestTypes);
+        }
     }
+    
     Widget _choiceChip (String name, int curStatus, {int status = 0, Function onTapHandler}) {
         bool selected = curStatus == status;
         return Container(
             child: ChoiceChip(
                 label: Text(name, style: TextStyle(
-                    color: selected ? Color(0XFF22b0a1) : ColorClass.titleColor
+                    color: selected ? Color(0XFF22b0a1) : ColorClass.titleColor,
+                    fontSize: ScreenAdaper.fontSize(26)
                 )),
                 padding: EdgeInsets.fromLTRB(
                     ScreenAdaper.width(20),
@@ -109,16 +122,22 @@ class _PurchaseState extends State<Purchase>  {
                         color: ColorClass.fontColor,
                         fontSize: ScreenAdaper.fontSize(30)
                     )),
-                    GestureDetector(
-                        onTap: () {
-                            Navigator.pop(_selfContext);
-                        },
-                        child: Icon(
-                            IconData(0xe633, fontFamily: "iconfont"),
-                            color: ColorClass.borderColor,
-                            size: ScreenAdaper.fontSize(30)
-                        )
+                    Container(
+                        width: ScreenAdaper.width(50),
+                        height: ScreenAdaper.width(50),
+                        child: IconButton(
+                            padding: EdgeInsets.all(0),
+                            onPressed: () {
+                                Navigator.pop(_selfContext);
+                            },
+                            icon: Icon(
+                                Icons.close,
+                                color: ColorClass.borderColor,
+                                size: ScreenAdaper.fontSize(60)
+                            )
+                        ),
                     )
+                    
                 ]
             )
         );
@@ -196,18 +215,28 @@ class _PurchaseState extends State<Purchase>  {
                                         )
                                     ),
                                     child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: <Widget>[
-                                            Container(
-                                                width: ScreenAdaper.height(50),
-                                                height: ScreenAdaper.height(50),
-                                                child: IconButton(
-                                                    onPressed: () {
-                                                        shopModel.setShopNum(shopModel.shopNum - 1);
-                                                    },
-                                                    icon: Icon(IconData(0xe635, fontFamily: "iconfont")),
-                                                    color: shopModel.shopNum == 1 ? Color(0xFFd9d9d9) : ColorClass.fontRed,
-                                                    iconSize: ScreenAdaper.fontSize(20),
-                                                )
+                                            GestureDetector(
+                                                child: Container(
+                                                    width: ScreenAdaper.height(50),
+                                                    height: ScreenAdaper.height(50),
+                                                    child: RaisedButton(
+                                                        padding: EdgeInsets.all(0),
+                                                        elevation: 0,
+                                                        highlightColor: Color.fromRGBO(0, 0, 0, 0),
+                                                        highlightElevation: 0,
+                                                        color: Color.fromRGBO(0, 0, 0, 0),
+                                                        onPressed: () {
+                                                            shopModel.setShopNum(shopModel.shopNum - 1);
+                                                        },
+                                                        child: Icon(
+                                                            IconData(0xe635, fontFamily: "iconfont"),
+                                                            color: shopModel.shopNum == 1 ? Color(0xFFd9d9d9) : ColorClass.fontRed,
+                                                            size: ScreenAdaper.fontSize(20),
+                                                        )
+                                                    )
+                                                ),
                                             ),
                                             Container(
                                                 height: ScreenAdaper.height(50),
@@ -233,13 +262,20 @@ class _PurchaseState extends State<Purchase>  {
                                             Container(
                                                 width: ScreenAdaper.height(50),
                                                 height: ScreenAdaper.height(50),
-                                                child: IconButton(
+                                                child: RaisedButton(
+                                                    padding: EdgeInsets.all(0),
+                                                    elevation: 0,
+                                                    color: Color.fromRGBO(0, 0, 0, 0),
+                                                    highlightColor: Color.fromRGBO(0, 0, 0, 0),
+                                                    highlightElevation: 0,
                                                     onPressed: () {
                                                         shopModel.setShopNum(shopModel.shopNum + 1);
                                                     },
-                                                    icon: Icon(IconData(0xe634, fontFamily: "iconfont")),
-                                                    color: ColorClass.fontRed,
-                                                    iconSize: ScreenAdaper.fontSize(20),
+                                                    child: Icon(
+                                                        IconData(0xe634, fontFamily: "iconfont"),
+                                                        size: ScreenAdaper.fontSize(20),
+                                                        color: ColorClass.fontRed
+                                                    )
                                                 )
                                             )
                                         ]
@@ -368,10 +404,17 @@ class _PurchaseState extends State<Purchase>  {
                                     fontSize: ScreenAdaper.fontSize(22),
                                     color: ColorClass.subTitleColor
                                 )),
-                                Text("神木林购买协议", style: TextStyle(
-                                    fontSize: ScreenAdaper.fontSize(22),
-                                    color: ColorClass.common
-                                )),
+                                GestureDetector(
+                                    onTap: () {
+                                        Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
+                                            return PurchaseAgreement();
+                                        }));
+                                    },
+                                    child: Text("神木林购买协议", style: TextStyle(
+                                        fontSize: ScreenAdaper.fontSize(22),
+                                        color: ColorClass.common
+                                    )),
+                                ),
                                 Text(",支付代表您接受本协议内容", style: TextStyle(
                                     fontSize: ScreenAdaper.fontSize(22),
                                     color: ColorClass.subTitleColor
@@ -384,7 +427,7 @@ class _PurchaseState extends State<Purchase>  {
         );
     }
 
-    Widget _button ({Function onTap}) {
+    Widget _button ({Function onTap, ShopModel shopModel}) {
         return Container(
             width: double.infinity,
             padding: EdgeInsets.fromLTRB(
@@ -397,9 +440,10 @@ class _PurchaseState extends State<Purchase>  {
                 height: ScreenAdaper.height(88),
                 child: RaisedButton(
                     elevation: 0,
-                    onPressed: () {
+                    onPressed: shopModel != null && shopModel.isDisabled ? null : () {
                         onTap != null && onTap();
                     },
+                    disabledColor: Color(0xFF86d4ca),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(ScreenAdaper.width(10))
                     ),
@@ -442,7 +486,9 @@ class _PurchaseState extends State<Purchase>  {
                             children: <Widget>[
                                 _header("确认支付"),
                                 _paymentType(),
-                                _button(onTap: _onPay)
+                                _button(shopModel: shopModel, onTap: () {
+                                    _onPay(shopModel);
+                                })
                             ]
                         );
                     },

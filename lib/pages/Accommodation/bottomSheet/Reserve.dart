@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/components/calendarPage/calendar_page_viewModel.dart';
+import 'package:flutter_sml/model/api/restaurant/FoodFirmApiModel.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import '../../../services/ScreenAdaper.dart';
 import '../../../common/Color.dart';
@@ -14,7 +16,11 @@ class Reserve extends StatelessWidget {
     String bathroom;//卫浴
     String picture;//封面图
     String price;//价格
-    Reserve({Key key,this.title,this.area,this.room,this.windows,this.bed,this.intnet,this.bathroom,this.picture,this.price});
+    DayModel startTime;
+    DayModel endTime;
+    Function placeOrder;
+    FoodFirmApiModel firm;
+    Reserve({Key key,this.title,this.area,this.room,this.windows,this.bed,this.intnet,this.bathroom,this.picture,this.price,  this.placeOrder, this.firm});
 
     Widget _header (String name) {
         return Container(
@@ -36,14 +42,19 @@ class Reserve extends StatelessWidget {
                         color: ColorClass.fontColor,
                         fontSize: ScreenAdaper.fontSize(30)
                     )),
-                    GestureDetector(
-                        onTap: () {
-                            Navigator.pop(_selfContext);
-                        },
-                        child: Icon(
-                            IconData(0xe633, fontFamily: "iconfont"),
-                            color: ColorClass.borderColor,
-                            size: ScreenAdaper.fontSize(30)
+                    Container(
+                        width: ScreenAdaper.width(50),
+                        height: ScreenAdaper.width(50),
+                        child: IconButton(
+                            padding: EdgeInsets.all(0),
+                            onPressed: () {
+                                Navigator.pop(_selfContext);
+                            },
+                            icon: Icon(
+                                Icons.close,
+                                color: ColorClass.borderColor,
+                                size: ScreenAdaper.fontSize(60)
+                            )
                         )
                     )
                 ]
@@ -237,7 +248,7 @@ class Reserve extends StatelessWidget {
                                             borderRadius: BorderRadius.zero
                                         ),
                                         onPressed: () {
-                                            Navigator.pushNamed(context, "/placeOrder");
+                                            this.placeOrder != null && this.placeOrder();
                                         },
                                         color: ColorClass.common,
                                         child: Text("在线预订，商家确认后付款", style: TextStyle(
