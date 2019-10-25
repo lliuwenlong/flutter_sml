@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_sml/model/store/user/User.dart';
 import 'package:provider/provider.dart';
+import 'package:sy_flutter_wechat/sy_flutter_wechat.dart';
 import '../../services/ScreenAdaper.dart';
 import '../Shop/Purchase.dart';
 import '../../components/AppBarWidget.dart';
@@ -12,7 +13,7 @@ import '../../model/api/shop/ShopModel.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../components/LoadingSm.dart';
 import '../../model/store/shop/Shop.dart';
-import 'package:fluwx/fluwx.dart' as fluwx;
+// import 'package:fluwx/fluwx.dart' as fluwx;
 
 class ShopPage extends StatefulWidget {
     ShopPage({Key key}) : super(key: key);
@@ -31,12 +32,12 @@ class _ShopPageState extends State<ShopPage> {
     initState() {
         super.initState();
         this._getData(isInit: true);
-        fluwx.responseFromPayment.listen((response){
-            Provider.of<ShopModel>(context).changeIsDisabled(false);
-            if (response.errCode == 0) {
-                nav();
-            }
-        });
+        // fluwx.responseFromPayment.listen((response){
+        //     Provider.of<ShopModel>(context).changeIsDisabled(false);
+        //     if (response.errCode == 0) {
+        //         nav();
+        //     }
+        // });
     }
 
     nav () {
@@ -108,25 +109,23 @@ class _ShopPageState extends State<ShopPage> {
             });
             if (res["code"] == 200) {
                 var data = jsonDecode(res["data"]);
-                await fluwx.pay(appId: "wxa22d7212da062286", 
-                    partnerId: data["partnerid"],
-                    prepayId: data["prepayid"],
-                    packageValue: data["package"],
-                    nonceStr: data["noncestr"],
-                    timeStamp: int.parse(data["timestamp"]),
-                    sign: data["sign"].toString(),
-                    signType: data["signType"]
-                );
+                Map<String, String> payInfo = {
+                    "appid":"wxa22d7212da062286",
+                    "partnerid": data["partnerid"],
+                    "prepayid": data["prepayid"],
+                    "package": "Sign=WXPay",
+                    "noncestr": data["noncestr"],
+                    "timestamp": data["timestamp"],
+                    "sign": data["sign"].toString()
+                };
+
+                SyPayResult payResult = await SyFlutterWechat.pay(SyPayInfo.fromJson(payInfo));
+                Provider.of<ShopModel>(context).changeIsDisabled(false);
+                if (payResult == SyPayResult.success) {
+                    this.nav();
+                }
             }
         }
-        // fluwx.pay( appId: 'wxd930ea5d5a258f4f', 
-        //     partnerId: '1900000109',
-        //     prepayId: '1101000000140415649af9fc314aa427',
-        //     packageValue: 'Sign=WXPay',
-        //     nonceStr: '1101000000140429eb40476f8896f4c9',
-        //     timeStamp: 1398746574,
-        //     sign: '7FFECB600D7157C5AA49810D2D8F28BC2811827B'
-        // );
     }
 
     _purchase (Data val) {

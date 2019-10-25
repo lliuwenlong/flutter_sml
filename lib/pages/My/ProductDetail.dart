@@ -432,7 +432,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                   alignment: WrapAlignment.start,
                                   spacing: 0,
                                   children: <Widget>[
-                                    this._treeInfo('树龄','${ detailData['treeLife']}年生'),
+                                    this._treeInfo('树龄','${ detailData['treeLife']}'),
                                     this._treeInfo('枝条数','${detailData['branch']}' ),
                                     this._treeInfo('树维', detailData['cricle']),
                                     this._treeInfo('树高', detailData['height'])

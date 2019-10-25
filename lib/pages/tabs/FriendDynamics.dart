@@ -5,8 +5,8 @@ import 'package:flutter_sml/components/AppBarWidget.dart';
 import 'package:flutter_sml/components/MyUnderlineIndicator.dart';
 import 'package:flutter_sml/components/NullContent.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:fluwx/fluwx.dart' as fluwx;
-import 'package:fluwx/fluwx.dart';
+// import 'package:fluwx/fluwx.dart' as fluwx;
+// import 'package:fluwx/fluwx.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
@@ -100,14 +100,14 @@ class _FriendDynamicsPageState extends State<FriendDynamicsPage> with SingleTick
    
     _setShare(int type) async {
         if (Platform.isAndroid) {
-            await fluwx.share(WeChatShareWebPageModel(
-                transaction: "树友圈详情",
-                webPage: "http://192.168.2.121:8081/app/#/evaluate",
-                thumbnail: "",
-                title: "树友圈详情",
-                description: "树友圈详情",
-                scene: type == 1 ? WeChatScene.SESSION : WeChatScene.TIMELINE
-            ));
+            // await fluwx.share(WeChatShareWebPageModel(
+            //     transaction: "树友圈详情",
+            //     webPage: "http://192.168.2.121:8081/app/#/evaluate",
+            //     thumbnail: "",
+            //     title: "树友圈详情",
+            //     description: "树友圈详情",
+            //     scene: type == 1 ? WeChatScene.SESSION : WeChatScene.TIMELINE
+            // ));
         }
         Map response = await this.http.post("http://api.zhongyunkj.cn/api/v1/circle/msg/${this.infoId}/share?type=1");
         if (response["code"] == 200) {

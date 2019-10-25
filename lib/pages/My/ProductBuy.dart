@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/pages/Shop/PurchaseAgreement.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
 import '../../common/HttpUtil.dart';
-import 'package:fluwx/fluwx.dart' as fluwx;
+// import 'package:fluwx/fluwx.dart' as fluwx;
 import 'dart:ui';
 
 class ProductBuy extends StatefulWidget {
@@ -35,14 +36,14 @@ class _ProductBuyState extends State<ProductBuy>  {
     @override
     initState () {
         super.initState();
-        fluwx.responseFromPayment.listen((response){
-            setState(() {
-                this.isDisabled = false;
-            });
-            if (response.errCode == 0) {
-                Navigator.pushReplacementNamed(context, "/order");
-            }
-        });
+        // fluwx.responseFromPayment.listen((response){
+        //     setState(() {
+        //         this.isDisabled = false;
+        //     });
+        //     if (response.errCode == 0) {
+        //         Navigator.pushReplacementNamed(context, "/order");
+        //     }
+        // });
     }
     _payment () async {
         setState(() {
@@ -60,15 +61,15 @@ class _ProductBuyState extends State<ProductBuy>  {
         });
         if (res["code"] == 200) {
             var data = jsonDecode(res["data"]);
-            await fluwx.pay(appId: "wxa22d7212da062286", 
-                partnerId: data["partnerid"],
-                prepayId: data["prepayid"],
-                packageValue: data["package"],
-                nonceStr: data["noncestr"],
-                timeStamp: int.parse(data["timestamp"]),
-                sign: data["sign"].toString(),
-                signType: data["signType"]
-            );
+            // await fluwx.pay(appId: "wxa22d7212da062286", 
+            //     partnerId: data["partnerid"],
+            //     prepayId: data["prepayid"],
+            //     packageValue: data["package"],
+            //     nonceStr: data["noncestr"],
+            //     timeStamp: int.parse(data["timestamp"]),
+            //     sign: data["sign"].toString(),
+            //     signType: data["signType"]
+            // );
         }
     }
     _onPay () {
@@ -232,10 +233,17 @@ class _ProductBuyState extends State<ProductBuy>  {
                                     fontSize: ScreenAdaper.fontSize(22),
                                     color: ColorClass.subTitleColor
                                 )),
-                                Text("神木林购买协议", style: TextStyle(
-                                    fontSize: ScreenAdaper.fontSize(22),
-                                    color: ColorClass.common
-                                )),
+                                GestureDetector(
+                                    onTap: () {
+                                        Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
+                                            return PurchaseAgreement();
+                                        }));
+                                    },
+                                    child: Text("神木林购买协议", style: TextStyle(
+                                        fontSize: ScreenAdaper.fontSize(22),
+                                        color: ColorClass.common
+                                    )),
+                                ),
                                 Text(",支付代表您接受本协议内容", style: TextStyle(
                                     fontSize: ScreenAdaper.fontSize(22),
                                     color: ColorClass.subTitleColor
@@ -264,6 +272,7 @@ class _ProductBuyState extends State<ProductBuy>  {
                     onPressed: this.isDisabled ? null : () {
                         onTap != null && onTap();
                     },
+                    disabledColor: Color(0xFF86d4ca),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(ScreenAdaper.width(10))
                     ),

@@ -16,10 +16,12 @@ import 'model/store/shop/Shop.dart';
 import 'model/store/user/User.dart';
 import 'dart:ui';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:fluwx/fluwx.dart' as fluwx;
+// import 'package:fluwx/fluwx.dart' as fluwx;
 import './common/HttpUtil.dart';
 import './components/AppFuncBrowse.dart';
 import 'package:amap_location/amap_location.dart';
+import 'package:sy_flutter_wechat/sy_flutter_wechat.dart';
+
 
 void main() {
     AMapLocationClient.setApiKey("022af4564933e753fc99559734e3edfe");
@@ -72,12 +74,14 @@ class _MyAppState extends State<MyApp>  {
     }
 
     _initFluwx() async {
-        await fluwx.register(
-            appId: "wxa22d7212da062286",
-            doOnAndroid: true,
-            doOnIOS: false,
-            enableMTA: false);
-        await fluwx.isWeChatInstalled();
+        bool result = await SyFlutterWechat.register('wxa22d7212da062286');
+        print(result);
+        // await fluwx.register(
+        //     appId: "wxa22d7212da062286",
+        //     doOnAndroid: true,
+        //     doOnIOS: true,
+        //     enableMTA: false);
+        // await fluwx.isWeChatInstalled();
     }
 
     getUserId () async {

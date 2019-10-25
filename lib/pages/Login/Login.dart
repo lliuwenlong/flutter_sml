@@ -10,7 +10,7 @@ import '../../components/Input.dart';
 import '../../common/HttpUtil.dart';
 import '../../model/api/user/UserModel.dart';
 import '../../model/store/user/User.dart';
-import 'package:fluwx/fluwx.dart' as fluwx;
+// import 'package:fluwx/fluwx.dart' as fluwx;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
@@ -28,11 +28,11 @@ class _LoginPageState extends State<LoginPage> {
     @override
     void initState() {
         super.initState();
-        fluwx.responseFromAuth.listen((data) {
-            if (data.code != null) {
-                Navigator.pushNamedAndRemoveUntil(context, '/tabBars', (router) => false);
-            }
-        });
+        // fluwx.responseFromAuth.listen((data) {
+        //     if (data.code != null) {
+        //         Navigator.pushNamedAndRemoveUntil(context, '/tabBars', (router) => false);
+        //     }
+        // });
     }
     void didChangeDependencies() {
         super.didChangeDependencies();
@@ -63,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                     return;
                 }
                 if (data.wxAuth == 0) {
-                    await fluwx.sendAuth(scope: "snsapi_userinfo", state: "wechat_sdk_demo_test");
+                    // await fluwx.sendAuth(scope: "snsapi_userinfo", state: "wechat_sdk_demo_test");
                 } else {
                     Navigator.pushNamedAndRemoveUntil(context, '/tabBars', (router) => false);
                 }

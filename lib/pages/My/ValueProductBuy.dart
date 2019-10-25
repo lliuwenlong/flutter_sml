@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/model/store/user/User.dart';
+import 'package:flutter_sml/pages/Shop/PurchaseAgreement.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import '../../model/store/shop/Shop.dart';
@@ -8,6 +12,8 @@ import '../../model/api/shop/DistsModel.dart';
 import '../../common/HttpUtil.dart';
 import 'dart:ui';
 import 'dart:io';
+// import 'package:fluwx/fluwx.dart' as fluwx;
+
 class Purchase extends StatefulWidget {
     int prodId;
     double price;
@@ -27,6 +33,7 @@ class _PurchaseState extends State<Purchase>  {
     String payType = "Wechat";
     int treeNum = 1;
     final HttpUtil http = HttpUtil();
+    bool isDisabled = false;
     @override
     void didChangeDependencies() {
         super.didChangeDependencies();
@@ -35,30 +42,57 @@ class _PurchaseState extends State<Purchase>  {
     @override
     initState () {
         super.initState();
-       
+        // fluwx.responseFromPayment.listen((response){
+        //     if (response.errCode == 0) {
+        //         Navigator.pushReplacementNamed(context, "/order");
+        //         setState(() {
+        //             this.isDisabled = false;
+        //         });
+        //     } else {
+        //         setState(() {
+        //             this.isDisabled = false;
+        //         });
+        //     }
+        // });
     }
     _payment () async {
-   
-       Map response = await this.http.post('/api/v1/vp/buy',params: {
-            "amount": this.price*this.treeNum,
-            "channel": this.payType,
-            "num": this.treeNum,
-            "platform": Platform.isAndroid?'Android':Platform.isIOS?'IOS':'Other',
-            "prodId": this.prodId,
-            "woodSn": this.woodSn
+        setState(() {
+            this.isDisabled = true;
         });
-
-		if(response['code']== 200){
-			Fluttertoast.showToast(
-				msg: '支付成功',
-				toastLength: Toast.LENGTH_SHORT,
-				textColor: Colors.white,
-				backgroundColor: Colors.black87,
-				gravity: ToastGravity.CENTER,
-				timeInSecForIos: 1,
-				fontSize: ScreenAdaper.fontSize(30)
-			);
-      Navigator.pop(context);
+        Map res = await this.http.post('/api/v12/wxpay/unifiedorder', params: {
+            "valueProduct": {
+                "amount": this.price*this.treeNum,
+                "channel": "Wechat",
+                "num": this.treeNum,
+                "platform": Platform.isAndroid?'Android' : Platform.isIOS ? 'IOS' : 'Other',
+                "prodId": this.prodId,
+                "tradeType": "APP",
+                "userId": Provider.of<User>(context).userId,
+                "woodSn": this.woodSn
+            },
+            "goodsType": "valuepro"
+        });
+        
+		if(res['code']== 200){
+			var data = jsonDecode(res["data"]);
+            // fluwx.pay(appId: "wxa22d7212da062286", 
+            //     partnerId: data["partnerid"],
+            //     prepayId: data["prepayid"],
+            //     packageValue: data["package"],
+            //     nonceStr: data["noncestr"],
+            //     timeStamp: int.parse(data["timestamp"]),
+            //     sign: data["sign"].toString(),
+            //     signType: data["signType"]
+            // ).then((val) {
+            //     Fluttertoast.showToast(
+            //         msg: "${val}",
+            //         toastLength: Toast.LENGTH_SHORT,
+            //         gravity: ToastGravity.CENTER,
+            //         timeInSecForIos: 1,
+            //         textColor: Colors.white,
+            //         fontSize: ScreenAdaper.fontSize(30)
+            //     );
+            // });
 		}
     }
     _onPay () {
@@ -283,22 +317,22 @@ class _PurchaseState extends State<Purchase>  {
                             top: ScreenAdaper.height(10),
                         ),
                         decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                                    color: ColorClass.borderColor,
-                                    width: ScreenAdaper.width(1)
-                                )
-                            )
+                            // border: Border(
+                            //     bottom: BorderSide(
+                            //         color: ColorClass.borderColor,
+                            //         width: ScreenAdaper.width(1)
+                            //     )
+                            // )
                         ),
                         child: _rowItem("Wechat")
                     ),
-                    Container(
-                        padding: EdgeInsets.only(
-                            top: ScreenAdaper.height(30),
-                            bottom: ScreenAdaper.height(30)
-                        ),
-                        child: _rowItem("Alipay")
-                    ),
+                    // Container(
+                    //     padding: EdgeInsets.only(
+                    //         top: ScreenAdaper.height(30),
+                    //         bottom: ScreenAdaper.height(30)
+                    //     ),
+                    //     child: _rowItem("Alipay")
+                    // ),
                     Container(
                         margin:  EdgeInsets.only(
                             top: ScreenAdaper.height(20),
@@ -310,10 +344,17 @@ class _PurchaseState extends State<Purchase>  {
                                     fontSize: ScreenAdaper.fontSize(22),
                                     color: ColorClass.subTitleColor
                                 )),
-                                Text("神木林购买协议", style: TextStyle(
-                                    fontSize: ScreenAdaper.fontSize(22),
-                                    color: ColorClass.common
-                                )),
+                                GestureDetector(
+                                    onTap: () {
+                                        Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
+                                            return PurchaseAgreement();
+                                        }));
+                                    },
+                                    child: Text("神木林购买协议", style: TextStyle(
+                                        fontSize: ScreenAdaper.fontSize(22),
+                                        color: ColorClass.common
+                                    )),
+                                ),
                                 Text(",支付代表您接受本协议内容", style: TextStyle(
                                     fontSize: ScreenAdaper.fontSize(22),
                                     color: ColorClass.subTitleColor
@@ -339,9 +380,10 @@ class _PurchaseState extends State<Purchase>  {
                 height: ScreenAdaper.height(88),
                 child: RaisedButton(
                     elevation: 0,
-                    onPressed: () {
+                    onPressed: isDisabled ? null : () {
                         onTap != null && onTap();
                     },
+                    disabledColor: Color(0xFF86d4ca),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(ScreenAdaper.width(10))
                     ),

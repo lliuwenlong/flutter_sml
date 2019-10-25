@@ -50,9 +50,9 @@ class _ValueDetailState extends State<ValueDetail> {
         ),
         builder: (BuildContext context) {
             return Purchase(
-              prodId:arguments['sid'], 
-              price: double.parse(detailData['price']),
-              woodSn: arguments['woodSn']
+                prodId:arguments['sid'], 
+                price: double.parse(detailData['price']),
+                woodSn: arguments['woodSn']
             );
         }
       );
@@ -112,7 +112,6 @@ class _ValueDetailState extends State<ValueDetail> {
                       color: Color(0XFF22b0a1),
                       onPressed: () {
                         this._purchase();
-                        print('object');
                       },
                     ),
                   ),

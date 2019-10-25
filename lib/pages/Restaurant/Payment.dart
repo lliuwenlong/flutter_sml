@@ -9,7 +9,7 @@ import '../../components/AppBarWidget.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/HttpUtil.dart';
 import '../../model/store/user/User.dart';
-import 'package:fluwx/fluwx.dart' as fluwx;
+// import 'package:fluwx/fluwx.dart' as fluwx;
 
 class Payment extends StatefulWidget {
   final arguments;
@@ -37,15 +37,15 @@ class _PaymentState extends State<Payment> {
     void initState() {
         print(this.arguments);
         super.initState();
-        fluwx.responseFromPayment.listen((response){
-            setState(() {
-                this.isDisabled = false;
-            });
-            if (response.errCode == 0) {
-                Navigator.pushReplacementNamed(context, "/order");
-            } else {
-            }
-        });
+        // fluwx.responseFromPayment.listen((response){
+        //     setState(() {
+        //         this.isDisabled = false;
+        //     });
+        //     if (response.errCode == 0) {
+        //         Navigator.pushReplacementNamed(context, "/order");
+        //     } else {
+        //     }
+        // });
     }
 	@override
 	void didChangeDependencies() {
@@ -75,6 +75,11 @@ class _PaymentState extends State<Payment> {
             3: "nearplay"
         };
 
+        Map typeName = {
+            1: "餐饮",
+            2: "购物",
+            3: "周边游"
+        };
         setState(() {
             isDisabled = true;
         });
@@ -84,27 +89,27 @@ class _PaymentState extends State<Payment> {
                  "food": {
                     "amount": this._moneyController.text,
                     "channel": "Wechat",
-                    "desc": "1",
+                    "desc": typeName[this.arguments['type']],
                     "firmId": this.arguments['firmId'],
                     "platform": Platform.isAndroid ? "Android" : "IOS",
                     "tradeType": "APP",
                     "type": type[this.arguments['type']],
-                    "userCouponId": 10,
+                    "userCouponId": this.chooseCouponParams["couponId"],
                     "userId": this._userModel.userId
                 },
                 "goodsType": type[this.arguments['type']]
             });
             if (res["code"] == 200) {
                 var data = jsonDecode(res["data"]);
-                await fluwx.pay(appId: "wxa22d7212da062286", 
-                    partnerId: data["partnerid"],
-                    prepayId: data["prepayid"],
-                    packageValue: data["package"],
-                    nonceStr: data["noncestr"],
-                    timeStamp: int.parse(data["timestamp"]),
-                    sign: data["sign"].toString(),
-                    signType: data["signType"]
-                );
+                // await fluwx.pay(appId: "wxa22d7212da062286", 
+                //     partnerId: data["partnerid"],
+                //     prepayId: data["prepayid"],
+                //     packageValue: data["package"],
+                //     nonceStr: data["noncestr"],
+                //     timeStamp: int.parse(data["timestamp"]),
+                //     sign: data["sign"].toString(),
+                //     signType: data["signType"]
+                // );
             }
         }
     }

@@ -36,7 +36,6 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
         "food": Icon(IconData(0xe659, fontFamily: "iconfont"), color: Color(0xFFaaaaaa), size: ScreenAdaper.fontSize(80)),
         "house": Icon(IconData(0xe657, fontFamily: "iconfont"),  color: Color(0xFFaaaaaa), size: ScreenAdaper.fontSize(80)),
     };
-
     Map<String, int> typeMap = {
         "food": 1,
         "nearplay": 3,

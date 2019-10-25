@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_sml/model/store/user/User.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:fluwx/fluwx.dart' as fluwx;
+// import 'package:fluwx/fluwx.dart' as fluwx;
 import 'package:provider/provider.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
@@ -331,14 +331,14 @@ _getData() async {
 
     _setShare(int type) async {
         if (Platform.isAndroid) {
-            await fluwx.share(fluwx.WeChatShareWebPageModel(
-                transaction: "树友圈详情",
-                webPage: "http://192.168.2.121:8081/app/#/evaluate",
-                thumbnail: "",
-                title: "树友圈详情",
-                description: "树友圈详情",
-                scene: type == 1 ? fluwx.WeChatScene.SESSION : fluwx.WeChatScene.TIMELINE
-            ));
+            // await fluwx.share(fluwx.WeChatShareWebPageModel(
+            //     transaction: "树友圈详情",
+            //     webPage: "http://192.168.2.121:8081/app/#/evaluate",
+            //     thumbnail: "",
+            //     title: "树友圈详情",
+            //     description: "树友圈详情",
+            //     scene: type == 1 ? fluwx.WeChatScene.SESSION : fluwx.WeChatScene.TIMELINE
+            // ));
         }
         
         Map response = await this.http.post("http://api.zhongyunkj.cn/api/v1/circle/msg/${this.widget.arguments["id"]}/share?type=1");

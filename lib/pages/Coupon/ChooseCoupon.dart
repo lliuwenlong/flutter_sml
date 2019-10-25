@@ -101,13 +101,13 @@ class _ChooseCouponState extends State<ChooseCoupon> with SingleTickerProviderSt
 										),
 										Expanded(
 											flex: 1,
-											child: data.firmId == 0 ? SizedBox() : Container(
+											child: data["times"] != null && data["times"] > 0 ? SizedBox() : Container(
 												height: ScreenAdaper.height(80),
 												child: Stack(
 													children: <Widget>[
 														Align(
 															alignment: Alignment.bottomRight,
-															child: Text("¥ ${data['worth']}", style: TextStyle(
+															child: Text("¥ ${data["firmId"]}${data['worth']}", style: TextStyle(
 																fontSize: ScreenAdaper.fontSize(44),
 																color: Color(0xfffb4135),
 															)),
