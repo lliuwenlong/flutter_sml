@@ -16,11 +16,12 @@ class Reserve extends StatelessWidget {
     String bathroom;//卫浴
     String picture;//封面图
     String price;//价格
+    int dayNum;
     DayModel startTime;
     DayModel endTime;
     Function placeOrder;
     FoodFirmApiModel firm;
-    Reserve({Key key,this.title,this.area,this.room,this.windows,this.bed,this.intnet,this.bathroom,this.picture,this.price,  this.placeOrder, this.firm});
+    Reserve({Key key,this.title,this.area,this.room,this.windows,this.bed,this.intnet,this.bathroom,this.picture,this.price, this.dayNum,  this.placeOrder, this.firm});
 
     Widget _header (String name) {
         return Container(
@@ -226,7 +227,7 @@ class Reserve extends StatelessWidget {
                                                     )
                                                 ),
                                                 TextSpan(
-                                                    text: this.price,
+                                                    text: '${double.parse(this.price)*this.dayNum}',
                                                     style: TextStyle(
                                                         fontSize: ScreenAdaper.fontSize(44)
                                                     )

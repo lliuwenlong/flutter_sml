@@ -18,7 +18,8 @@ class PlaceOrder extends StatefulWidget {
     String price;
     int goodId;
     int firmId;
-    PlaceOrder({Key key, this.title, this.startTime, this.endTime, this.price, this.goodId, this.firmId, Map arguments}) : super(key: key);
+    int dayNum;
+    PlaceOrder({Key key, this.title, this.startTime, this.endTime, this.price, this.goodId, this.firmId,this.dayNum, Map arguments}) : super(key: key);
     _PlaceOrderState createState() => _PlaceOrderState();
 }
 
@@ -37,14 +38,16 @@ class _PlaceOrderState extends State<PlaceOrder> {
     User _userModel;
     HttpUtil http = HttpUtil();
     Map chooseCouponParams = {};
-
+    int couponLength = 0;
     @override
     void didChangeDependencies() {
         super.didChangeDependencies();
         _userModel = Provider.of<User>(context);
+        _getCoupon();
     }
 
     submitData () async {
+    
         if (this.usernameContainer.text.isEmpty) {
             ShowToast().showToast('入住人姓名不可为空');
             return;
@@ -59,7 +62,8 @@ class _PlaceOrderState extends State<PlaceOrder> {
             return;
         }
         DateFormat formatter = new DateFormat('yyyy-MM-dd');
-        DateTime startTime = DateTime(widget.startTime.year, widget.startTime.month, int.parse(widget.startTime.day));
+        print(widget.startTime.day);
+        DateTime startTime = DateTime(widget.startTime.year, widget.startTime.month, widget.startTime.dayNum);
         DateTime endTime = DateTime(widget.endTime.year, widget.endTime.month, int.parse(widget.endTime.day));
         Map res = await http.post("/api/v1/house/order", params: {
             "firmId": widget.firmId,
@@ -77,7 +81,19 @@ class _PlaceOrderState extends State<PlaceOrder> {
             ShowToast().showToast(res["msg"]);
         }
     }
+    _getCoupon () async{
+        Map response = await this.http.get('/api/v1/coupon/user',data: {
+          'firmId': widget.firmId,
+          'userId': this._userModel.userId
+        });
+        if (response['code'] == 200) {
+          setState(() {
+              this.couponLength =response['data'].length;
+          });
+        }
 
+        print(couponLength);
+    }
     @override
     Widget build(BuildContext context) {
         ScreenAdaper.init(context);
@@ -118,8 +134,13 @@ class _PlaceOrderState extends State<PlaceOrder> {
                                                     fontSize: ScreenAdaper.fontSize(26)
                                                 )
                                             ),
-                                            TextSpan(
-                                                text: '${widget.price}',
+                                          chooseCouponParams['worth']!=null&&int.parse(chooseCouponParams['worth']) > 0?TextSpan(
+                                                text: '${double.parse(widget.price)*widget.dayNum -int.parse(chooseCouponParams['worth'])}',
+                                                style: TextStyle(
+                                                    fontSize: ScreenAdaper.fontSize(44)
+                                                )
+                                            ):TextSpan(
+                                                text: '${chooseCouponParams['worth']=='0'?0:double.parse(widget.price)*widget.dayNum}',
                                                 style: TextStyle(
                                                     fontSize: ScreenAdaper.fontSize(44)
                                                 )
@@ -317,7 +338,6 @@ class _PlaceOrderState extends State<PlaceOrder> {
                         ),
                         GestureDetector(
                             onTap: () {
-                                print(this.chooseCouponParams["couponId"] == null ? 0 : 1);
                                 Navigator.pushNamed(context, '/chooseCoupon',arguments: {
                                     "firmId": widget.firmId,
                                     "type": 3,
@@ -333,6 +353,8 @@ class _PlaceOrderState extends State<PlaceOrder> {
                                     setState(() {
                                         this.chooseCouponParams = params;
                                     });
+
+                                   
                                 });
                             },
                             child: Container(
@@ -374,7 +396,15 @@ class _PlaceOrderState extends State<PlaceOrder> {
                                             ),
                                             Row(
                                                 children: <Widget>[
-                                                    Text(
+                                                  chooseCouponParams['worth']==null?Container(
+                                                    child: couponLength>0?Text(
+                                                        '$couponLength张可用',
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                "SourceHanSansCN-Medium",
+                                                            fontSize: ScreenAdaper.fontSize(28),
+                                                            color: Color(0xff999999)),
+                                                    ):Text(
                                                         '暂无可用优惠券',
                                                         style: TextStyle(
                                                             fontFamily:
@@ -382,6 +412,26 @@ class _PlaceOrderState extends State<PlaceOrder> {
                                                             fontSize: ScreenAdaper.fontSize(28),
                                                             color: Color(0xff999999)),
                                                     ),
+                                                  ):Container(
+                                                    child: 
+                                                    int.parse(chooseCouponParams['worth'])>0?
+                                                    Text(
+                                                        '- ${chooseCouponParams['worth']}元',
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                "SourceHanSansCN-Medium",
+                                                            fontSize: ScreenAdaper.fontSize(28),
+                                                            color: Colors.red),
+                                                    ):Text(
+                                                        '抵用券',
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                "SourceHanSansCN-Medium",
+                                                            fontSize: ScreenAdaper.fontSize(28),
+                                                            color: Colors.red),
+                                                    ),
+                                                  ),
+                                                  
                                                     Icon(
                                                         IconData(0xe61e,
                                                             fontFamily: 'iconfont'),

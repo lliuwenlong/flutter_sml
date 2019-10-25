@@ -45,7 +45,6 @@ class _HomePageState extends State<HomePage> {
             "pageSize": 10,
             "pageNO": this._page
         });
-        getLoction();
         if (response["code"] == 200) {
             final ArticleModel articleModel = new ArticleModel.fromJson(response);
             if (isInit) {
@@ -63,9 +62,9 @@ class _HomePageState extends State<HomePage> {
         
         return response;
     }
-
+  // 活动公告
     getNews () async {
-        Map response = await http.get("/api/v1/notice/data/news", data: {
+        Map response = await http.get("/api/v1/notice/data/notice", data: {
             "pageSize": 20,
             "pageNO": 1,
         });

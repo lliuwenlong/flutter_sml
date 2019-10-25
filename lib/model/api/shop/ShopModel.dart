@@ -32,15 +32,17 @@ class Data {
     String image;
     String name;
     int woodId;
+    int baseId;
     String price;
 
-    Data({this.baseName, this.image, this.name, this.woodId, this.price});
+    Data({this.baseName, this.image, this.name, this.woodId,this.baseId, this.price});
 
     Data.fromJson(Map<String, dynamic> json) {
         baseName = json['baseName'];
         image = json['image'];
         name = json['name'];
         woodId = json['woodId'];
+        baseId = json['baseId'];
         price = json['price'];
     }
 
@@ -50,6 +52,7 @@ class Data {
         data['image'] = this.image;
         data['name'] = this.name;
         data['woodId'] = this.woodId;
+        data['baseId'] = this.baseId;
         data['price'] = this.price;
         return data;
     }

@@ -35,7 +35,8 @@ class _AccommodationState extends State<Accommodation> {
 
         if (response["code"] == 200) {
             var loction = await getLoction();
-            if (loction != null) {
+            print(loction);
+            if (loction != null && loction["latitude"] != null && loction["longitude"]!=null) {
                 List data = response["data"]["list"];
                 data.forEach((item) {
                     double distance = calculatedDistance(loction["latitude"], loction["longitude"], double.parse(item["latitude"]), double.parse(item["longitude"]));

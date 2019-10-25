@@ -196,6 +196,9 @@ flutter:
    - images/no.png
    - images/2.0x/no.png
    - images/3.0x/no.png
+   - images/used.png
+   - images/2.0x/used.png
+   - images/3.0x/used.png
    - videos/video.mp4
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

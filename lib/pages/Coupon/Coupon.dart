@@ -19,14 +19,18 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
     TabController _tabController;
     RefreshController _notUseRefreshController = RefreshController(initialRefresh: false);
     RefreshController _beOverdueListRefreshController = RefreshController(initialRefresh: false);
+    RefreshController _usedRefreshController = RefreshController(initialRefresh: false);
     bool isNotUseLoading = true;
     bool isBeOverdueLoading = true;
+    bool isUsedLoading = true;
     HttpUtil http = HttpUtil();
-    int notUsePage = 1;
-    int beOverduePage = 1;
+    int notUsePage = 1;//未使用
+    int beOverduePage = 1;//已过期
+    int usedPage = 1;//已使用
     User userModel;
     List notUseList = [];
     List beOverdueList = [];
+    List usedList = [];
     Map<String, Icon> iconMap = {
         "food": Icon(IconData(0xe659, fontFamily: "iconfont"), color: Color(0xFFf6cf70), size: ScreenAdaper.fontSize(80)),
         "house": Icon(IconData(0xe657, fontFamily: "iconfont"),  color: Color(0xFFc1a786), size: ScreenAdaper.fontSize(80)),
@@ -63,17 +67,20 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
         if (
             isInit
             && ((this._tabController.index == 0 && this.isNotUseLoading == false)
-            || (this._tabController.index == 1 && this.isBeOverdueLoading == false))
+            || (this._tabController.index == 1 && this.isBeOverdueLoading == false)
+            || (this._tabController.index == 2 && this.isUsedLoading == false)
+            )
         ) {
             return null;
         }
 
         final Map<String, dynamic> response = await this.http.get("/api/v1/coupon/data", data: {
-            "pageNO": _tabController.index == 0 ? this.notUsePage : this.beOverduePage,
+            "pageNO": _tabController.index == 0 ? this.notUsePage :_tabController.index == 1? this.beOverduePage:this.usedPage,
             "pageSize": 10,
             "userId": this.userModel.userId,
             "type": _tabController.index + 1
         });
+        print(response);
         if (response["code"] == 200) {
             final res = new CouponDataModel.fromJson(response);
             if (isInit) {
@@ -81,9 +88,12 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                     if (_tabController.index == 0) {
                         notUseList = res.data.list;
                         isNotUseLoading = false;
-                    } else {
+                    } else if(_tabController.index == 1) {
                         beOverdueList = res.data.list;
                         isBeOverdueLoading = false;
+                    }else{
+                      usedList = res.data.list;
+                      isUsedLoading = false;
                     }
                     
                 });
@@ -91,8 +101,10 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                 setState(() {
                     if (_tabController.index == 0) {
                         notUseList.addAll(res.data.list);
-                    } else {
+                    } else if (_tabController.index == 1) {
                         beOverdueList.addAll(res.data.list);
+                    } else {
+                        usedList.addAll(res.data.list);
                     }
                 });
             }
@@ -104,13 +116,16 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
         setState(() {
             if (_tabController.index == 0) {
                 this.beOverduePage++;
-            } else {
+            } else if (_tabController.index == 1) {
                 this.notUsePage++;
+            } else {
+                this.usedPage++;
             }
         });
         var controller = _tabController.index == 0
             ? this._notUseRefreshController
-            : this._beOverdueListRefreshController;
+            : _tabController.index == 1?
+            this._beOverdueListRefreshController:this._usedRefreshController;
         var response = await _getData();
         if (response["data"].length == 0) {
             controller.loadNoData();
@@ -123,13 +138,16 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
         setState(() {
             if (_tabController.index == 0) {
                 this.beOverduePage = 1;
-            } else {
+            } else if (_tabController.index == 1) {
                 this.notUsePage = 1;
+            } else {
+                this.usedPage = 1;
             }
         });
         var controller = _tabController.index == 0
             ? this._notUseRefreshController
-            : this._beOverdueListRefreshController;
+            : _tabController.index == 1?
+            this._beOverdueListRefreshController:this._usedRefreshController;
         final Map res = await _getData(isInit: true);
         controller.refreshCompleted();
         if (controller.footerStatus == LoadStatus.noMore) {
@@ -137,8 +155,8 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
         }
     }
 
-    Widget _cardItem (ListItem data,{isBeOverdue: false}) {
-        Map<String, Icon> icon = isBeOverdue ? this.beOverdueIconMap : this.iconMap;
+    Widget _cardItem (ListItem data,{isBeOverdue: false,isUsed:false}) {
+        Map<String, Icon> icon = isBeOverdue || isUsed ? this.beOverdueIconMap : this.iconMap;
         return Container(
             padding: EdgeInsets.fromLTRB(
                 ScreenAdaper.width(25),
@@ -179,12 +197,12 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: <Widget>[
                                             Text(data.name != null ? data.name : "", style: TextStyle(
-                                                color: isBeOverdue ? ColorClass.iconColor : Color(0XFF333333),
+                                                color: isBeOverdue ||isUsed ? ColorClass.iconColor : Color(0XFF333333),
                                                 fontSize: ScreenAdaper.fontSize(28)
                                             )),
                                             SizedBox(height: ScreenAdaper.height(15)),
                                             Text("有效期至：${data.endDate}", style: TextStyle(
-                                                color: isBeOverdue ? ColorClass.iconColor : Color(0XFF999999),
+                                                color: isBeOverdue ||isUsed ? ColorClass.iconColor : Color(0XFF999999),
                                                 fontSize: ScreenAdaper.fontSize(24)
                                             ))
                                         ],
@@ -197,20 +215,20 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                                 children: <Widget>[
                                                     Align(
                                                         alignment: Alignment.bottomRight,
-                                                        child: Text.rich(
+                                                        child:data.worth!=null&&int.parse(data.worth)>0?Text.rich(
                                                             TextSpan(
                                                                 children: [
                                                                     TextSpan(text: "¥", style: TextStyle(
-                                                                        color: isBeOverdue ? ColorClass.iconColor : Color(0XFFfb4135),
+                                                                        color: isBeOverdue ||isUsed ? ColorClass.iconColor : Color(0XFFfb4135),
                                                                         fontSize: ScreenAdaper.fontSize(24)
                                                                     )),
                                                                     TextSpan(text: "${data.worth}", style: TextStyle(
-                                                                        color: isBeOverdue ? ColorClass.iconColor : Color(0XFFfb4135),
+                                                                        color: isBeOverdue ||isUsed ? ColorClass.iconColor : Color(0XFFfb4135),
                                                                         fontSize: ScreenAdaper.fontSize(44)
                                                                     ))
                                                                 ]
                                                             )
-                                                        )
+                                                        ):Text('')
                                                     )
                                                 ]
                                             ),
@@ -249,7 +267,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                     data.firmId==0?Text("平台赠送", style: TextStyle(
-                                        color: isBeOverdue ? ColorClass.iconColor : ColorClass.fontColor,
+                                        color: isBeOverdue || isUsed? ColorClass.iconColor : ColorClass.fontColor,
                                         fontSize: ScreenAdaper.fontSize(28)
                                     )):Text(data.title != null ? data.title : "", style: TextStyle(
                                         color: isBeOverdue ? ColorClass.iconColor : ColorClass.fontColor,
@@ -266,7 +284,18 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                                 )
                                             )
                                         )
-                                        : Container(
+                                        : isUsed?
+                                        Container(
+                                            width: ScreenAdaper.height(128),
+                                            height: ScreenAdaper.width(100),
+                                            decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    image: AssetImage("images/used.png"),
+                                                    fit: BoxFit.contain
+                                                )
+                                            )
+                                        ):
+                                        Container(
                                             width: ScreenAdaper.width(136),
                                             height: ScreenAdaper.height(50),
                                             child: OutlineButton(
@@ -424,8 +453,35 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                                 }
                             )
                     ),
-                    Container(
-                        child: NullContent('暂无数据')
+                    SmartRefresher(
+                        controller: _usedRefreshController,
+                        enablePullDown: true,
+                        enablePullUp: true,
+                        header: WaterDropHeader(),
+                        footer: ClassicFooter(
+                            loadStyle: LoadStyle.ShowWhenLoading,
+                            idleText: "上拉加载",
+                            failedText: "加载失败！点击重试！",
+                            canLoadingText: "加载更多",
+                            noDataText: "没有更多数据",
+                            loadingText: "加载中"
+                        ),
+                        onRefresh: _onRefresh,
+                        onLoading: _onLoading,
+                        child: this.isUsedLoading
+                            ? Container(
+                                margin: EdgeInsets.only(
+                                    top: ScreenAdaper.height(200)
+                                ),
+                                child: Loading(),
+                            ):this.usedList.length <=0 ? NullContent('暂无数据')
+                            : ListView.builder(
+                                itemCount: this.usedList.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  var data = this.usedList[index];
+                                    return this._cardItem(data,isUsed: true);
+                                }
+                            )
                     )
                 ]
             )

@@ -52,6 +52,7 @@ class _ShopPageState extends State<ShopPage> {
                 "pageSize": 10
             }
         );
+        
         if (response["code"] == 200) {
             final ShopApiModel shopModel =  new ShopApiModel.fromJson(response);
             if (isInit) {
@@ -129,6 +130,7 @@ class _ShopPageState extends State<ShopPage> {
     }
 
     _purchase (Data val) {
+     
         Provider.of<ShopModel>(context).reset();
 
 		showModalBottomSheet(
@@ -140,8 +142,8 @@ class _ShopPageState extends State<ShopPage> {
 				)
 			),
 			builder: (BuildContext context) {
-				return Purchase(id: val.woodId, price: double.parse(val.price), onPay: (String type, int number, int forestTypes) {
-                    this.onPay(type, number, val.woodId, forestTypes);
+				return Purchase(id: val.baseId, price: double.parse(val.price), onPay: (String type, int number, int forestTypes) {
+                    this.onPay(type, number, val.baseId, forestTypes);
                 });
 			}
 		);

@@ -20,7 +20,7 @@ getLoction () async {
     PermissionStatus permission1 = await LocationPermissions().requestPermissions();
     if (permission1 == PermissionStatus.granted) {
         await AMapLocationClient.startup(new AMapLocationOption( desiredAccuracy:CLLocationAccuracy.kCLLocationAccuracyHundredMeters  ));
-        var res = await AMapLocationClient.getLocation(true);
+        AMapLocation res = await AMapLocationClient.getLocation(true);
         return {
             "longitude": res.longitude,
             "latitude": res.latitude

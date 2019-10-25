@@ -122,7 +122,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
         return formatter.format(time);
     }
 
-    placeOrder (String title, String price, int goodId) {
+    placeOrder (String title, String price, int goodId,int dayNum) {
         if (this.dayNum != 0) {
             Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
                 return new PlaceOrder(
@@ -131,7 +131,8 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                     endTime: endTime,
                     price: price,
                     goodId: goodId,
-                    firmId: this.firm.firmId
+                    firmId: this.firm.firmId,
+                    dayNum: this.dayNum,
                 );
             }));
         } else {
@@ -160,17 +161,18 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                     color: Colors.white,
                     child: Reserve(
                         firm: this.firm,
-						title: good.title,
-						area: good.area != null ? good.area : "",
+                        title: good.title,
+                        area: good.area != null ? good.area : "",
                         room:good.room != null ? good.room : "",
                         windows:good.window != null ? good.window : "",
                         bed:good.bed != null ? good.bed : "",
                         intnet:good.intnet != null ? good.intnet : "",
                         bathroom:good.bathroom != null ? good.bathroom : "",
                         picture:good.picture != null ? good.picture : "",
-                        price:good.price != null ? good.price : "",
+                        price:good.price != null ? good.price : 0,
+                        dayNum:this.dayNum,
                         placeOrder: () {
-                            this.placeOrder(good.title, good.price, good.goodsId);
+                            this.placeOrder(good.title, good.price, good.goodsId,this.dayNum);
                         }
 					)
                 );

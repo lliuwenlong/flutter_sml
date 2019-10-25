@@ -48,7 +48,6 @@ class _PurchaseState extends State<Purchase>  {
         super.initState();
         this._getData();
     }
-
     _getData () async {
         final response = await HttpUtil().get("/api/v1/wood/${this.type != null ? this.baseid : this.id}/dists");
         if (response["code"] == 200) {

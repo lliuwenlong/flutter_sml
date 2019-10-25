@@ -45,7 +45,7 @@ class _RestaurantState extends State<Restaurant> {
         });
         if (response["code"] == 200) {
             var loction = await getLoction();
-            if (loction != null) {
+            if (loction != null && loction["latitude"] != null && loction["longitude"]!=null) {
                 List data = response["data"]["list"];
                 data.forEach((item) {
                     double distance = calculatedDistance(loction["latitude"], loction["longitude"], double.parse(item["latitude"]), double.parse(item["longitude"]));
