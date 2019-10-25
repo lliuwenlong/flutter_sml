@@ -33,7 +33,6 @@ class _ChooseCouponState extends State<ChooseCoupon> with SingleTickerProviderSt
           'firmId': this.arguments['firmId'],
           'userId': this._userModel.userId
         });
-        print(response);
         if (response['code'] == 200) {
           setState(() {
               this.couponList =response['data'];

@@ -37,7 +37,7 @@ class _PaymentState extends State<Payment> {
     Map chooseCouponParams = {};
     @override
     void initState() {
-        print(this.arguments);
+        // print(this.arguments);
         super.initState();
         // fluwx.responseFromPayment.listen((response){
         //     setState(() {
@@ -85,7 +85,7 @@ class _PaymentState extends State<Payment> {
         setState(() {
             isDisabled = true;
         });
-        print(type[this.arguments['type']]);
+     
         if (this._payType == "Wechat") {
             Map res = await this.http.post("/api/v12/wxpay/unifiedorder", params: {
                  "food": {
