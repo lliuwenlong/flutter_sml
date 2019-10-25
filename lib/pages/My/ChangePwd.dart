@@ -55,13 +55,13 @@ class _ChangePwdState extends State<ChangePwd> {
   _changePwd() async {
     if (this._codeController.text != this._code) {
       	Fluttertoast.showToast(
-			msg: '验证码错误',
-			toastLength: Toast.LENGTH_SHORT,
-			gravity: ToastGravity.CENTER,
-			timeInSecForIos: 1,
-			textColor: Colors.white,
-			backgroundColor: Colors.black87,
-			fontSize: ScreenAdaper.fontSize(30));
+          msg: '验证码错误',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIos: 1,
+          textColor: Colors.white,
+          backgroundColor: Colors.black87,
+          fontSize: ScreenAdaper.fontSize(30));
       	return;
     }
     if (this._pwdController.text == null || this._pwdController.text == "") {
