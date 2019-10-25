@@ -17,8 +17,6 @@ PODS:
     - Flutter
   - fluttertoast (0.0.2):
     - Flutter
-  - fluwx (0.0.1):
-    - Flutter
   - HappyDNS (0.3.15)
   - image_picker (0.0.1):
     - Flutter
@@ -53,7 +51,6 @@ DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios-release`)
   - flutter_inappbrowser (from `.symlinks/plugins/flutter_inappbrowser/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
-  - fluwx (from `.symlinks/plugins/fluwx/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - keyboard_visibility (from `.symlinks/plugins/keyboard_visibility/ios`)
   - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
@@ -88,8 +85,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_inappbrowser/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
-  fluwx:
-    :path: ".symlinks/plugins/fluwx/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
   keyboard_visibility:
@@ -122,7 +117,6 @@ SPEC CHECKSUMS:
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
   flutter_inappbrowser: 93214ba3c0bc9db42e879f808d993b6d3be32379
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
-  fluwx: 765c6052398eaf6fe13c73409488b0d0b9d00fd6
   HappyDNS: 00c15e651a347206e58a20503a32a5564589b56a
   image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
   keyboard_visibility: 96a24de806fe6823c3ad956c01ba2ec6d056616f

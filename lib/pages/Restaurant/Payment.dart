@@ -4,7 +4,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_sml/model/store/shop/Shop.dart';
 import 'package:provider/provider.dart';
+import 'package:sy_flutter_wechat/sy_flutter_wechat.dart';
 import '../../components/AppBarWidget.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/HttpUtil.dart';
@@ -94,13 +96,31 @@ class _PaymentState extends State<Payment> {
                     "platform": Platform.isAndroid ? "Android" : "IOS",
                     "tradeType": "APP",
                     "type": type[this.arguments['type']],
-                    "userCouponId": this.chooseCouponParams["couponId"],
+                    "userCouponId": this.chooseCouponParams["couponId"] != null ? this.chooseCouponParams["couponId"] : null,
                     "userId": this._userModel.userId
                 },
                 "goodsType": type[this.arguments['type']]
             });
             if (res["code"] == 200) {
                 var data = jsonDecode(res["data"]);
+                Map<String, String> payInfo = {
+                    "appid":"wxa22d7212da062286",
+                    "partnerid": data["partnerid"],
+                    "prepayid": data["prepayid"],
+                    "package": "Sign=WXPay",
+                    "noncestr": data["noncestr"],
+                    "timestamp": data["timestamp"],
+                    "sign": data["sign"].toString()
+                };
+
+                SyPayResult payResult = await SyFlutterWechat.pay(SyPayInfo.fromJson(payInfo));
+                Provider.of<ShopModel>(context).changeIsDisabled(false);
+                if (payResult == SyPayResult.success) {
+                    Navigator.pushReplacementNamed(context, "/order");
+                }
+                setState(() {
+                    this.isDisabled = false;
+                });
                 // await fluwx.pay(appId: "wxa22d7212da062286", 
                 //     partnerId: data["partnerid"],
                 //     prepayId: data["prepayid"],

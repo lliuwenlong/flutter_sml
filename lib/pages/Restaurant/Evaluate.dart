@@ -25,7 +25,7 @@ class Evaluate extends StatelessWidget {
         this.createTime = createTime;
         this.nickName = nickName;
         this.headerImage = headerImage;
-        this.imageUrl = imageUrl is String ? imageUrl.split(",") : [];
+        this.imageUrl = imageUrl != null && (imageUrl is String) ? imageUrl.split(",") : [];
     }
 
     @override
@@ -57,7 +57,7 @@ class Evaluate extends StatelessWidget {
                             height: ScreenAdaper.width(85),
                             child: CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                    this.headerImage
+                                    this.headerImage != null ? this.headerImage : ""
                                 )
                             ),
                         ),
@@ -72,7 +72,7 @@ class Evaluate extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
                                             Expanded(
-                                                child: Text(this.nickName, style: TextStyle(
+                                                child: Text(this.nickName !=null ? this.nickName : "", style: TextStyle(
                                                     color: ColorClass.common,
                                                     fontSize: ScreenAdaper.fontSize(30),
                                                 ), overflow: TextOverflow.ellipsis),

@@ -8,6 +8,7 @@ import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
 import '../../common/HttpUtil.dart';
 // import 'package:fluwx/fluwx.dart' as fluwx;
+import 'package:sy_flutter_wechat/sy_flutter_wechat.dart';
 import 'dart:ui';
 
 class ProductBuy extends StatefulWidget {
@@ -61,6 +62,27 @@ class _ProductBuyState extends State<ProductBuy>  {
         });
         if (res["code"] == 200) {
             var data = jsonDecode(res["data"]);
+                Map<String, String> payInfo = {
+                    "appid":"wxa22d7212da062286",
+                    "partnerid": data["partnerid"],
+                    "prepayid": data["prepayid"],
+                    "package": "Sign=WXPay",
+                    "noncestr": data["noncestr"],
+                    "timestamp": data["timestamp"],
+                    "sign": data["sign"].toString()
+                };
+                try  {
+                    SyPayResult payResult = await SyFlutterWechat.pay(SyPayInfo.fromJson(payInfo));
+                    if (payResult == SyPayResult.success) {
+                        Navigator.pushReplacementNamed(context, "/order");
+                    }
+                    setState(() {
+                        this.isDisabled = false;
+                    });
+                } catch (e) {
+                    print(e);
+                }
+                
             // await fluwx.pay(appId: "wxa22d7212da062286", 
             //     partnerId: data["partnerid"],
             //     prepayId: data["prepayid"],
