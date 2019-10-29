@@ -95,6 +95,9 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
                       
                         beOverdueList = res.data.list;
                         isBeOverdueLoading = false;
+                    }else{
+                      usedList = res.data.list;
+                      isUsedLoading = false;
                     }
                     
                 });

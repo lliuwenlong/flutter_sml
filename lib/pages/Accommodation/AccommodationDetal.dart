@@ -169,7 +169,7 @@ class _AccommodationDetalState extends State<AccommodationDetal> with SingleTick
                         intnet:good.intnet != null ? good.intnet : "",
                         bathroom:good.bathroom != null ? good.bathroom : "",
                         picture:good.picture != null ? good.picture : "",
-                        price:good.price != null ? good.price : 0,
+                        price:good.price != null ? good.price : "",
                         dayNum:this.dayNum,
                         placeOrder: () {
                             this.placeOrder(good.title, good.price, good.goodsId,this.dayNum);
