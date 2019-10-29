@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/common/CommonHandler.dart';
 import 'package:flutter_sml/pages/Shop/PurchaseAgreement.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
 import '../../common/HttpUtil.dart';
 // import 'package:fluwx/fluwx.dart' as fluwx;
-import 'package:sy_flutter_wechat/sy_flutter_wechat.dart';
 import 'dart:ui';
 
 class ProductBuy extends StatefulWidget {
@@ -72,13 +72,14 @@ class _ProductBuyState extends State<ProductBuy>  {
                     "sign": data["sign"].toString()
                 };
                 try  {
-                    SyPayResult payResult = await SyFlutterWechat.pay(SyPayInfo.fromJson(payInfo));
-                    if (payResult == SyPayResult.success) {
-                        Navigator.pushReplacementNamed(context, "/order");
+                    try  {
+                        await wechatPay(payInfo, success: this.success);
+                        setState(() {
+                            this.isDisabled = false;
+                        });
+                    } catch (e) {
+                        print(e);
                     }
-                    setState(() {
-                        this.isDisabled = false;
-                    });
                 } catch (e) {
                     print(e);
                 }
@@ -99,6 +100,11 @@ class _ProductBuyState extends State<ProductBuy>  {
         this._payment();
 
     }
+
+    success () {
+        Navigator.pushReplacementNamed(context, "/order");
+    }
+
     Widget _header (String name) {
         return Container(
             padding: EdgeInsets.all(

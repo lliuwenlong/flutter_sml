@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/common/CommonHandler.dart';
 import 'package:flutter_sml/model/store/user/User.dart';
 import 'package:flutter_sml/pages/Shop/PurchaseAgreement.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:sy_flutter_wechat/sy_flutter_wechat.dart';
 import '../../model/store/shop/Shop.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/Color.dart';
@@ -86,10 +86,7 @@ class _PurchaseState extends State<Purchase>  {
                 "sign": data["sign"].toString()
             };
             try  {
-                SyPayResult payResult = await SyFlutterWechat.pay(SyPayInfo.fromJson(payInfo));
-                if (payResult == SyPayResult.success) {
-                    Navigator.pushReplacementNamed(context, "/order");
-                }
+                await wechatPay(payInfo, success: this.success);
                 setState(() {
                     this.isDisabled = false;
                 });
@@ -115,6 +112,10 @@ class _PurchaseState extends State<Purchase>  {
             //     );
             // });
 		}
+    }
+
+    success () {
+        Navigator.pushNamed(context, '/order'); 
     }
     _onPay () {
 		this._payment();

@@ -37,7 +37,7 @@ class Business extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                        Text(name, style: TextStyle(
+                        Text(name == null ? "" : name, style: TextStyle(
                             color: ColorClass.titleColor,
                             fontSize: ScreenAdaper.fontSize(28)
                         )),
@@ -46,7 +46,7 @@ class Business extends StatelessWidget {
                             flex: 1,
                             child: Container(
                                 alignment: Alignment.centerRight,
-                                child: !isIcon ? Text(subTitle, style: TextStyle(
+                                child: !isIcon ? Text(subTitle == null ? "" : this.subTitle, style: TextStyle(
                                     color: color != null ? color : ColorClass.fontColor,
                                     fontSize: ScreenAdaper.fontSize(24)
                                 ), textAlign: TextAlign.end) : icon,

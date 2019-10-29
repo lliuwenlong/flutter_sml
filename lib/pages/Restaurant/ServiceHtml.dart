@@ -10,7 +10,9 @@ class ServiceHtml extends StatefulWidget {
     int id;
     int type;
     String price;
-    ServiceHtml(this.id, this.type, {this.price, Key key}) : super(key: key);
+    int firmId;
+    int goodsId;
+    ServiceHtml(this.id, this.type, {this.price, this.goodsId, this.firmId, Key key}) : super(key: key);
     @override
     _ServiceHtmlState createState() => _ServiceHtmlState(this.id, this.type, price: this.price);
 }
@@ -70,9 +72,10 @@ class _ServiceHtmlState extends State<ServiceHtml> {
                                     ),
                                     onPressed: () {
                                         Navigator.pushNamed(context, "/payment", arguments: {
-                                            "amount": 155,
+                                            "amount": widget.price,
                                             "type": widget.type,
-                                            "firmId": widget.id
+                                            "firmId": widget.firmId,
+                                            "goodsId": widget.id,
                                         });
                                     },
                                     child: Text("购买", style: TextStyle(

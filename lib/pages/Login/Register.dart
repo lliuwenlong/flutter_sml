@@ -152,7 +152,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ScreenAdaper.init(context);
         return GestureDetector(
             onTap: () {
-                FocusScope.of(context).requestFocus(FocusNode()); 
+                FocusScope.of(context).requestFocus(FocusNode());
             },
             child: Scaffold(
                 appBar: AppBarWidget().buildAppBar('注册'),
@@ -284,8 +284,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             ]
                         ),
                     ),
-                ),
-                
+                )
             ),
         );
     }

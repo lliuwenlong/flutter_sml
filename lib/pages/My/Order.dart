@@ -373,9 +373,7 @@ class _OrderState extends State<Order> with SingleTickerProviderStateMixin{
                             )
                         ]
                     ),
-                    ((data.type=='house'||data.type=='havefun')&&data.status == '2')||(data.type=='tree'&&data.status=='8') 
-                    ? SizedBox()
-                    : Container(
+                    Container(
                         alignment: Alignment.centerRight,
                         child: 
                         data.status!='4'&&data.status!='5'&&data.status!='6'&&data.status!='9'?Container(

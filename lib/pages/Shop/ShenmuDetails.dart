@@ -99,18 +99,18 @@ class _ShenmuDetailsState extends State<ShenmuDetails> {
                     padding: EdgeInsets.only(left: ScreenAdaper.width(30),right: ScreenAdaper.width(30),top:ScreenAdaper.height(14),bottom: ScreenAdaper.height(14)),
                     child:  RaisedButton(
                         child: Text(
-                        '购买',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: ScreenAdaper.fontSize(40)
-                        )
+                            '购买',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: ScreenAdaper.fontSize(40)
+                            )
                         ),
                         disabledColor: Color(0XFF86d4ca),
                         splashColor: Color.fromARGB(0, 0, 0, 0),
                         highlightColor: Color(0xff009a8a),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5))
+                            borderRadius: BorderRadius.all(Radius.circular(5))
                         ),
                         color: Color(0XFF22b0a1),
                         onPressed: (){

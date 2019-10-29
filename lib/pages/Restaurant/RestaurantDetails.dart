@@ -834,7 +834,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> with SingleTicker
                                                         return GestureDetector(
                                                             onTap: () {
                                                                 Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) {
-                                                                    return new ServiceHtml(good.goodsId, widget.type, price: good.price);
+                                                                    return new ServiceHtml(good.goodsId, widget.type, price: good.price, firmId: this.firm.firmId);
                                                                 }));
                                                             },
                                                             child: FoodServiceItem(

@@ -23,8 +23,6 @@ PODS:
   - keyboard_visibility (0.5.0):
     - Flutter
     - Reachability
-  - location_permissions (2.0.3):
-    - Flutter
   - multi_image_picker (4.5.4):
     - BSImagePicker (~> 2.10.1)
     - Flutter
@@ -53,7 +51,6 @@ DEPENDENCIES:
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - keyboard_visibility (from `.symlinks/plugins/keyboard_visibility/ios`)
-  - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
   - multi_image_picker (from `.symlinks/plugins/multi_image_picker/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - screen (from `.symlinks/plugins/screen/ios`)
@@ -89,8 +86,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker/ios"
   keyboard_visibility:
     :path: ".symlinks/plugins/keyboard_visibility/ios"
-  location_permissions:
-    :path: ".symlinks/plugins/location_permissions/ios"
   multi_image_picker:
     :path: ".symlinks/plugins/multi_image_picker/ios"
   path_provider:
@@ -120,7 +115,6 @@ SPEC CHECKSUMS:
   HappyDNS: 00c15e651a347206e58a20503a32a5564589b56a
   image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
   keyboard_visibility: 96a24de806fe6823c3ad956c01ba2ec6d056616f
-  location_permissions: 195ff2a1182fa9029ef3f2653156961ee5a1e40b
   multi_image_picker: b0e37df1ae01ed78cefc5ce57a07b1076438fae2
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
   Qiniu: 909b408ee489ea54827e9717be90b94bc9dfbc48
@@ -131,6 +125,6 @@ SPEC CHECKSUMS:
   url_launcher: 0067ddb8f10d36786672aa0722a21717dba3a298
   video_player: 3964090a33353060ed7f58aa6427c7b4b208ec21
 
-PODFILE CHECKSUM: 69cff28feda455e26a40a129d9c7631da911bacf
+PODFILE CHECKSUM: 840d7e0b5c439eddefd5d3d3d7d371dbc57466c9
 
 COCOAPODS: 1.8.0

@@ -19,12 +19,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 // import 'package:fluwx/fluwx.dart' as fluwx;
 import './common/HttpUtil.dart';
 import './components/AppFuncBrowse.dart';
-import 'package:amap_location/amap_location.dart';
-import 'package:sy_flutter_wechat/sy_flutter_wechat.dart';
+// import 'package:amap_location/amap_location.dart';
+// import 'package:sy_flutter_wechat/sy_flutter_wechat.dart';
 
 
 void main() {
-    AMapLocationClient.setApiKey("7ab90eb4210174935742137a19529d87");
+    // AMapLocationClient.setApiKey("7ab90eb4210174935742137a19529d87");
     // 强制竖屏
     SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
@@ -74,7 +74,7 @@ class _MyAppState extends State<MyApp>  {
     }
 
     _initFluwx() async {
-        bool result = await SyFlutterWechat.register('wxa22d7212da062286');
+        // await SyFlutterWechat.register('wxa22d7212da062286');
         // print(result);
         // await fluwx.register(
         //     appId: "wxa22d7212da062286",

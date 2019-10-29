@@ -72,9 +72,11 @@ class _PlaceOrderState extends State<PlaceOrder> {
             "phone": this.telContainer.text,
             "quitDate": formatter.format(endTime),
             "realName": this.usernameContainer.text,
-            "userId": _userModel.userId
+            "userId": _userModel.userId,
+            "userCouponId": this.chooseCouponParams["couponId"],
         });
         if (res["code"] == 200) {
+            ShowToast().showToast('提交成功，等待审核，通过后请到我的订单中完成付款');
             FocusScope.of(context).requestFocus(FocusNode());
             Navigator.pushNamed(context, "/order");
         } else {
@@ -140,7 +142,7 @@ class _PlaceOrderState extends State<PlaceOrder> {
                                                     fontSize: ScreenAdaper.fontSize(44)
                                                 )
                                             ):TextSpan(
-                                                text: '${chooseCouponParams['worth']=='0'?0:double.parse(widget.price)*widget.dayNum}',
+                                                text: '${chooseCouponParams['worth']=='0' ? double.parse(widget.price)*(widget.dayNum - 1) : double.parse(widget.price)*widget.dayNum}',
                                                 style: TextStyle(
                                                     fontSize: ScreenAdaper.fontSize(44)
                                                 )
@@ -344,7 +346,8 @@ class _PlaceOrderState extends State<PlaceOrder> {
                                     "orderSn": null,
                                     "amount": widget.price,
                                     "couponId": this.chooseCouponParams["couponId"] == null ? 0 : this.chooseCouponParams["couponId"],
-                                    'worth': 0
+                                    'worth': 0,
+                                    "goodsId": widget.goodId,
                                 }).then((val) {
                                     Map params = val;
                                     if (val == null) {

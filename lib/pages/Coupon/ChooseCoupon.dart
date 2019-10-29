@@ -31,7 +31,8 @@ class _ChooseCouponState extends State<ChooseCoupon> with SingleTickerProviderSt
     _getData () async{
         Map response = await this.http.get('/api/v1/coupon/user',data: {
           'firmId': this.arguments['firmId'],
-          'userId': this._userModel.userId
+          'userId': this._userModel.userId,
+          "goodsId": this.arguments['goodsId']
         });
         if (response['code'] == 200) {
           setState(() {

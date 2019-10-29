@@ -4,9 +4,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_sml/common/CommonHandler.dart';
 import 'package:flutter_sml/model/store/shop/Shop.dart';
 import 'package:provider/provider.dart';
-import 'package:sy_flutter_wechat/sy_flutter_wechat.dart';
 import '../../components/AppBarWidget.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../common/HttpUtil.dart';
@@ -39,6 +39,9 @@ class _PaymentState extends State<Payment> {
     void initState() {
         // print(this.arguments);
         super.initState();
+        if (this.arguments["type"] == 4) {
+            this._inputText = this.arguments["amount"];
+        }
         // fluwx.responseFromPayment.listen((response){
         //     setState(() {
         //         this.isDisabled = false;
@@ -57,7 +60,12 @@ class _PaymentState extends State<Payment> {
 	}
 
     _getPrice () {
-        return ((_inputText.isEmpty ? 0 : double.parse(_inputText)) - double.parse(this.chooseCouponParams['worth']));
+        if (this.arguments["type"] == 4 && this.chooseCouponParams['worth'] == "0"){
+            return 0;
+        }
+        return arguments["type"] == 4
+            ? ((arguments["amount"].isEmpty ? 0 : double.parse(arguments["amount"])) - double.parse(this.chooseCouponParams['worth']))
+            : ((_inputText.isEmpty ? 0 : double.parse(_inputText)) - double.parse(this.chooseCouponParams['worth']));
     }
   	_getData () async{
 		Map res = await this.http.get('/api/v1/coupon/user',data: {
@@ -74,33 +82,50 @@ class _PaymentState extends State<Payment> {
         Map type = {
             1: "food",
             2: "shopping",
-            3: "nearplay"
+            3: "nearplay",
+            4: "havefun"
         };
 
         Map typeName = {
-            1: "餐饮",
-            2: "购物",
-            3: "周边游"
+            1: "神木餐饮",
+            2: "神木购物",
+            3: "周边游",
+            4: "神木娱乐"
         };
         setState(() {
             isDisabled = true;
         });
-     
+        Map params = {};
+        if (this.arguments["type"] == 4) {
+            params["fun"] = {
+                "amount": this._inputText,
+                "channel": "Wechat",
+                "desc": typeName[this.arguments['type']],
+                "goodsId": this.arguments['goodsId'],
+                "platform": Platform.isAndroid ? "Android" : "IOS",
+                "tradeType": "APP",
+                "userCouponId": this.chooseCouponParams["couponId"] != null ? this.chooseCouponParams["couponId"] : null,
+                "userId": this._userModel.userId
+            };
+            params["goodsType"] = type[this.arguments['type']];
+        } else {
+            params["food"] = {
+                "amount": this._moneyController.text,
+                "channel": "Wechat",
+                "desc": typeName[this.arguments['type']],
+                "firmId": this.arguments['firmId'],
+                "platform": Platform.isAndroid ? "Android" : "IOS",
+                "tradeType": "APP",
+                "type": type[this.arguments['type']],
+                "userCouponId": this.chooseCouponParams["couponId"] != null ? this.chooseCouponParams["couponId"] : null,
+                "userId": this._userModel.userId
+            };
+            params["goodsType"] = type[this.arguments['type']];
+        }
+        print(params);
         if (this._payType == "Wechat") {
-            Map res = await this.http.post("/api/v12/wxpay/unifiedorder", params: {
-                 "food": {
-                    "amount": this._moneyController.text,
-                    "channel": "Wechat",
-                    "desc": typeName[this.arguments['type']],
-                    "firmId": this.arguments['firmId'],
-                    "platform": Platform.isAndroid ? "Android" : "IOS",
-                    "tradeType": "APP",
-                    "type": type[this.arguments['type']],
-                    "userCouponId": this.chooseCouponParams["couponId"] != null ? this.chooseCouponParams["couponId"] : null,
-                    "userId": this._userModel.userId
-                },
-                "goodsType": type[this.arguments['type']]
-            });
+            Map res = await this.http.post("/api/v12/wxpay/unifiedorder", params: params);
+            print(res);
             if (res["code"] == 200) {
                 var data = jsonDecode(res["data"]);
                 Map<String, String> payInfo = {
@@ -112,15 +137,14 @@ class _PaymentState extends State<Payment> {
                     "timestamp": data["timestamp"],
                     "sign": data["sign"].toString()
                 };
-
-                SyPayResult payResult = await SyFlutterWechat.pay(SyPayInfo.fromJson(payInfo));
-                Provider.of<ShopModel>(context).changeIsDisabled(false);
-                if (payResult == SyPayResult.success) {
-                    Navigator.pushReplacementNamed(context, "/order");
+                try  {
+                    await wechatPay(payInfo, success: this.success);
+                    setState(() {
+                        this.isDisabled = false;
+                    });
+                } catch (e) {
+                    print(e);
                 }
-                setState(() {
-                    this.isDisabled = false;
-                });
                 // await fluwx.pay(appId: "wxa22d7212da062286", 
                 //     partnerId: data["partnerid"],
                 //     prepayId: data["prepayid"],
@@ -133,6 +157,10 @@ class _PaymentState extends State<Payment> {
             }
         }
     }
+    success () {
+        Navigator.pushReplacementNamed(context, "/order");
+    }
+
     @override
     Widget build(BuildContext context) {
         return Scaffold(
@@ -210,7 +238,11 @@ class _PaymentState extends State<Payment> {
                                                 SizedBox(width: ScreenAdaper.width(10),),
                                                 Expanded(
                                                     flex: 1,
-                                                    child: TextField(
+                                                    child: widget.arguments["type"] == 4
+                                                    ? Text("${widget.arguments['amount']}", style: TextStyle(
+                                                            color: Color(0xff333333),
+                                                            fontSize: ScreenAdaper.fontSize(50),
+                                                        )) : TextField(
                                                         decoration: InputDecoration(
                                                             hintText: '请询问店员后输入金额',
                                                             hintStyle: TextStyle(
@@ -274,6 +306,7 @@ class _PaymentState extends State<Payment> {
                                                 'type': arguments['type'],
                                                 'orderSn': arguments['orderSn'],
                                                 'amount': arguments['amount'],
+                                                'goodsId': arguments['goodsId'],
                                                 'couponId': this.chooseCouponParams['couponId'] != null ? this.chooseCouponParams['couponId'] : 0
                                             }).then((val) {
                                                 Map params = val;
@@ -338,7 +371,9 @@ class _PaymentState extends State<Payment> {
                                                             color: Color(0xff999999)),
                                                     ),
                                                 ): Text(
-                                                    '${this.chooseCouponParams['worth']}元代金券',
+                                                    this.chooseCouponParams['worth'] == "0"
+                                                    ? "抵用券"
+                                                    : '${this.chooseCouponParams['worth']}元代金券',
                                                     style: TextStyle(
                                                         fontFamily:
                                                             "SourceHanSansCN-Medium",
@@ -361,7 +396,7 @@ class _PaymentState extends State<Payment> {
                                         this.chooseCouponParams['worth']!=null?Container(
                                             alignment: Alignment.bottomRight,
                                             child: Text(
-                                                '- ¥ ${this.chooseCouponParams['worth']}',
+                                                '- ¥ ${this.chooseCouponParams['worth'] == "0" ? this.arguments["amount"] : this.chooseCouponParams['worth']}',
                                                 style: TextStyle(
                                                     fontSize: ScreenAdaper.fontSize(34),
                                                     color: Color(0xfffb4135)),
@@ -410,12 +445,15 @@ class _PaymentState extends State<Payment> {
                                         ):Container(
                                             child: this.chooseCouponParams['worth'] == null ?
                                                 Text(
-                                                    '¥ $_inputText',
+                                                    '¥ ${widget.arguments["type"] == 4 ? widget.arguments["amount"] : _inputText}',
                                                     style: TextStyle(
                                                         color: Color(0xff333333),
                                                         fontSize: ScreenAdaper.fontSize(48)),
                                                 ):Text(
-                                                    '¥ ${_getPrice() > 0 ? _getPrice()  : 0.01}',
+                                                    _getPrice() >= 0 && this.arguments["type"] == 4 && this.chooseCouponParams['worth'] == "0"
+                                                        ?  '¥ 0.0'
+                                                        : '¥ ${_getPrice() > 0 ? _getPrice()  : 0.01}'
+                                                    ,
                                                     style: TextStyle(
                                                         color: Color(0xff333333),
                                                         fontSize: ScreenAdaper.fontSize(48)),
