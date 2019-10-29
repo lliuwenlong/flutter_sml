@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_sml/common/CommonHandler.dart';
 import 'package:flutter_sml/model/store/user/User.dart';
 import 'package:provider/provider.dart';
-import 'package:sy_flutter_wechat/sy_flutter_wechat.dart';
 import '../../services/ScreenAdaper.dart';
 import '../Shop/Purchase.dart';
 import '../../components/AppBarWidget.dart';
@@ -119,20 +119,17 @@ class _ShopPageState extends State<ShopPage> {
                     "timestamp": data["timestamp"],
                     "sign": data["sign"].toString()
                 };
-
-                SyPayResult payResult = await SyFlutterWechat.pay(SyPayInfo.fromJson(payInfo));
-                Provider.of<ShopModel>(context).changeIsDisabled(false);
-                if (payResult == SyPayResult.success) {
-                    this.nav();
+                try  {
+                    await wechatPay(payInfo, success: this.nav);
+                } catch (e) {
+                    print(e);
                 }
             }
         }
     }
 
     _purchase (Data val) {
-     
         Provider.of<ShopModel>(context).reset();
-
 		showModalBottomSheet(
 			context: this._selfContext,
 			shape:  RoundedRectangleBorder(

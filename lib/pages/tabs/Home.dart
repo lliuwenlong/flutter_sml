@@ -2,7 +2,7 @@ import 'package:amap_location/amap_location.dart';
 import 'package:amap_location/amap_location_option.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sml/common/CommonHandler.dart';
-import 'package:location_permissions/location_permissions.dart';
+// import 'package:location_permissions/location_permissions.dart';
 import '../Home/Swiper.dart';
 import '../../services/ScreenAdaper.dart';
 import '../../components/AppBarWidget.dart';
